@@ -673,18 +673,6 @@
 		CFE7FBB10D2F6755002F3102 /* debug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EAE061710526CCB900A80003 /* debug.cpp */; };
 		CFE7FBB40D2F67BA002F3102 /* fxemu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EAE0617C0526CCB900A80003 /* fxemu.cpp */; };
 		CFE7FBB80D2F683C002F3102 /* debug.h in Headers */ = {isa = PBXBuildFile; fileRef = EA6E6C0E08F9734500CB3555 /* debug.h */; };
-		CFEFAE8B10EAC92300FB081A /* snes_ntsc.c in Sources */ = {isa = PBXBuildFile; fileRef = CFEFAE8A10EAC92300FB081A /* snes_ntsc.c */; };
-		CFEFAE8C10EAC92300FB081A /* snes_ntsc.c in Sources */ = {isa = PBXBuildFile; fileRef = CFEFAE8A10EAC92300FB081A /* snes_ntsc.c */; };
-		CFEFAE8D10EAC92300FB081A /* snes_ntsc.c in Sources */ = {isa = PBXBuildFile; fileRef = CFEFAE8A10EAC92300FB081A /* snes_ntsc.c */; };
-		CFEFAE9110EAC92B00FB081A /* snes_ntsc_config.h in Headers */ = {isa = PBXBuildFile; fileRef = CFEFAE8E10EAC92B00FB081A /* snes_ntsc_config.h */; };
-		CFEFAE9210EAC92B00FB081A /* snes_ntsc_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = CFEFAE8F10EAC92B00FB081A /* snes_ntsc_impl.h */; };
-		CFEFAE9310EAC92B00FB081A /* snes_ntsc.h in Headers */ = {isa = PBXBuildFile; fileRef = CFEFAE9010EAC92B00FB081A /* snes_ntsc.h */; };
-		CFEFAE9410EAC92B00FB081A /* snes_ntsc_config.h in Headers */ = {isa = PBXBuildFile; fileRef = CFEFAE8E10EAC92B00FB081A /* snes_ntsc_config.h */; };
-		CFEFAE9510EAC92B00FB081A /* snes_ntsc_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = CFEFAE8F10EAC92B00FB081A /* snes_ntsc_impl.h */; };
-		CFEFAE9610EAC92B00FB081A /* snes_ntsc.h in Headers */ = {isa = PBXBuildFile; fileRef = CFEFAE9010EAC92B00FB081A /* snes_ntsc.h */; };
-		CFEFAE9710EAC92B00FB081A /* snes_ntsc_config.h in Headers */ = {isa = PBXBuildFile; fileRef = CFEFAE8E10EAC92B00FB081A /* snes_ntsc_config.h */; };
-		CFEFAE9810EAC92B00FB081A /* snes_ntsc_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = CFEFAE8F10EAC92B00FB081A /* snes_ntsc_impl.h */; };
-		CFEFAE9910EAC92B00FB081A /* snes_ntsc.h in Headers */ = {isa = PBXBuildFile; fileRef = CFEFAE9010EAC92B00FB081A /* snes_ntsc.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -738,10 +726,6 @@
 		CFA518E50EBCB5B1008379F6 /* crypt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = crypt.h; sourceTree = "<group>"; };
 		CFA82C3D0F1B43A60089C17F /* srtcemu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = srtcemu.h; sourceTree = "<group>"; };
 		CFA82C3E0F1B43A60089C17F /* srtcemu.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = srtcemu.cpp; sourceTree = "<group>"; };
-		CFEFAE8A10EAC92300FB081A /* snes_ntsc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = snes_ntsc.c; sourceTree = "<group>"; };
-		CFEFAE8E10EAC92B00FB081A /* snes_ntsc_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = snes_ntsc_config.h; sourceTree = "<group>"; };
-		CFEFAE8F10EAC92B00FB081A /* snes_ntsc_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = snes_ntsc_impl.h; sourceTree = "<group>"; };
-		CFEFAE9010EAC92B00FB081A /* snes_ntsc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = snes_ntsc.h; sourceTree = "<group>"; };
 		EA00D01D0A5A9956000C58E0 /* logger.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = logger.cpp; sourceTree = "<group>"; };
 		EA00D01F0A5A998F000C58E0 /* logger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = logger.h; sourceTree = "<group>"; };
 		EA0C952D08364A4A009307B4 /* mac-coreimage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = "mac-coreimage.h"; sourceTree = "<group>"; };
@@ -1069,14 +1053,10 @@
 				CF5553B40EA24C36005957E4 /* blit.h */,
 				CF5553B60EA24C36005957E4 /* epx.h */,
 				CF5553B80EA24C36005957E4 /* hq2x.h */,
-				CFEFAE9010EAC92B00FB081A /* snes_ntsc.h */,
-				CFEFAE8E10EAC92B00FB081A /* snes_ntsc_config.h */,
-				CFEFAE8F10EAC92B00FB081A /* snes_ntsc_impl.h */,
 				CF5553B10EA24C36005957E4 /* 2xsai.cpp */,
 				CF5553B30EA24C36005957E4 /* blit.cpp */,
 				CF5553B50EA24C36005957E4 /* epx.cpp */,
 				CF5553B70EA24C36005957E4 /* hq2x.cpp */,
-				CFEFAE8A10EAC92300FB081A /* snes_ntsc.c */,
 			);
 			path = filter;
 			sourceTree = "<group>";
@@ -1358,24 +1338,10 @@
 				CF047D62109D0E0600FD0754 /* spc7110.h in Headers */,
 				CF047D63109D0E0600FD0754 /* srtc.h in Headers */,
 				CF047D64109D0E0600FD0754 /* tile.h in Headers */,
-				CF37577110A6AEA1001BF7C5 /* apu.h in Headers */,
-				CF37577210A6AEA1001BF7C5 /* blargg_common.h in Headers */,
-				CF37577310A6AEA1001BF7C5 /* blargg_config.h in Headers */,
-				CF37577410A6AEA1001BF7C5 /* blargg_endian.h in Headers */,
-				CF37577510A6AEA1001BF7C5 /* blargg_source.h in Headers */,
-				CF37577710A6AEA1001BF7C5 /* resampler.h in Headers */,
-				CF37577810A6AEA1001BF7C5 /* ring_buffer.h in Headers */,
-				CF37577A10A6AEA1001BF7C5 /* SNES_SPC.h in Headers */,
-				CF37577D10A6AEA1001BF7C5 /* SPC_CPU.h in Headers */,
-				CF37577F10A6AEA1001BF7C5 /* SPC_DSP.h in Headers */,
-				CF37578110A6AEA1001BF7C5 /* SPC_Filter.h in Headers */,
 				CF047D65109D0E0600FD0754 /* 2xsai.h in Headers */,
 				CF047D66109D0E0600FD0754 /* blit.h in Headers */,
 				CF047D67109D0E0600FD0754 /* epx.h in Headers */,
 				CF047D68109D0E0600FD0754 /* hq2x.h in Headers */,
-				CFEFAE9610EAC92B00FB081A /* snes_ntsc.h in Headers */,
-				CFEFAE9410EAC92B00FB081A /* snes_ntsc_config.h in Headers */,
-				CFEFAE9510EAC92B00FB081A /* snes_ntsc_impl.h in Headers */,
 				CF047D69109D0E0600FD0754 /* crypt.h in Headers */,
 				CF047D6A109D0E0600FD0754 /* ioapi.h in Headers */,
 				CF047D6B109D0E0600FD0754 /* unzip.h in Headers */,
@@ -1425,6 +1391,17 @@
 				CF047D97109D0E0600FD0754 /* mac-prefix.h in Headers */,
 				CF047D98109D0E0600FD0754 /* mac-global_prefix.h in Headers */,
 				CF047D99109D0E0600FD0754 /* HID_Utilities_External.h in Headers */,
+				CF37577110A6AEA1001BF7C5 /* apu.h in Headers */,
+				CF37577210A6AEA1001BF7C5 /* blargg_common.h in Headers */,
+				CF37577310A6AEA1001BF7C5 /* blargg_config.h in Headers */,
+				CF37577410A6AEA1001BF7C5 /* blargg_endian.h in Headers */,
+				CF37577510A6AEA1001BF7C5 /* blargg_source.h in Headers */,
+				CF37577710A6AEA1001BF7C5 /* resampler.h in Headers */,
+				CF37577810A6AEA1001BF7C5 /* ring_buffer.h in Headers */,
+				CF37577A10A6AEA1001BF7C5 /* SNES_SPC.h in Headers */,
+				CF37577D10A6AEA1001BF7C5 /* SPC_CPU.h in Headers */,
+				CF37577F10A6AEA1001BF7C5 /* SPC_DSP.h in Headers */,
+				CF37578110A6AEA1001BF7C5 /* SPC_Filter.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1473,24 +1450,10 @@
 				CF0566B70CF98E7E00C7877C /* spc7110.h in Headers */,
 				CF0566B80CF98E7E00C7877C /* srtc.h in Headers */,
 				CF0566B90CF98E7E00C7877C /* tile.h in Headers */,
-				CF37578310A6AEA1001BF7C5 /* apu.h in Headers */,
-				CF37578410A6AEA1001BF7C5 /* blargg_common.h in Headers */,
-				CF37578510A6AEA1001BF7C5 /* blargg_config.h in Headers */,
-				CF37578610A6AEA1001BF7C5 /* blargg_endian.h in Headers */,
-				CF37578710A6AEA1001BF7C5 /* blargg_source.h in Headers */,
-				CF37578910A6AEA1001BF7C5 /* resampler.h in Headers */,
-				CF37578A10A6AEA1001BF7C5 /* ring_buffer.h in Headers */,
-				CF37578C10A6AEA1001BF7C5 /* SNES_SPC.h in Headers */,
-				CF37578F10A6AEA1001BF7C5 /* SPC_CPU.h in Headers */,
-				CF37579110A6AEA1001BF7C5 /* SPC_DSP.h in Headers */,
-				CF37579310A6AEA1001BF7C5 /* SPC_Filter.h in Headers */,
 				CF5553CA0EA24C36005957E4 /* 2xsai.h in Headers */,
 				CF5553CC0EA24C36005957E4 /* blit.h in Headers */,
 				CF5553CE0EA24C36005957E4 /* epx.h in Headers */,
 				CF5553D00EA24C36005957E4 /* hq2x.h in Headers */,
-				CFEFAE9910EAC92B00FB081A /* snes_ntsc.h in Headers */,
-				CFEFAE9710EAC92B00FB081A /* snes_ntsc_config.h in Headers */,
-				CFEFAE9810EAC92B00FB081A /* snes_ntsc_impl.h in Headers */,
 				CFA518E80EBCB5B1008379F6 /* crypt.h in Headers */,
 				CFA518D90EBCB4CA008379F6 /* ioapi.h in Headers */,
 				CFA518DD0EBCB4D2008379F6 /* unzip.h in Headers */,
@@ -1540,6 +1503,17 @@
 				CF0566EC0CF98E7E00C7877C /* mac-prefix.h in Headers */,
 				CF0566ED0CF98E7E00C7877C /* mac-global_prefix.h in Headers */,
 				CF0566EE0CF98E7E00C7877C /* HID_Utilities_External.h in Headers */,
+				CF37578310A6AEA1001BF7C5 /* apu.h in Headers */,
+				CF37578410A6AEA1001BF7C5 /* blargg_common.h in Headers */,
+				CF37578510A6AEA1001BF7C5 /* blargg_config.h in Headers */,
+				CF37578610A6AEA1001BF7C5 /* blargg_endian.h in Headers */,
+				CF37578710A6AEA1001BF7C5 /* blargg_source.h in Headers */,
+				CF37578910A6AEA1001BF7C5 /* resampler.h in Headers */,
+				CF37578A10A6AEA1001BF7C5 /* ring_buffer.h in Headers */,
+				CF37578C10A6AEA1001BF7C5 /* SNES_SPC.h in Headers */,
+				CF37578F10A6AEA1001BF7C5 /* SPC_CPU.h in Headers */,
+				CF37579110A6AEA1001BF7C5 /* SPC_DSP.h in Headers */,
+				CF37579310A6AEA1001BF7C5 /* SPC_Filter.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1588,24 +1562,10 @@
 				CF2F463C1095EE72007D33FA /* spc7110.h in Headers */,
 				CF2F463D1095EE72007D33FA /* srtc.h in Headers */,
 				CF2F463E1095EE72007D33FA /* tile.h in Headers */,
-				CF37575F10A6AEA1001BF7C5 /* apu.h in Headers */,
-				CF37576010A6AEA1001BF7C5 /* blargg_common.h in Headers */,
-				CF37576110A6AEA1001BF7C5 /* blargg_config.h in Headers */,
-				CF37576210A6AEA1001BF7C5 /* blargg_endian.h in Headers */,
-				CF37576310A6AEA1001BF7C5 /* blargg_source.h in Headers */,
-				CF37576510A6AEA1001BF7C5 /* resampler.h in Headers */,
-				CF37576610A6AEA1001BF7C5 /* ring_buffer.h in Headers */,
-				CF37576810A6AEA1001BF7C5 /* SNES_SPC.h in Headers */,
-				CF37576B10A6AEA1001BF7C5 /* SPC_CPU.h in Headers */,
-				CF37576D10A6AEA1001BF7C5 /* SPC_DSP.h in Headers */,
-				CF37576F10A6AEA1001BF7C5 /* SPC_Filter.h in Headers */,
 				CF2F463F1095EE72007D33FA /* 2xsai.h in Headers */,
 				CF2F46401095EE72007D33FA /* blit.h in Headers */,
 				CF2F46411095EE72007D33FA /* epx.h in Headers */,
 				CF2F46421095EE72007D33FA /* hq2x.h in Headers */,
-				CFEFAE9310EAC92B00FB081A /* snes_ntsc.h in Headers */,
-				CFEFAE9110EAC92B00FB081A /* snes_ntsc_config.h in Headers */,
-				CFEFAE9210EAC92B00FB081A /* snes_ntsc_impl.h in Headers */,
 				CF2F46431095EE72007D33FA /* crypt.h in Headers */,
 				CF2F46441095EE72007D33FA /* ioapi.h in Headers */,
 				CF2F46451095EE72007D33FA /* unzip.h in Headers */,
@@ -1655,6 +1615,17 @@
 				CF2F46711095EE72007D33FA /* mac-prefix.h in Headers */,
 				CF2F46721095EE72007D33FA /* mac-global_prefix.h in Headers */,
 				CF2F46731095EE72007D33FA /* HID_Utilities_External.h in Headers */,
+				CF37575F10A6AEA1001BF7C5 /* apu.h in Headers */,
+				CF37576010A6AEA1001BF7C5 /* blargg_common.h in Headers */,
+				CF37576110A6AEA1001BF7C5 /* blargg_config.h in Headers */,
+				CF37576210A6AEA1001BF7C5 /* blargg_endian.h in Headers */,
+				CF37576310A6AEA1001BF7C5 /* blargg_source.h in Headers */,
+				CF37576510A6AEA1001BF7C5 /* resampler.h in Headers */,
+				CF37576610A6AEA1001BF7C5 /* ring_buffer.h in Headers */,
+				CF37576810A6AEA1001BF7C5 /* SNES_SPC.h in Headers */,
+				CF37576B10A6AEA1001BF7C5 /* SPC_CPU.h in Headers */,
+				CF37576D10A6AEA1001BF7C5 /* SPC_DSP.h in Headers */,
+				CF37576F10A6AEA1001BF7C5 /* SPC_Filter.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1723,7 +1694,7 @@
 /* Begin PBXProject section */
 		20286C28FDCF999611CA2CEA /* Project object */ = {
 			isa = PBXProject;
-			buildConfigurationList = EA6A1100085808D200A1CF18 /* Build configuration list for PBXProject "snes9x" */;
+			buildConfigurationList = EA6A1100085808D200A1CF18 /* Build configuration list for PBXProject "snes9x+merge" */;
 			compatibilityVersion = "Xcode 2.4";
 			hasScannedForEncodings = 1;
 			mainGroup = 20286C29FDCF999611CA2CEA /* Snes9x CVS */;
@@ -1882,17 +1853,10 @@
 				CF047DD8109D0E0600FD0754 /* spc7110.cpp in Sources */,
 				CF047DD9109D0E0600FD0754 /* srtc.cpp in Sources */,
 				CF047DDA109D0E0600FD0754 /* tile.cpp in Sources */,
-				CF37577010A6AEA1001BF7C5 /* apu.cpp in Sources */,
-				CF37577910A6AEA1001BF7C5 /* SNES_SPC.cpp in Sources */,
-				CF37577B10A6AEA1001BF7C5 /* SNES_SPC_misc.cpp in Sources */,
-				CF37577C10A6AEA1001BF7C5 /* SNES_SPC_state.cpp in Sources */,
-				CF37577E10A6AEA1001BF7C5 /* SPC_DSP.cpp in Sources */,
-				CF37578010A6AEA1001BF7C5 /* SPC_Filter.cpp in Sources */,
 				CF047DDB109D0E0600FD0754 /* 2xsai.cpp in Sources */,
 				CF047DDC109D0E0600FD0754 /* blit.cpp in Sources */,
 				CF047DDD109D0E0600FD0754 /* epx.cpp in Sources */,
 				CF047DDE109D0E0600FD0754 /* hq2x.cpp in Sources */,
-				CFEFAE8C10EAC92300FB081A /* snes_ntsc.c in Sources */,
 				CF047DDF109D0E0600FD0754 /* ioapi.c in Sources */,
 				CF047DE0109D0E0600FD0754 /* unzip.c in Sources */,
 				CF047DE1109D0E0600FD0754 /* 7zlzma.cpp in Sources */,
@@ -1929,6 +1893,12 @@
 				CF047E00109D0E0600FD0754 /* mac-server.cpp in Sources */,
 				CF047E01109D0E0600FD0754 /* mac-snes9x.cpp in Sources */,
 				CF047E02109D0E0600FD0754 /* mac-stringtools.cpp in Sources */,
+				CF37577010A6AEA1001BF7C5 /* apu.cpp in Sources */,
+				CF37577910A6AEA1001BF7C5 /* SNES_SPC.cpp in Sources */,
+				CF37577B10A6AEA1001BF7C5 /* SNES_SPC_misc.cpp in Sources */,
+				CF37577C10A6AEA1001BF7C5 /* SNES_SPC_state.cpp in Sources */,
+				CF37577E10A6AEA1001BF7C5 /* SPC_DSP.cpp in Sources */,
+				CF37578010A6AEA1001BF7C5 /* SPC_Filter.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1977,17 +1947,10 @@
 				CF0567270CF98E7E00C7877C /* spc7110.cpp in Sources */,
 				CF0567280CF98E7E00C7877C /* srtc.cpp in Sources */,
 				CF0567290CF98E7E00C7877C /* tile.cpp in Sources */,
-				CF37578210A6AEA1001BF7C5 /* apu.cpp in Sources */,
-				CF37578B10A6AEA1001BF7C5 /* SNES_SPC.cpp in Sources */,
-				CF37578D10A6AEA1001BF7C5 /* SNES_SPC_misc.cpp in Sources */,
-				CF37578E10A6AEA1001BF7C5 /* SNES_SPC_state.cpp in Sources */,
-				CF37579010A6AEA1001BF7C5 /* SPC_DSP.cpp in Sources */,
-				CF37579210A6AEA1001BF7C5 /* SPC_Filter.cpp in Sources */,
 				CF5553C90EA24C36005957E4 /* 2xsai.cpp in Sources */,
 				CF5553CB0EA24C36005957E4 /* blit.cpp in Sources */,
 				CF5553CD0EA24C36005957E4 /* epx.cpp in Sources */,
 				CF5553CF0EA24C36005957E4 /* hq2x.cpp in Sources */,
-				CFEFAE8D10EAC92300FB081A /* snes_ntsc.c in Sources */,
 				CFA518D40EBCB4AD008379F6 /* ioapi.c in Sources */,
 				CFA518C80EBCB3ED008379F6 /* unzip.c in Sources */,
 				CF05672E0CF98E7E00C7877C /* 7zlzma.cpp in Sources */,
@@ -2024,6 +1987,12 @@
 				CF0567510CF98E7E00C7877C /* mac-server.cpp in Sources */,
 				CF0567520CF98E7E00C7877C /* mac-snes9x.cpp in Sources */,
 				CF0567530CF98E7E00C7877C /* mac-stringtools.cpp in Sources */,
+				CF37578210A6AEA1001BF7C5 /* apu.cpp in Sources */,
+				CF37578B10A6AEA1001BF7C5 /* SNES_SPC.cpp in Sources */,
+				CF37578D10A6AEA1001BF7C5 /* SNES_SPC_misc.cpp in Sources */,
+				CF37578E10A6AEA1001BF7C5 /* SNES_SPC_state.cpp in Sources */,
+				CF37579010A6AEA1001BF7C5 /* SPC_DSP.cpp in Sources */,
+				CF37579210A6AEA1001BF7C5 /* SPC_Filter.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2072,17 +2041,10 @@
 				CF2F46B21095EE72007D33FA /* spc7110.cpp in Sources */,
 				CF2F46B31095EE72007D33FA /* srtc.cpp in Sources */,
 				CF2F46B41095EE72007D33FA /* tile.cpp in Sources */,
-				CF37575E10A6AEA1001BF7C5 /* apu.cpp in Sources */,
-				CF37576710A6AEA1001BF7C5 /* SNES_SPC.cpp in Sources */,
-				CF37576910A6AEA1001BF7C5 /* SNES_SPC_misc.cpp in Sources */,
-				CF37576A10A6AEA1001BF7C5 /* SNES_SPC_state.cpp in Sources */,
-				CF37576C10A6AEA1001BF7C5 /* SPC_DSP.cpp in Sources */,
-				CF37576E10A6AEA1001BF7C5 /* SPC_Filter.cpp in Sources */,
 				CF2F46B51095EE72007D33FA /* 2xsai.cpp in Sources */,
 				CF2F46B61095EE72007D33FA /* blit.cpp in Sources */,
 				CF2F46B71095EE72007D33FA /* epx.cpp in Sources */,
 				CF2F46B81095EE72007D33FA /* hq2x.cpp in Sources */,
-				CFEFAE8B10EAC92300FB081A /* snes_ntsc.c in Sources */,
 				CF2F46B91095EE72007D33FA /* ioapi.c in Sources */,
 				CF2F46BA1095EE72007D33FA /* unzip.c in Sources */,
 				CF2F46BB1095EE72007D33FA /* 7zlzma.cpp in Sources */,
@@ -2119,6 +2081,12 @@
 				CF2F46DA1095EE72007D33FA /* mac-server.cpp in Sources */,
 				CF2F46DB1095EE72007D33FA /* mac-snes9x.cpp in Sources */,
 				CF2F46DC1095EE72007D33FA /* mac-stringtools.cpp in Sources */,
+				CF37575E10A6AEA1001BF7C5 /* apu.cpp in Sources */,
+				CF37576710A6AEA1001BF7C5 /* SNES_SPC.cpp in Sources */,
+				CF37576910A6AEA1001BF7C5 /* SNES_SPC_misc.cpp in Sources */,
+				CF37576A10A6AEA1001BF7C5 /* SNES_SPC_state.cpp in Sources */,
+				CF37576C10A6AEA1001BF7C5 /* SPC_DSP.cpp in Sources */,
+				CF37576E10A6AEA1001BF7C5 /* SPC_Filter.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2188,6 +2156,7 @@
 				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
 				GCC_WARN_MISSING_PARENTHESES = YES;
 				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
+				GCC_WARN_SHADOW = YES;
 				GCC_WARN_SIGN_COMPARE = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNKNOWN_PRAGMAS = YES;
@@ -2231,6 +2200,7 @@
 				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
 				GCC_WARN_MISSING_PARENTHESES = YES;
 				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
+				GCC_WARN_SHADOW = YES;
 				GCC_WARN_SIGN_COMPARE = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNKNOWN_PRAGMAS = YES;
@@ -2276,6 +2246,7 @@
 				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
 				GCC_WARN_MISSING_PARENTHESES = YES;
 				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
+				GCC_WARN_SHADOW = YES;
 				GCC_WARN_SIGN_COMPARE = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
@@ -2324,6 +2295,7 @@
 				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
 				GCC_WARN_MISSING_PARENTHESES = YES;
 				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
+				GCC_WARN_SHADOW = YES;
 				GCC_WARN_SIGN_COMPARE = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNKNOWN_PRAGMAS = YES;
@@ -2362,6 +2334,7 @@
 				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
 				GCC_WARN_MISSING_PARENTHESES = YES;
 				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
+				GCC_WARN_SHADOW = YES;
 				GCC_WARN_SIGN_COMPARE = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
@@ -2411,6 +2384,7 @@
 				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
 				GCC_WARN_MISSING_PARENTHESES = YES;
 				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
+				GCC_WARN_SHADOW = YES;
 				GCC_WARN_SIGN_COMPARE = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
@@ -2469,7 +2443,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		EA6A1100085808D200A1CF18 /* Build configuration list for PBXProject "snes9x" */ = {
+		EA6A1100085808D200A1CF18 /* Build configuration list for PBXProject "snes9x+merge" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				EA6A1102085808D200A1CF18 /* Release */,

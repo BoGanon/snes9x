@@ -1,5 +1,6 @@
 #include <sys/stat.h>
 #include <gtk/gtk.h>
+#include <errno.h>
 
 #include "gtk_s9x.h"
 
@@ -130,32 +131,40 @@ const char *
 S9xGetDirectory (enum s9x_getdirtype dirtype)
 {
     static char path[PATH_MAX + 1];
-    char        *config_dir = get_config_dir ();
 
     switch (dirtype)
     {
-        default:
-        case DEFAULT_DIR:
-            strcpy (path, config_dir);
-            break;
-
         case HOME_DIR:
             strcpy (path, getenv ("HOME"));
             break;
 
-        case ROM_DIR:
-            sprintf (path, "%s/roms", config_dir);
-            break;
-
         case SNAPSHOT_DIR:
-            sprintf (path, "%s/snapshots", config_dir);
+            sprintf (path, "%s", gui_config->savestate_directory);
             break;
 
         case IPS_DIR:
+            sprintf (path, "%s", gui_config->patch_directory);
+            break;
+
         case CHEAT_DIR:
+            sprintf (path, "%s", gui_config->cheat_directory);
+            break;
+
         case SRAM_DIR:
-        case ROMFILENAME_DIR:
-        case BIOS_DIR:
+            sprintf (path, "%s", gui_config->sram_directory);
+            break;
+
+        case SCREENSHOT_DIR:
+        case SPC_DIR:
+            sprintf (path, "%s", gui_config->export_directory);
+
+        default:
+            path[0] = '\0';
+    }
+
+    /* Anything else, use ROM filename path */
+    if (path[0] == '\0')
+    {
             char *loc;
 
             strcpy (path, Memory.ROMFilename);
@@ -173,29 +182,14 @@ S9xGetDirectory (enum s9x_getdirtype dirtype)
             {
                 path[loc - path] = '\0';
             }
-
-            if (gui_config->data_location == DIR_ROM ||
-                dirtype == ROMFILENAME_DIR)
-            {
-                /* printf ("Got %s\n", path); */
-
-                break;
-            }
-
-            if (gui_config->data_location == DIR_CONFIG)
-                sprintf (path, "%s/sram", config_dir);
-            else if (gui_config->data_location == DIR_CUSTOM)
-                sprintf (path, "%s", gui_config->custom_sram_directory);
-
-            break;
     }
 
     /* Try and mkdir, whether it exists or not */
-    mkdir (path, 0777);
-
-    free (config_dir);
-
-    /* printf ("path: %s\n", path); */
+    if (dirtype != HOME_DIR && path[0] != '\0')
+    {
+        mkdir (path, 0755);
+        chmod (path, 0755);
+    }
 
     return path;
 }
@@ -307,17 +301,33 @@ S9xOpenSnapshotFile (const char *fname, bool8 read_only, STREAM *file)
     {
         if ((*file = OPEN_STREAM (filename, "rb")))
             return (TRUE);
+        else
+            fprintf (stderr,
+                     "Failed to open file stream for reading. (%s)\n",
+                     zError (errno));
     }
     else
     {
         if ((*file = OPEN_STREAM (filename, "wb")))
         {
             if (chown (filename, getuid (), getgid ()) < 0)
+            {
+                fprintf (stderr, "Couldn't set ownership of file.\n");
                 return (FALSE);
+            }
             else
                 return (TRUE);
         }
+        else
+        {
+            fprintf (stderr,
+                     "Couldn't open stream with zlib. (%s)\n",
+                     zError (errno));
+        }
     }
+
+    fprintf (stderr, "zlib: Couldn't open snapshot file:\n%s\n", filename);
+
 #else
     char command [PATH_MAX];
 
@@ -333,7 +343,11 @@ S9xOpenSnapshotFile (const char *fname, bool8 read_only, STREAM *file)
         if (*file = popen (command, "wb"))
             return (TRUE);
     }
+
+    fprintf (stderr, "gzip: Couldn't open snapshot file:\n%s\n", filename);
+
 #endif
+
     return (FALSE);
 }
 
@@ -380,7 +394,7 @@ S9xLoadState (const char *filename)
     }
     else
     {
-        fprintf (stderr, "Failed to load state file %s\n", filename);
+        fprintf (stderr, "Failed to load state file: %s\n", filename);
     }
 
     return;
@@ -389,10 +403,15 @@ S9xLoadState (const char *filename)
 void
 S9xSaveState (const char *filename)
 {
-    S9xFreezeGame (filename);
-
+    if (S9xFreezeGame (filename))
+    {
     sprintf (buf, "%s saved", filename);
     S9xSetInfoString (buf);
+    }
+    else
+    {
+        fprintf (stderr, "Couldn't save state file: %s\n", filename);
+    }
 
     return;
 }
@@ -408,7 +427,7 @@ S9xOpenROMDialog (void)
     {
             "*.smc", "*.SMC", "*.fig", "*.FIG", "*.sfc", "*.SFC",
             "*.jma", "*.JMA", "*.zip", "*.ZIP", "*.gd3", "*.GD3",
-            "*.swc", "*.SWC",
+            "*.swc", "*.SWC", "*.gz" , "*.GZ",
             NULL
     };
 
@@ -483,11 +502,12 @@ S9xQuickSaveSlot (int slot)
              S9xGetDirectory (SNAPSHOT_DIR), SLASH_STR, def,
              slot);
 
+    if (S9xFreezeGame (filename))
+    {
     sprintf (buf, "%s.%03d saved", def, slot);
 
     S9xSetInfoString (buf);
-
-    S9xFreezeGame (filename);
+    }
 
     return;
 }

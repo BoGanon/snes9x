@@ -40,9 +40,9 @@ event_server_toggled (GtkToggleButton *toggle, gpointer data)
 }
 
 Snes9xNetplayDialog::Snes9xNetplayDialog (Snes9xConfig *config) :
-    GladeWindow (snes9x_glade, snes9x_glade_size, "netplay_dialog")
+    GtkBuilderWindow ("netplay_dialog")
 {
-    GladeWindowCallbacks callbacks[] =
+    GtkBuilderWindowCallbacks callbacks[] =
     {
         { "server_toggled", G_CALLBACK (event_server_toggled) },
         { "browse_clicked", G_CALLBACK (event_browse_clicked) },
