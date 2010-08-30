@@ -188,7 +188,9 @@
 #include "snapshot.h"
 #include "controls.h"
 #include "crosshairs.h"
+#ifdef MOVIE
 #include "movie.h"
+#endif
 #include "display.h"
 #ifdef NETPLAY_SUPPORT
 #include "netplay.h"
@@ -363,6 +365,7 @@ static const char	*speed_names[4] =
 static const int	ptrspeeds[4] = { 1, 1, 4, 8 };
 
 // Note: these should be in asciibetical order!
+#ifdef MOVIE
 #define THE_COMMANDS \
 	S(BeginRecordingMovie), \
 	S(ClipWindows), \
@@ -428,6 +431,71 @@ static const int	ptrspeeds[4] = { 1, 1, 4, 8 };
 	S(ToggleHDMA), \
 	S(ToggleSprites), \
 	S(ToggleTransparency) \
+
+#else
+#define THE_COMMANDS \
+	S(ClipWindows), \
+	S(Debugger), \
+	S(DecEmuTurbo), \
+	S(DecFrameRate), \
+	S(DecFrameTime), \
+	S(DecTurboSpeed), \
+	S(EmuTurbo), \
+	S(ExitEmu), \
+	S(IncEmuTurbo), \
+	S(IncFrameRate), \
+	S(IncFrameTime), \
+	S(IncTurboSpeed), \
+	S(LoadFreezeFile), \
+	S(LoadOopsFile), \
+	S(Pause), \
+	S(QuickLoad000), \
+	S(QuickLoad001), \
+	S(QuickLoad002), \
+	S(QuickLoad003), \
+	S(QuickLoad004), \
+	S(QuickLoad005), \
+	S(QuickLoad006), \
+	S(QuickLoad007), \
+	S(QuickLoad008), \
+	S(QuickLoad009), \
+	S(QuickLoad010), \
+	S(QuickSave000), \
+	S(QuickSave001), \
+	S(QuickSave002), \
+	S(QuickSave003), \
+	S(QuickSave004), \
+	S(QuickSave005), \
+	S(QuickSave006), \
+	S(QuickSave007), \
+	S(QuickSave008), \
+	S(QuickSave009), \
+	S(QuickSave010), \
+	S(Reset), \
+	S(SaveFreezeFile), \
+	S(SaveSPC), \
+	S(Screenshot), \
+	S(SoftReset), \
+	S(SoundChannel0), \
+	S(SoundChannel1), \
+	S(SoundChannel2), \
+	S(SoundChannel3), \
+	S(SoundChannel4), \
+	S(SoundChannel5), \
+	S(SoundChannel6), \
+	S(SoundChannel7), \
+	S(SoundChannelsOn), \
+	S(SwapJoypads), \
+	S(ToggleBG0), \
+	S(ToggleBG1), \
+	S(ToggleBG2), \
+	S(ToggleBG3), \
+	S(ToggleEmuTurbo), \
+	S(ToggleHDMA), \
+	S(ToggleSprites), \
+	S(ToggleTransparency) \
+
+#endif
 
 #define S(x)	x
 
@@ -2079,7 +2147,11 @@ void S9xApplyCommand (s9xcommand_t cmd, int16 data1, int16 data2)
 
 				if (data1)
 				{
+#ifdef MOVIE
 					if (!Settings.UpAndDown && !S9xMoviePlaying()) // if up+down isn't allowed AND we are NOT playing a movie,
+#else
+					if (!Settings.UpAndDown)
+#endif
 					{
 						if (cmd.button.joypad.buttons & (SNES_LEFT_MASK | SNES_RIGHT_MASK))
 						{
@@ -2150,7 +2222,9 @@ void S9xApplyCommand (s9xcommand_t cmd, int16 data1, int16 data2)
 
 				superscope.next_buttons |= i & (SUPERSCOPE_FIRE | SUPERSCOPE_CURSOR | SUPERSCOPE_PAUSE);
 
+#ifdef MOVIE
 				if (!S9xMovieActive()) // PPU modification during non-recordable command screws up movie synchronization
+#endif
 					if ((superscope.next_buttons & (SUPERSCOPE_FIRE | SUPERSCOPE_CURSOR)) && curcontrollers[1] == SUPERSCOPE && !(superscope.phys_buttons & SUPERSCOPE_OFFSCREEN))
 						DoGunLatch(superscope.x, superscope.y);
 			}
@@ -2205,9 +2279,11 @@ void S9xApplyCommand (s9xcommand_t cmd, int16 data1, int16 data2)
 						break;
 
 					case SoftReset:
+#ifdef MOVIE
 						S9xMovieUpdateOnReset();
 						if (S9xMoviePlaying())
 							S9xMovieStop(TRUE);
+#endif
 						S9xSoftReset();
 						break;
 
@@ -2463,7 +2539,7 @@ void S9xApplyCommand (s9xcommand_t cmd, int16 data1, int16 data2)
 						Settings.Transparency = !Settings.Transparency;
 						DisplayStateChange("Transparency effects", Settings.Transparency);
 						break;
-
+#ifdef MOVIE
 					case BeginRecordingMovie:
 						if (S9xMovieActive())
 							S9xMovieStop(FALSE);
@@ -2480,7 +2556,7 @@ void S9xApplyCommand (s9xcommand_t cmd, int16 data1, int16 data2)
 						if (S9xMovieActive())
 							S9xMovieStop(FALSE);
 						break;
-
+#endif
 					case SwapJoypads:
 						if ((curcontrollers[0] != NONE && !(curcontrollers[0] >= JOYPAD0 && curcontrollers[0] <= JOYPAD7)))
 						{
@@ -2519,7 +2595,7 @@ void S9xApplyCommand (s9xcommand_t cmd, int16 data1, int16 data2)
 
 						S9xSetInfoString(buf);
 						break;
-
+#ifdef MOVIE
 					case SeekToFrame:
 						if (S9xMovieActive())
 						{
@@ -2535,7 +2611,7 @@ void S9xApplyCommand (s9xcommand_t cmd, int16 data1, int16 data2)
 								Settings.HighSpeedSeek = distance;
 							}
 						}
-
+#endif
 						break;
 
 					case LAST_COMMAND:
@@ -2756,8 +2832,10 @@ static void do_polling (int mp)
 {
 	set<uint32>::iterator	itr;
 
+#ifdef MOVIE
 	if (S9xMoviePlaying())
 		return;
+#endif
 
 	if (pollmap[mp].empty())
 		return;
@@ -2895,7 +2973,9 @@ void S9xSetJoypadLatch (bool latch)
 				case MOUSE0:
 				case MOUSE1:
 					do_polling(i);
+#ifdef MOVIE
 					if (!S9xMoviePlaying())
+#endif
 						UpdatePolledMouse(i);
 					break;
 
@@ -3089,7 +3169,9 @@ void S9xDoAutoJoypad (void)
 	S9xSetJoypadLatch(1);
 	S9xSetJoypadLatch(0);
 
+#ifdef MOVIE
 	S9xMovieUpdate(false);
+#endif
 
 	for (int n = 0; n < 2; n++)
 	{
@@ -3323,7 +3405,9 @@ void S9xControlEOF (void)
 
 	do_polling(POLL_ALL);
 
+#ifdef MOVIE
 	S9xMovieUpdate();
+#endif
 
 	pad_read_last = pad_read;
 	pad_read      = false;

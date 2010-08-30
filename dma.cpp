@@ -191,8 +191,9 @@ extern uint8	*HDMAMemPointers[8];
 extern int		HDMA_ModeByteCounts[8];
 extern SPC7110	s7emu;
 
+#ifdef SDD1_DECOMP
 static uint8	sdd1_decode_buffer[0x10000];
-
+#endif
 static inline bool8 addCyclesInDMA (uint8);
 static inline bool8 HDMAReadLineCount (int);
 
@@ -298,7 +299,7 @@ bool8 S9xDoDMA (uint8 Channel)
 	// S-DD1
 
 	uint8	*in_sdd1_dma = NULL;
-
+#ifdef SDD1_DECOMP
 	if (Settings.SDD1)
 	{
 		if (d->AAddressFixed && Memory.FillRAM[0x4801] > 0)
@@ -321,13 +322,13 @@ bool8 S9xDoDMA (uint8 Channel)
 				S9xMessage(S9X_WARNING, S9X_DMA_TRACE, String);
 			}
 		#endif
-
 			in_sdd1_dma = sdd1_decode_buffer;
 		}
 
+
 		Memory.FillRAM[0x4801] = 0;
 	}
-
+#endif
 	// SPC7110
 
 	uint8	*spc7110_dma = NULL;

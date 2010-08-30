@@ -183,7 +183,9 @@
 #include "sdd1.h"
 #include "srtc.h"
 #include "controls.h"
+#ifdef MOVIE
 #include "movie.h"
+#endif
 #include "display.h"
 #ifdef NETPLAY_SUPPORT
 #include "netplay.h"

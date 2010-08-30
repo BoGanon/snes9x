@@ -200,6 +200,9 @@ void S9xAPUSaveState (uint8 *);
 void S9xDumpSPCSnapshot (void);
 
 bool8 S9xInitSound (int, int);
+#ifdef __cplusplus
+extern "C"
+#endif
 bool8 S9xOpenSoundDevice (void);
 
 bool8 S9xSyncSound (void);

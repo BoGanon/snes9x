@@ -181,7 +181,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
+#ifndef _EE
 #include <memory.h>
+#endif // _EE
 #include <time.h>
 #include <string.h>
 #ifdef HAVE_STRINGS_H
@@ -212,7 +214,9 @@
 #ifndef snes9x_types_defined
 #define snes9x_types_defined
 typedef unsigned char		bool8;
+
 #ifdef HAVE_STDINT_H
+
 #include <stdint.h>
 typedef intptr_t			pint;
 typedef int8_t				int8;
@@ -223,16 +227,20 @@ typedef int32_t				int32;
 typedef uint32_t			uint32;
 typedef int64_t				int64;
 typedef uint64_t			uint64;
+
 #else	// HAVE_STDINT_H
+
 #ifdef PTR_NOT_INT
 typedef long				pint;
 #else
 typedef int					pint;
 #endif
+
 #ifdef __WIN32__
+
 #ifdef __BORLANDC__
 #include <systypes.h>
-#else
+#else // __BORLANDC__
 typedef signed char			int8;
 typedef unsigned char		uint8;
 typedef signed short		int16;
@@ -240,9 +248,10 @@ typedef unsigned short		uint16;
 #ifndef WSAAP
 // winsock2.h typedefs int32 as well
 typedef signed int			int32;
-#endif
+#endif // WSAAP
 typedef unsigned int		uint32;
-#endif
+#endif // __BORLANC__
+
 typedef unsigned char		uint8_t;
 typedef signed __int64		int64;
 typedef unsigned __int64	uint64;
@@ -250,16 +259,24 @@ typedef int					socklen_t;
 #else	// __WIN32__
 typedef signed char			int8;
 typedef unsigned char		uint8;
+typedef unsigned char		uint8_t;
 typedef signed short		int16;
 typedef unsigned short		uint16;
 typedef signed int			int32;
 typedef unsigned int		uint32;
 #ifdef __GNUC__
+#ifndef _EE
 // long long is not part of ISO C++ 
 __extension__
-#endif
+#endif // _EE
+#endif // __GNUC__
+#ifndef _EE
 typedef long long			int64;
 typedef unsigned long long	uint64;
+#else // _EE
+typedef long			int64;
+typedef unsigned long	uint64;
+#endif // _EE
 #endif	//  __WIN32__
 #endif	// HAVE_STDINT_H
 #endif	// snes9x_types_defined
@@ -291,7 +308,13 @@ typedef unsigned long long	uint64;
 
 #ifndef __WIN32__
 #define ZeroMemory(a, b)	memset((a), 0, (b))
+#ifdef __cplusplus
+extern "C"
+#endif
 void _splitpath (const char *, char *, char *, char *, char *);
+#ifdef __cplusplus
+extern "C"
+#endif
 void _makepath (char *, const char *, const char *, const char *, const char *);
 #define S9xDisplayString	DisplayStringFromBottom
 #else

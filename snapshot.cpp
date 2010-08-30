@@ -186,7 +186,9 @@
 #include "srtc.h"
 #include "snapshot.h"
 #include "controls.h"
+#ifdef MOVIE
 #include "movie.h"
+#endif
 #include "display.h"
 #include "language.h"
 
@@ -1123,14 +1125,77 @@ static FreezeData	SnapScreenshot[] =
 #undef STRUCT
 #define STRUCT	struct SnapshotMovieInfo
 
+#ifdef MOVIE
 static FreezeData	SnapMovie[] =
 {
 	INT_ENTRY(6, MovieInputDataSize)
 };
+#endif
 
-static int UnfreezeBlock (STREAM, const char *, uint8 *, int);
+static int UnfreezeBlock (STREAM stream, const char *name, uint8 *block, unsigned int size)
+{
+	char	buffer[20];
+	unsigned int		len = 0, rem = 0;
+	long	rewind = FIND_STREAM(stream);
+
+	size_t	l = READ_STREAM(buffer, 11, stream);
+	buffer[l] = 0;
+
+	if (l != 11 || strncmp(buffer, name, 3) != 0 || buffer[3] != ':')
+	{
+	err:
+		fprintf(stdout, "absent: %s(%d); next: '%.11s'\n", name, size, buffer);
+		REVERT_STREAM(stream, FIND_STREAM(stream) - l, 0);
+		return (WRONG_FORMAT);
+	}
+
+	if (buffer[4] == '-')
+	{
+		len = (((unsigned char) buffer[6]) << 24)
+			| (((unsigned char) buffer[7]) << 16)
+			| (((unsigned char) buffer[8]) << 8)
+			| (((unsigned char) buffer[9]) << 0);
+	}
+	else
+		len = atoi(buffer + 4);
+
+	if (len <= 0)
+		goto err;
+
+	if (len > size)
+	{
+		rem = len - size;
+		len = size;
+	}
+
+	ZeroMemory(block, size);
+
+	if (READ_STREAM(block, len, stream) != len)
+	{
+		REVERT_STREAM(stream, rewind, 0);
+		return (WRONG_FORMAT);
+	}
+
+	if (rem)
+	{
+		char	*junk = new char[rem];
+		len = READ_STREAM(junk, rem, stream);
+		delete [] junk;
+		if (len != rem)
+		{
+			REVERT_STREAM(stream, rewind, 0);
+			return (WRONG_FORMAT);
+		}
+	}
+
+	return (SUCCESS);
+}
+
+//static int UnfreezeBlock (STREAM, const char *, uint8 *, int);
 static int UnfreezeBlockCopy (STREAM, const char *, uint8 **, int);
+#ifdef MOVIE
 static int UnfreezeStruct (STREAM, const char *, void *, FreezeData *, int, int);
+#endif
 static int UnfreezeStructCopy (STREAM, const char *, uint8 **, FreezeData *, int, int);
 static void UnfreezeStructFromCopy (void *, FreezeData *, int, uint8 *, int);
 static void FreezeBlock (STREAM, const char *, uint8 *, int);
@@ -1167,9 +1232,11 @@ bool8 S9xFreezeGame (const char *filename)
 		S9xResetSaveTimer(TRUE);
 
 		const char *base = S9xBasename(filename);
+#ifdef MOVIE
 		if (S9xMovieActive())
 			sprintf(String, MOVIE_INFO_SNAPSHOT " %s", base);
 		else
+#endif
 			sprintf(String, SAVE_INFO_SNAPSHOT " %s", base);
 
 		S9xMessage(S9X_INFO, S9X_FREEZE_FILE_INFO, String);
@@ -1230,7 +1297,7 @@ bool8 S9xUnfreezeGame (const char *filename)
 
 			return (FALSE);
 		}
-
+#ifdef MOVIE
 		if (S9xMovieActive())
 		{
 			if (S9xMovieReadOnly())
@@ -1239,6 +1306,7 @@ bool8 S9xUnfreezeGame (const char *filename)
 				sprintf(String, MOVIE_INFO_RERECORD " %s", base);
 		}
 		else
+#endif
 			sprintf(String, SAVE_INFO_LOAD " %s", base);
 
 		S9xMessage(S9X_INFO, S9X_FREEZE_FILE_INFO, String);
@@ -1386,7 +1454,7 @@ void S9xFreezeToStream (STREAM stream)
 
 		delete ssi;
 	}
-
+#ifdef MOVIE
 	if (S9xMovieActive())
 	{
 		uint8	*movie_freeze_buf;
@@ -1404,6 +1472,7 @@ void S9xFreezeToStream (STREAM stream)
 			delete [] movie_freeze_buf;
 		}
 	}
+#endif
 
 #ifdef ZSNES_FX
 	if (Settings.SuperFX)
@@ -1416,7 +1485,8 @@ void S9xFreezeToStream (STREAM stream)
 int S9xUnfreezeFromStream (STREAM stream)
 {
 	int		result = SUCCESS;
-	int		version, len;
+	int		version;
+	unsigned int len;
 	char	buffer[PATH_MAX + 1];
 
 	len = strlen(SNAPSHOT_MAGIC) + 1 + 4 + 1;
@@ -1568,6 +1638,7 @@ int S9xUnfreezeFromStream (STREAM stream)
 
 		result = UnfreezeStructCopy(stream, "SHO", &local_screenshot, SnapScreenshot, COUNT(SnapScreenshot), version);
 
+#ifdef MOVIE
 		SnapshotMovieInfo	mi;
 
 		result = UnfreezeStruct(stream, "MOV", &mi, SnapMovie, COUNT(SnapMovie), version);
@@ -1598,7 +1669,7 @@ int S9xUnfreezeFromStream (STREAM stream)
 					break;
 			}
 		}
-
+#endif
 		result = SUCCESS;
 	} while (false);
 
@@ -1737,7 +1808,7 @@ int S9xUnfreezeFromStream (STREAM stream)
 
 		if (local_bsx_data)
 			S9xBSXPostLoadState();
-
+#ifdef MOVIE
 		if (local_movie_data)
 		{
 			// restore last displayed pad_read status
@@ -1748,7 +1819,7 @@ int S9xUnfreezeFromStream (STREAM stream)
 			S9xUpdateFrameCounter(-1);
 			pad_read = pad_read_temp;
 		}
-
+#endif
 		if (local_screenshot)
 		{
 			SnapshotScreenshotInfo	*ssi = new SnapshotScreenshotInfo;
@@ -2004,64 +2075,7 @@ static void FreezeBlock (STREAM stream, const char *name, uint8 *block, int size
 	WRITE_STREAM(block, size, stream);
 }
 
-static int UnfreezeBlock (STREAM stream, const char *name, uint8 *block, int size)
-{
-	char	buffer[20];
-	int		len = 0, rem = 0;
-	long	rewind = FIND_STREAM(stream);
 
-	size_t	l = READ_STREAM(buffer, 11, stream);
-	buffer[l] = 0;
-
-	if (l != 11 || strncmp(buffer, name, 3) != 0 || buffer[3] != ':')
-	{
-	err:
-		fprintf(stdout, "absent: %s(%d); next: '%.11s'\n", name, size, buffer);
-		REVERT_STREAM(stream, FIND_STREAM(stream) - l, 0);
-		return (WRONG_FORMAT);
-	}
-
-	if (buffer[4] == '-')
-	{
-		len = (((unsigned char) buffer[6]) << 24)
-			| (((unsigned char) buffer[7]) << 16)
-			| (((unsigned char) buffer[8]) << 8)
-			| (((unsigned char) buffer[9]) << 0);
-	}
-	else
-		len = atoi(buffer + 4);
-
-	if (len <= 0)
-		goto err;
-
-	if (len > size)
-	{
-		rem = len - size;
-		len = size;
-	}
-
-	ZeroMemory(block, size);
-
-	if (READ_STREAM(block, len, stream) != len)
-	{
-		REVERT_STREAM(stream, rewind, 0);
-		return (WRONG_FORMAT);
-	}
-
-	if (rem)
-	{
-		char	*junk = new char[rem];
-		len = READ_STREAM(junk, rem, stream);
-		delete [] junk;
-		if (len != rem)
-		{
-			REVERT_STREAM(stream, rewind, 0);
-			return (WRONG_FORMAT);
-		}
-	}
-
-	return (SUCCESS);
-}
 
 static int UnfreezeBlockCopy (STREAM stream, const char *name, uint8 **block, int size)
 {
@@ -2079,7 +2093,7 @@ static int UnfreezeBlockCopy (STREAM stream, const char *name, uint8 **block, in
 
 	return (SUCCESS);
 }
-
+#ifdef MOVIE
 static int UnfreezeStruct (STREAM stream, const char *name, void *base, FreezeData *fields, int num_fields, int version)
 {
 	int		result;
@@ -2098,7 +2112,7 @@ static int UnfreezeStruct (STREAM stream, const char *name, void *base, FreezeDa
 
 	return (SUCCESS);
 }
-
+#endif
 static int UnfreezeStructCopy (STREAM stream, const char *name, uint8 **block, FreezeData *fields, int num_fields, int version)
 {
 	int	len = 0;

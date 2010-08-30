@@ -178,6 +178,8 @@
 #ifndef _CONTROLS_H_
 #define _CONTROLS_H_
 
+#include "port.h"
+
 #define S9xNoMapping			0
 #define S9xButtonJoypad			1
 #define S9xButtonMouse			2
@@ -449,5 +451,19 @@ struct SControlSnapshot
 
 void S9xControlPreSaveState (struct SControlSnapshot *s);
 void S9xControlPostLoadState (struct SControlSnapshot *s);
+
+#define CONTROLLER_DATA_SIZE		2
+#define MOUSE_DATA_SIZE				5
+#define SCOPE_DATA_SIZE				6
+#define JUSTIFIER_DATA_SIZE			11
+
+uint16 MovieGetJoypad (int);
+void MovieSetJoypad (int, uint16);
+bool MovieGetMouse (int, uint8 d[MOUSE_DATA_SIZE]);
+void MovieSetMouse (int, uint8 d[MOUSE_DATA_SIZE], bool);
+bool MovieGetScope (int, uint8 d[SCOPE_DATA_SIZE]);
+void MovieSetScope (int, uint8 d[SCOPE_DATA_SIZE]);
+bool MovieGetJustifier (int, uint8 d[JUSTIFIER_DATA_SIZE]);
+void MovieSetJustifier (int, uint8 d[JUSTIFIER_DATA_SIZE]);
 
 #endif

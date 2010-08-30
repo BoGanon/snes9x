@@ -365,7 +365,11 @@ extern uint8	*RegRAM;
 END_EXTERN_C
 #endif
 
+#ifdef __cplusplus
+extern "C"
+#endif
 void S9xAutoSaveSRAM (void);
+
 bool8 LoadZip(const char *, int32 *, int32 *, uint8 *);
 
 enum s9xwrap_t

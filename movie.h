@@ -192,11 +192,6 @@
 #define MOVIE_SYNC_NOCPUSHUTDOWN	0x80
 #define MOVIE_MAX_METADATA			512
 
-#define CONTROLLER_DATA_SIZE		2
-#define MOUSE_DATA_SIZE				5
-#define SCOPE_DATA_SIZE				6
-#define JUSTIFIER_DATA_SIZE			11
-
 struct MovieInfo
 {
 	time_t	TimeCreated;
@@ -241,14 +236,5 @@ uint8 S9xMovieControllers (void);
 uint32 S9xMovieGetId (void);
 uint32 S9xMovieGetLength (void);
 uint32 S9xMovieGetFrameCounter (void);
-
-uint16 MovieGetJoypad (int);
-void MovieSetJoypad (int, uint16);
-bool MovieGetMouse (int, uint8 d[MOUSE_DATA_SIZE]);
-void MovieSetMouse (int, uint8 d[MOUSE_DATA_SIZE], bool);
-bool MovieGetScope (int, uint8 d[SCOPE_DATA_SIZE]);
-void MovieSetScope (int, uint8 d[SCOPE_DATA_SIZE]);
-bool MovieGetJustifier (int, uint8 d[JUSTIFIER_DATA_SIZE]);
-void MovieSetJustifier (int, uint8 d[JUSTIFIER_DATA_SIZE]);
 
 #endif

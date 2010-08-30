@@ -351,6 +351,9 @@ bool8 S9xSetRenderPixelFormat (int);
 #endif
 
 // external port interface which must be implemented or initialised for each port
+#ifdef __cplusplus
+extern "C" {
+#endif
 bool8 S9xGraphicsInit (void);
 void S9xGraphicsDeinit (void);
 bool8 S9xInitUpdate (void);
@@ -359,6 +362,9 @@ bool8 S9xContinueUpdate (int, int);
 void S9xReRefresh (void);
 void S9xSetPalette (void);
 void S9xSyncSpeed (void);
+#ifdef __cplusplus
+};
+#endif
 
 // called instead of S9xDisplayString if set to non-NULL
 extern void (*S9xCustomDisplayString) (const char *, int, int, bool);

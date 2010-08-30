@@ -195,7 +195,9 @@
 #include "srtc.h"
 #include "controls.h"
 #include "cheats.h"
+#ifdef MOVIE
 #include "movie.h"
+#endif
 #include "reader.h"
 #include "display.h"
 
@@ -211,7 +213,9 @@
 #define min(a, b) (((a) < (b)) ? (a) : (b))
 #endif
 
+#ifdef MOVIE
 static bool8	stopMovie = TRUE;
+#endif
 static char		LastRomFilename[PATH_MAX + 1] = "";
 
 // from NSRT
@@ -2642,10 +2646,10 @@ void CMemory::InitROM (void)
 	Settings.ForceNTSC = FALSE;
 
 	Settings.TakeScreenshot = FALSE;
-
+#ifdef MOVIE
 	if (stopMovie)
 		S9xMovieStop(TRUE);
-
+#endif
 	if (PostRomInitFunc)
 		PostRomInitFunc();
 

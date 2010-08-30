@@ -176,7 +176,9 @@
 
 
 #include "snes9x.h"
+#ifdef MOVIE
 #include "movie.h"
+#endif
 #include "logger.h"
 
 static int	resetno = 0;
@@ -228,10 +230,11 @@ void S9xCloseLogger (void)
 		fclose(audio);
 		audio = NULL;
 	}
-}	
+}
 
 void S9xVideoLogger (void *pixels, int width, int height, int depth, int bytes_per_line)
 {
+#ifdef MOVIE
 	int	fc = S9xMovieGetFrameCounter();
 	if (fc > 0)
 		framecounter = fc;
@@ -255,6 +258,7 @@ void S9xVideoLogger (void *pixels, int width, int height, int depth, int bytes_p
 		}
 
 	}
+#endif
 }
 
 void S9xAudioLogger (void *samples, int length)

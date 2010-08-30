@@ -603,7 +603,9 @@ void S9xUsage (void)
 	S9xMessage(S9X_INFO, S9X_USAGE, "-nostdconf                      Do not load the standard config files");
 	S9xMessage(S9X_INFO, S9X_USAGE, "");
 
+#ifndef _EE
 	S9xExtraUsage();
+#endif
 
 	S9xMessage(S9X_INFO, S9X_USAGE, "");
 	S9xMessage(S9X_INFO, S9X_USAGE, "ROM image can be compressed with zip, gzip, JMA, or compress.");
@@ -909,8 +911,10 @@ char * S9xParseArgs (char **argv, int argc)
 			{
 				// Do nothing, S9xLoadConfigFiles() handled it.
 			}
+#ifndef _EE
 			else
 				S9xParseArg(argv, i, argc);
+#endif
 		}
 		else
 			rom_filename = argv[i];

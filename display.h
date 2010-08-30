@@ -201,7 +201,9 @@ void S9xLoadConfigFiles (char **, int);
 void S9xSetInfoString (const char *);
 
 // Routines the port has to implement even if it doesn't use them
-
+#ifdef __cplusplus
+extern "C" {
+#endif
 void S9xPutImage (int, int);
 void S9xInitDisplay (int, char **);
 void S9xDeinitDisplay (void);
@@ -217,19 +219,26 @@ const char * S9xGetFilename (const char *, enum s9x_getdirtype);
 const char * S9xGetFilenameInc (const char *, enum s9x_getdirtype);
 const char * S9xChooseFilename (bool8);
 const char * S9xBasename (const char *);
+#ifdef __cplusplus
+};
+#endif
 
 // Routines the port has to implement if it uses command-line
 
+#ifndef _EE
 void S9xExtraUsage (void);
 void S9xParseArg (char **, int &, int);
+#endif
 
 // Routines the port may implement as needed
 
+#ifndef _EE
 void S9xExtraDisplayUsage (void);
 void S9xParseDisplayArg (char **, int &, int);
 void S9xSetTitle (const char *);
 void S9xInitInputDevices (void);
 void S9xProcessEvents (bool8);
 const char * S9xSelectFilename (const char *, const char *, const char *, const char *);
+#endif
 
 #endif
