@@ -383,7 +383,14 @@
 		<Unit filename="Makefile" />
 		<Unit filename="Makefile.eeglobal" />
 		<Unit filename="Makefile.pref" />
-		<Unit filename="snes9x.layout" />
+		<Unit filename="needc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="needcpp.cpp" />
+		<Unit filename="paths/paths.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="paths/paths.h" />
 		<Unit filename="../reader.cpp" />
 		<Unit filename="../reader.h" />
 		<Unit filename="../sa1.cpp" />
