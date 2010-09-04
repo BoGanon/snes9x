@@ -1144,7 +1144,9 @@ static int UnfreezeBlock (STREAM stream, const char *name, uint8 *block, unsigne
 	if (l != 11 || strncmp(buffer, name, 3) != 0 || buffer[3] != ':')
 	{
 	err:
+	#ifdef DEBUG
 		fprintf(stdout, "absent: %s(%d); next: '%.11s'\n", name, size, buffer);
+	#endif
 		REVERT_STREAM(stream, FIND_STREAM(stream) - l, 0);
 		return (WRONG_FORMAT);
 	}
@@ -1939,7 +1941,9 @@ static void FreezeStruct (STREAM stream, const char *name, void *base, FreezeDat
 	{
 		if (SNAPSHOT_VERSION < fields[i].debuted_in)
 		{
+		#ifdef DEBUG
 			fprintf(stderr, "%s[%p]: field has bad debuted_in value %d, > %d.", name, (void *) fields, fields[i].debuted_in, SNAPSHOT_VERSION);
+		#endif
 			continue;
 		}
 

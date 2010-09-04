@@ -523,7 +523,9 @@ static int maptype (int);
 static bool strless (const char *, const char *);
 static int findstr (const char *, const char **, int);
 static int get_threshold (const char **);
+#ifdef DEBUG
 static const char * maptypename (int);
+#endif
 static int32 ApplyMulti (s9xcommand_t *, int32, int16);
 static void do_polling (int);
 static void UpdatePolledMouse (int);
@@ -770,7 +772,9 @@ void S9xSetController (int port, enum controllers controller, int8 id1, int8 id2
 			return;
 
 		default:
+		#ifdef DEBUG
 			fprintf(stderr, "Unknown controller type %d\n", controller);
+		#endif
 			break;
 	}
 
@@ -1615,7 +1619,9 @@ s9xcommand_t S9xGetCommandT (const char *name)
 	{
 		if (multis.size() > 2147483640)
 		{
+		#ifdef DEBUG
 			fprintf(stderr, "Too many multis!");
+		#endif
 			return (cmd);
 		}
 
@@ -1631,7 +1637,9 @@ s9xcommand_t S9xGetCommandT (const char *name)
 					j++;
 				if (++j > 2147483640)
 				{
+				#ifdef DEBUG
 					fprintf(stderr, "Multi too long!");
+				#endif
 					return (cmd);
 				}
 			}
@@ -1643,7 +1651,9 @@ s9xcommand_t S9xGetCommandT (const char *name)
 		s9xcommand_t	*c = (s9xcommand_t *) calloc(j, sizeof(s9xcommand_t));
 		if (c == NULL)
 		{
+		#ifdef DEBUG
 			perror("malloc error while parsing multi");
+		#endif
 			return (cmd);
 		}
 
@@ -1745,6 +1755,7 @@ s9xcommand_t S9xGetMapping (uint32 id)
 		return (keymap[id]);
 }
 
+#ifdef DEBUG
 static const char * maptypename (int t)
 {
 	switch (t)
@@ -1756,6 +1767,7 @@ static const char * maptypename (int t)
 		default:			return ("unknown");
 	}
 }
+#endif
 
 void S9xUnmapID (uint32 id)
 {
@@ -1780,7 +1792,9 @@ bool S9xMapButton (uint32 id, s9xcommand_t mapping, bool poll)
 
 	if (id == InvalidControlID)
 	{
+	#ifdef DEBUG
 		fprintf(stderr, "Cannot map InvalidControlID\n");
+	#endif
 		return (false);
 	}
 
@@ -1797,12 +1811,16 @@ bool S9xMapButton (uint32 id, s9xcommand_t mapping, bool poll)
 
 	t = maptype(S9xGetMapping(id).type);
 
+#ifdef DEBUG
 	if (t != MAP_NONE && t != MAP_BUTTON)
 		fprintf(stderr, "WARNING: Remapping ID 0x%08x from %s to button\n", id, maptypename(t));
+#endif
 
 	if (id >= PseudoPointerBase)
 	{
+	#ifdef DEBUG
 		fprintf(stderr, "ERROR: Refusing to map pseudo-pointer #%d as a button\n", id - PseudoPointerBase);
+	#endif
 		return (false);
 	}
 
@@ -1810,9 +1828,11 @@ bool S9xMapButton (uint32 id, s9xcommand_t mapping, bool poll)
 
 	if (poll)
 	{
+	#ifdef DEBUG
 		if (id >= PseudoButtonBase)
 			fprintf(stderr, "INFO: Ignoring attempt to set pseudo-button #%d to polling\n", id - PseudoButtonBase);
 		else
+	#endif
 		{
 			switch (mapping.type)
 			{
@@ -1862,7 +1882,9 @@ void S9xReportButton (uint32 id, bool pressed)
 
 	if (maptype(keymap[id].type) != MAP_BUTTON)
 	{
+	#ifdef DEBUG
 		fprintf(stderr, "ERROR: S9xReportButton called on %s ID 0x%08x\n", maptypename(maptype(keymap[id].type)), id);
+	#endif
 		return;
 	}
 
@@ -1881,7 +1903,9 @@ bool S9xMapPointer (uint32 id, s9xcommand_t mapping, bool poll)
 
 	if (id == InvalidControlID)
 	{
+	#ifdef DEBUG
 		fprintf(stderr, "Cannot map InvalidControlID\n");
+	#endif
 		return (false);
 	}
 
@@ -1898,12 +1922,16 @@ bool S9xMapPointer (uint32 id, s9xcommand_t mapping, bool poll)
 
 	t = maptype(S9xGetMapping(id).type);
 
+#ifdef DEBUG
 	if (t != MAP_NONE && t != MAP_POINTER)
 		fprintf(stderr, "WARNING: Remapping ID 0x%08x from %s to pointer\n", id, maptypename(t));
+#endif
 
 	if (id < PseudoPointerBase && id >= PseudoButtonBase)
 	{
+	#ifdef DEBUG
 		fprintf(stderr, "ERROR: Refusing to map pseudo-button #%d as a pointer\n", id - PseudoButtonBase);
+	#endif
 		return (false);
 	}
 
@@ -1911,31 +1939,41 @@ bool S9xMapPointer (uint32 id, s9xcommand_t mapping, bool poll)
 	{
 		if (mapping.pointer.aim_mouse0 && mouse[0].ID != InvalidControlID && mouse[0].ID != id)
 		{
+		#ifdef DEBUG
 			fprintf(stderr, "ERROR: Rejecting attempt to control Mouse1 with two pointers\n");
+		#endif
 			return (false);
 		}
 
 		if (mapping.pointer.aim_mouse1 && mouse[1].ID != InvalidControlID && mouse[1].ID != id)
 		{
+		#ifdef DEBUG
 			fprintf(stderr, "ERROR: Rejecting attempt to control Mouse2 with two pointers\n");
+		#endif
 			return (false);
 		}
 
 		if (mapping.pointer.aim_scope && superscope.ID != InvalidControlID && superscope.ID != id)
 		{
+		#ifdef DEBUG
 			fprintf(stderr, "ERROR: Rejecting attempt to control SuperScope with two pointers\n");
+		#endif
 			return (false);
 		}
 
 		if (mapping.pointer.aim_justifier0 && justifier.ID[0] != InvalidControlID && justifier.ID[0] != id)
 		{
+		#ifdef DEBUG
 			fprintf(stderr, "ERROR: Rejecting attempt to control Justifier1 with two pointers\n");
+		#endif
 			return (false);
 		}
 
 		if (mapping.pointer.aim_justifier1 && justifier.ID[1] != InvalidControlID && justifier.ID[1] != id)
 		{
+		#ifdef DEBUG
 			fprintf(stderr, "ERROR: Rejecting attempt to control Justifier2 with two pointers\n");
+		#endif
 			return (false);
 		}
 	}
@@ -1944,9 +1982,11 @@ bool S9xMapPointer (uint32 id, s9xcommand_t mapping, bool poll)
 
 	if (poll)
 	{
+	#ifdef DEBUG
 		if (id >= PseudoPointerBase)
 			fprintf(stderr, "INFO: Ignoring attempt to set pseudo-pointer #%d to polling\n", id - PseudoPointerBase);
 		else
+	#endif
 		{
 			switch (mapping.type)
 			{
@@ -1989,7 +2029,9 @@ void S9xReportPointer (uint32 id, int16 x, int16 y)
 
 	if (maptype(keymap[id].type) != MAP_POINTER)
 	{
+	#ifdef DEBUG
 		fprintf(stderr, "ERROR: S9xReportPointer called on %s ID 0x%08x\n", maptypename(maptype(keymap[id].type)), id);
+	#endif
 		return;
 	}
 
@@ -2002,7 +2044,9 @@ bool S9xMapAxis (uint32 id, s9xcommand_t mapping, bool poll)
 
 	if (id == InvalidControlID)
 	{
+	#ifdef DEBUG
 		fprintf(stderr, "Cannot map InvalidControlID\n");
+	#endif
 		return (false);
 	}
 
@@ -2019,12 +2063,16 @@ bool S9xMapAxis (uint32 id, s9xcommand_t mapping, bool poll)
 
 	t = maptype(S9xGetMapping(id).type);
 
+#ifdef DEBUG
 	if (t != MAP_NONE && t != MAP_AXIS)
 		fprintf(stderr, "WARNING: Remapping ID 0x%08x from %s to axis\n", id, maptypename(t));
+#endif
 
 	if (id >= PseudoPointerBase)
 	{
+	#ifdef DEBUG
 		fprintf(stderr, "ERROR: Refusing to map pseudo-pointer #%d as an axis\n", id - PseudoPointerBase);
+	#endif
 		return (false);
 	}
 
@@ -2066,7 +2114,9 @@ void S9xReportAxis (uint32 id, int16 value)
 
 	if (maptype(keymap[id].type) != MAP_AXIS)
 	{
+	#ifdef DEBUG
 		fprintf(stderr, "ERROR: S9xReportAxis called on %s ID 0x%08x\n", maptypename(maptype(keymap[id].type)), id);
+	#endif
 		return;
 	}
 
@@ -2253,7 +2303,9 @@ void S9xApplyCommand (s9xcommand_t cmd, int16 data1, int16 data2)
 		case S9xButtonCommand:
 			if (((enum command_numbers) cmd.button.command) >= LAST_COMMAND)
 			{
+			#ifdef DEBUG
 				fprintf(stderr, "Unknown command %04x\n", cmd.button.command);
+			#endif
 				return;
 			}
 
@@ -2823,7 +2875,9 @@ void S9xApplyCommand (s9xcommand_t cmd, int16 data1, int16 data2)
 			return;
 
 		default:
+		#ifdef DEBUG
 			fprintf(stderr, "WARNING: Unknown command type %d\n", cmd.type);
+		#endif
 			return;
 	}
 }
@@ -3421,7 +3475,9 @@ void S9xSetControllerCrosshair (enum crosscontrols ctl, int8 idx, const char *fg
 
 	if (idx < -1 || idx > 31)
 	{
+	#ifdef DEBUG
 		fprintf(stderr, "S9xSetControllerCrosshair() called with invalid index\n");
+	#endif
 		return;
 	}
 
@@ -3433,7 +3489,9 @@ void S9xSetControllerCrosshair (enum crosscontrols ctl, int8 idx, const char *fg
 		case X_JUSTIFIER1:	c = &justifier.crosshair[0];	break;
 		case X_JUSTIFIER2:	c = &justifier.crosshair[1];	break;
 		default:
+		#ifdef DEBUG
 			fprintf(stderr, "S9xSetControllerCrosshair() called with an invalid controller ID %d\n", ctl);
+		#endif
 			return;
 	}
 
@@ -3459,7 +3517,9 @@ void S9xSetControllerCrosshair (enum crosscontrols ctl, int8 idx, const char *fg
 		fgcolor |= i;
 		if (i > 15 || fgcolor == 16)
 		{
+		#ifdef DEBUG
 			fprintf(stderr, "S9xSetControllerCrosshair() called with invalid fgcolor\n");
+		#endif
 			return;
 		}
 	}
@@ -3486,7 +3546,9 @@ void S9xSetControllerCrosshair (enum crosscontrols ctl, int8 idx, const char *fg
 		bgcolor |= i;
 		if (i > 15 || bgcolor == 16)
 		{
+		#ifdef DEBUG
 			fprintf(stderr, "S9xSetControllerCrosshair() called with invalid bgcolor\n");
+		#endif
 			return;
 		}
 	}
@@ -3522,7 +3584,9 @@ void S9xGetControllerCrosshair (enum crosscontrols ctl, int8 *idx, const char **
 		case X_JUSTIFIER1:	c = &justifier.crosshair[0];	break;
 		case X_JUSTIFIER2:	c = &justifier.crosshair[1];	break;
 		default:
+		#ifdef DEBUG
 			fprintf(stderr, "S9xGetControllerCrosshair() called with an invalid controller ID %d\n", ctl);
+		#endif
 			return;
 	}
 

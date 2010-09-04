@@ -1,17 +1,23 @@
 SUBDIRS =
 
+#JMA=1
+#DEBUGGER=1
+#LOGGER=1
+#SNES_OBJ=1
+#NETPLAY=1
+HAVE_LIBPNG=1
 ZLIB=1
 UNZIP_SUPPORT=1
 SDD1_DECOMP=1
 
-SNES9X_FLAGS = -DZLIB -DSDD_DECOMP -DUNZIP_SUPPORT
+SNES9X_FLAGS = -DHAVE_LIBPNG -DZLIB -DCORRECT_VRAM_READS -DSDD_DECOMP -DUNZIP_SUPPORT -fno-inline -ffast-math
 EE_BIN = snes9x.elf
 EE_CFLAGS = $(SNES9X_FLAGS)
-EE_CXXFLAGS = $(SNES9X_FLAGS) -funroll-loops -fno-exceptions -fno-rtti
+EE_CXXFLAGS = $(SNES9X_FLAGS) -fno-exceptions -fno-rtti
 
 EE_INCS = -I.. -I../apu -I../unzip -I$(PS2SDK)/ports/include
 EE_LDFLAGS = -L$(PS2SDK)/ports/lib
-EE_LIBS = -lz -lc
+EE_LIBS = -lpng -lz -lmf -lc
 
 EE_OBJS = ps2_snes9x.o paths/paths.o 
 
@@ -54,7 +60,6 @@ EE_OBJS += \
     ../crosshairs.o \
     ../cpu.o \
     ../sa1.o \
-    ../debug.o \
     ../sdd1.o \
     ../tile.o \
     ../srtc.o \
@@ -63,14 +68,27 @@ EE_OBJS += \
     ../clip.o \
     ../ppu.o \
     ../dma.o \
-    ../snes9x.o \
     ../globals.o \
     ../reader.o \
-    ../conffile.o \
     ../bsx.o \
-    ../logger.o \
     ../snapshot.o \
     ../screenshot.o \
+
+ifdef DEBUGGER
+EE_OBJS += ../debug.o
+endif
+
+ifdef LOGGER
+EE_OBJS += ../logger.o
+endif
+
+ifdef SNES9X_OBJ
+EE_OBJS += ../snes9x.o
+endif
+
+ifdef CONFFILE
+EE_OBJS += ../conffile.o
+endif
 
 ifdef MOVIE
 EE_OBJS += ../movie.o

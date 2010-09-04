@@ -3987,7 +3987,9 @@ static bool8 ReadUPSPatch (Reader *r, long, int32 &rom_size)
 		//itself is corrupted, which should be detected by the patch CRC32 check
 		//above anyway. errors due to the wrong ROM or patch file being used are
 		//already caught above.
+#ifdef DEBUG
 		fprintf(stderr, "WARNING: UPS patching appears to have failed.\nGame may not be playable.\n");
+#endif
 		return true;
 	}
 }

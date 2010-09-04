@@ -309,7 +309,9 @@ bool8 S9xDoScreenshot (int width, int height)
 
 	return (TRUE);
 #else
+#ifdef DEBUG
 	fprintf(stderr, "Screenshot support not available (libpng was not found at build time).\n");
+#endif
 	return (FALSE);
 #endif
 }

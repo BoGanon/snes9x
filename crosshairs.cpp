@@ -467,16 +467,20 @@ bool S9xLoadCrosshairFile (int idx, const char *filename)
 	char	*s = (char *) calloc(15 * 15 + 1, sizeof(char));
 	if (s == NULL)
 	{
+	#ifdef DEBUG
 		fprintf(stderr, "S9xLoadCrosshairFile: malloc error while reading ");
 		perror(filename);
+	#endif
 		return (false);
 	}
 
 	FILE	*fp = fopen(filename, "rb");
 	if (fp == NULL)
 	{
+	#ifdef DEBUG
 		fprintf(stderr, "S9xLoadCrosshairFile: Couldn't open ");
 		perror(filename);
+	#endif
 		free(s);
 		return (false);
 	}
@@ -484,7 +488,9 @@ bool S9xLoadCrosshairFile (int idx, const char *filename)
 	size_t	l = fread(s, 1, 8, fp);
 	if (l != 8)
 	{
+	#ifdef DEBUG
 		fprintf(stderr, "S9xLoadCrosshairFile: File is too short!\n");
+	#endif
 		free(s);
 		fclose(fp);
 		return (false);
@@ -523,7 +529,9 @@ bool S9xLoadCrosshairFile (int idx, const char *filename)
 		png_get_IHDR(png_ptr, info_ptr, &width, &height, &bit_depth, &color_type, NULL, NULL, NULL);
 		if (color_type != PNG_COLOR_TYPE_PALETTE)
 		{
+		#ifdef DEBUG
 			fprintf(stderr, "S9xLoadCrosshairFile: Input PNG is not a palettized image!\n");
+		#endif
 			png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp) NULL);
 			free(s);
 			fclose(fp);
@@ -535,7 +543,9 @@ bool S9xLoadCrosshairFile (int idx, const char *filename)
 
 		if (width != 15 || height != 15)
 		{
+		#ifdef DEBUG
 			fprintf(stderr, "S9xLoadCrosshairFile: Expecting a 15x15 PNG\n");
+		#endif
 			png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp) NULL);
 			free(s);
 			fclose(fp);
@@ -552,7 +562,9 @@ bool S9xLoadCrosshairFile (int idx, const char *filename)
 
 		if (num_palette != 3 || num_trans != 1)
 		{
+		#ifdef DEBUG
 			fprintf(stderr, "S9xLoadCrosshairFile: Expecting a 3-color PNG with 1 trasnparent color\n");
+		#endif
 			png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp) NULL);
 			free(s);
 			fclose(fp);
@@ -573,7 +585,9 @@ bool S9xLoadCrosshairFile (int idx, const char *filename)
 
 		if (transcol < 0 || fgcol < 0 || bgcol < 0)
 		{
+		#ifdef DEBUG
 			fprintf(stderr, "S9xLoadCrosshairFile: PNG must have 3 colors: white (fg), black (bg), and transparent.\n");
+		#endif
 			png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp) NULL);
 			free(s);
 			fclose(fp);
@@ -600,7 +614,9 @@ bool S9xLoadCrosshairFile (int idx, const char *filename)
 					s[r + i] = '.';
 				else
 				{
+				#ifdef DEBUG
 					fprintf(stderr, "S9xLoadCrosshairFile: WTF? This was supposed to be a 3-color PNG!\n");
+				#endif
 					png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp) NULL);
 					free(s);
 					fclose(fp);
@@ -618,7 +634,9 @@ bool S9xLoadCrosshairFile (int idx, const char *filename)
 		l = fread(s + 8, 1, 15 - 8, fp);
 		if (l != 15 - 8)
 		{
+		#ifdef DEBUG
 			fprintf(stderr, "S9xLoadCrosshairFile: File is too short!\n");
+		#endif
 			free(s);
 			fclose(fp);
 			return (false);
@@ -626,7 +644,9 @@ bool S9xLoadCrosshairFile (int idx, const char *filename)
 
 		if (getc(fp) != '\n')
 		{
+		#ifdef DEBUG
 			fprintf(stderr, "S9xLoadCrosshairFile: Invalid file format! (note: PNG support is not available)\n");
+		#endif
 			free(s);
 			fclose(fp);
 			return (false);
@@ -637,7 +657,9 @@ bool S9xLoadCrosshairFile (int idx, const char *filename)
 			l = fread(s + r * 15, 1, 15, fp);
 			if (l != 15)
 			{
+			#ifdef DEBUG
 				fprintf(stderr, "S9xLoadCrosshairFile: File is too short! (note: PNG support is not available)\n");
+			#endif
 				free(s);
 				fclose(fp);
 				return (false);
@@ -645,7 +667,9 @@ bool S9xLoadCrosshairFile (int idx, const char *filename)
 
 			if (getc(fp) != '\n')
 			{
+			#ifdef DEBUG
 				fprintf(stderr, "S9xLoadCrosshairFile: Invalid file format! (note: PNG support is not available)\n");
+			#endif
 				free(s);
 				fclose(fp);
 				return (false);
@@ -656,7 +680,9 @@ bool S9xLoadCrosshairFile (int idx, const char *filename)
 		{
 			if (s[i] != ' ' && s[i] != '#' && s[i] != '.')
 			{
+			#ifdef DEBUG
 				fprintf(stderr, "S9xLoadCrosshairFile: Invalid file format! (note: PNG support is not available)\n");
+			#endif
 				free(s);
 				fclose(fp);
 				return (false);
