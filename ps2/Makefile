@@ -1,23 +1,23 @@
 SUBDIRS =
 
-#JMA=1
+#JMA_SUPPORT=1
 #DEBUGGER=1
 #LOGGER=1
 #SNES_OBJ=1
 #NETPLAY=1
-HAVE_LIBPNG=1
+#HAVE_LIBPNG=1
 ZLIB=1
 UNZIP_SUPPORT=1
 SDD1_DECOMP=1
 
-SNES9X_FLAGS = -DHAVE_LIBPNG -DZLIB -DCORRECT_VRAM_READS -DSDD_DECOMP -DUNZIP_SUPPORT -fno-inline -ffast-math
+SNES9X_FLAGS = -DZLIB -DCORRECT_VRAM_READS -DSDD_DECOMP -DUNZIP_SUPPORT -fno-inline -ffast-math
 EE_BIN = snes9x.elf
 EE_CFLAGS = $(SNES9X_FLAGS)
 EE_CXXFLAGS = $(SNES9X_FLAGS) -fno-exceptions -fno-rtti
 
 EE_INCS = -I.. -I../apu -I../unzip -I$(PS2SDK)/ports/include
 EE_LDFLAGS = -L$(PS2SDK)/ports/lib
-EE_LIBS = -lpng -lz -lmf -lc
+EE_LIBS = -lz -lmf -lc
 
 EE_OBJS = ps2_snes9x.o paths/paths.o 
 
@@ -121,7 +121,7 @@ EE_OBJS += \
     ../unzip/ioapi.o \
     ../unzip/zip.o
 
-ifdef JMA
+ifdef JMA_SUPPORT
 EE_LDFLAGS = libjma.a
 EE_OBJS += \
     ../jma/s9x-jma.o \
