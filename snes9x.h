@@ -468,14 +468,8 @@ enum
 void S9xSetPause(uint32);
 void S9xClearPause(uint32);
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 void S9xExit(void);
 void S9xMessage(int, int, const char *);
-#ifdef __cplusplus
-};
-#endif
 
 extern struct SSettings			Settings;
 extern struct SCPUState			CPU;

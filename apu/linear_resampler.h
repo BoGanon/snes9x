@@ -25,7 +25,7 @@ class LinearResampler : public Resampler
             f__r_frac = 0;
         }
 
-        ~LinearResampler ()
+        virtual ~LinearResampler ()
         {
         }
 

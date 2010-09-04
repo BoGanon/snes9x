@@ -48,7 +48,7 @@ class HermiteResampler : public Resampler
             clear ();
         }
 
-        ~HermiteResampler ()
+        virtual ~HermiteResampler ()
         {
         }
 

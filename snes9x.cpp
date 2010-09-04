@@ -499,7 +499,9 @@ void S9xLoadConfigFiles (char **argv, int argc)
 	}
 #endif
 
+#ifdef SYS_CONFIG_FILE
 	S9xParsePortConfig(conf, 1);
+#endif
 	S9xVerifyControllers();
 }
 

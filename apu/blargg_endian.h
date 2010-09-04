@@ -18,6 +18,10 @@
 	#define BLARGG_CPU_RISC 1
 #endif
 
+#if defined (_EE)
+	#define BLARGG_CPU_RISC 1
+#endif
+
 // BLARGG_BIG_ENDIAN, BLARGG_LITTLE_ENDIAN: Determined automatically, otherwise only
 // one may be #defined to 1. Only needed if something actually depends on byte order.
 #if !defined (BLARGG_BIG_ENDIAN) && !defined (BLARGG_LITTLE_ENDIAN)

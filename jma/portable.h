@@ -20,7 +20,10 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #define __PORTABLE_H
 
 #include <string.h>
+
 #ifdef __GNUC__
+
+#ifndef _EE
 #include <stdint.h>
 
 typedef int8_t    INT8;
@@ -32,25 +35,47 @@ typedef uint32_t  UINT32;
 typedef int64_t   INT64;
 typedef uint64_t  UINT64;
 typedef uintptr_t UINT_PTR;
-
-#else
-
-typedef signed char INT8;
-typedef unsigned char UINT8;
-typedef short INT16;
+#else // _EE
+typedef signed char    INT8;
+typedef unsigned char  UINT8;
+typedef short          INT16;
 typedef unsigned short UINT16;
-typedef int                INT32;
-typedef unsigned int       UINT32;
+typedef int            INT32;
+typedef unsigned int   UINT32;
+#endif // !_EE
+
+#else // !__GNUC__
+
+typedef signed char    INT8;
+typedef unsigned char  UINT8;
+typedef short          INT16;
+typedef unsigned short UINT16;
+typedef int            INT32;
+typedef unsigned int   UINT32;
+
+#endif // __GNUC__
+
 #ifdef _MSC_VER
 typedef __int64            INT64;
 typedef unsigned __int64   UINT64;
-#else
+#endif
+
+#ifdef _EE
+typedef long          INT64;
+typedef unsigned long UINT64;
+#endif
+
+#ifndef _EE
+#ifndef _MSC_VER
+#ifndef __GNUC__
 typedef long long          INT64;
 typedef unsigned long long UINT64;
 #endif
-typedef unsigned           UINT_PTR;
-
 #endif
+#endif
+
+
+typedef unsigned           UINT_PTR;
 
 typedef UINT8 BYTE;
 typedef UINT16 WORD;

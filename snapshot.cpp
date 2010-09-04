@@ -1135,7 +1135,7 @@ static FreezeData	SnapMovie[] =
 static int UnfreezeBlock (STREAM stream, const char *name, uint8 *block, unsigned int size)
 {
 	char	buffer[20];
-	unsigned int		len = 0, rem = 0;
+	int		len = 0, rem = 0;
 	long	rewind = FIND_STREAM(stream);
 
 	size_t	l = READ_STREAM(buffer, 11, stream);
@@ -1162,7 +1162,7 @@ static int UnfreezeBlock (STREAM stream, const char *name, uint8 *block, unsigne
 	if (len <= 0)
 		goto err;
 
-	if (len > size)
+	if ((unsigned int)len > size)
 	{
 		rem = len - size;
 		len = size;
@@ -1486,7 +1486,7 @@ int S9xUnfreezeFromStream (STREAM stream)
 {
 	int		result = SUCCESS;
 	int		version;
-	unsigned int len;
+	int len;
 	char	buffer[PATH_MAX + 1];
 
 	len = strlen(SNAPSHOT_MAGIC) + 1 + 4 + 1;

@@ -1,15 +1,19 @@
 SUBDIRS =
 
+ZLIB=1
+UNZIP_SUPPORT=1
 SDD1_DECOMP=1
 
+SNES9X_FLAGS = -DZLIB -DSDD_DECOMP -DUNZIP_SUPPORT
 EE_BIN = snes9x.elf
-EE_CXXFLAGS = -DSDD_DECOMP -fno-inline -fno-exceptions -fno-rtti
+EE_CFLAGS = $(SNES9X_FLAGS)
+EE_CXXFLAGS = $(SNES9X_FLAGS) -funroll-loops -fno-exceptions -fno-rtti
 
-EE_INCS = -I.. -I$(PS2SDK)/ports/include
+EE_INCS = -I.. -I../apu -I../unzip -I$(PS2SDK)/ports/include
 EE_LDFLAGS = -L$(PS2SDK)/ports/lib
 EE_LIBS = -lz -lc
 
-EE_OBJS = needc.o needcpp.o paths/paths.o 
+EE_OBJS = ps2_snes9x.o paths/paths.o 
 
 EE_OBJS += \
     ../fxinst.o \
@@ -99,11 +103,9 @@ EE_OBJS += \
     ../unzip/ioapi.o \
     ../unzip/zip.o
 
-UNZIPDEFINES=-DUNZIP_SUPPORT
-
 ifdef JMA
 EE_LDFLAGS = libjma.a
-EE_OBJS = \
+EE_OBJS += \
     ../jma/s9x-jma.o \
     ../jma/7zlzma.o \
     ../jma/crc32.o \
@@ -113,13 +115,13 @@ EE_OBJS = \
     ../jma/lzma.o \
     ../jma/lzmadec.o \
     ../jma/winout.o
-EE_CXXFLAGS = -fexceptions
+#EE_CXXFLAGS = -fexceptions
 endif
 
 all: $(EE_BIN)
 
 clean:
-	rm -f $(EE_OBJS)
+	rm -f $(EE_OBJS) $(EE_BIN)
 
 include Makefile.eeglobal
 include Makefile.pref
