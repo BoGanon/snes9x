@@ -1,12 +1,25 @@
 SUBDIRS =
 
+INTERFACE_OBJS = \
+    interface/src/config.o \
+    interface/src/gui.o \
+    interface/src/gzip.o \
+    interface/src/hdd.o \
+    interface/src/init.o \
+    interface/src/paths.o \
+    interface/src/tar.o
+
+INTERFACE_INCS = \
+    -Iinterface/include
+
 #DEBUG=1
 #MOVIE_SUPPORT=1
 #JMA_SUPPORT=1
 #DEBUGGER=1
 #LOGGER_SUPPORT=1
 #CONFFILE_SUPPORT=1
-#NETPLAY=1
+#NETPLAY_SUPPORT=1
+
 HAVE_LIBPNG=1
 ZLIB=1
 UNZIP_SUPPORT=1
@@ -17,11 +30,17 @@ EE_BIN = snes9x.elf
 EE_CFLAGS = $(SNES9X_FLAGS)
 EE_CXXFLAGS = $(SNES9X_FLAGS) -fno-exceptions -fno-rtti
 
-EE_INCS = -I.. -I../apu -I../unzip -I$(PS2SDK)/ports/include
+EE_INCS = $(INTERFACE_INCS) -I.. -I../apu -I../unzip -I$(PS2SDK)/ports/include
 EE_LDFLAGS = -L$(PS2SDK)/ports/lib
-EE_LIBS = -lpng -lz -lmf -lc
 
-EE_OBJS = ps2_snes9x.o paths/paths.o 
+EE_GFX_LIBS = -ldma -lpacket -lgraph -lfont -ldraw -limage
+EE_PAD_LIBS = -lmtap -lpadx
+EE_FILE_LIBS = -lfileXio -lmc
+EE_SYS_LIBS = -lpoweroff -lpatches -lmf -lc
+
+EE_LIBS = $(EE_GFX_LIBS) $(EE_PAD_LIBS) -lconfig -lpng -lz $(EE_FILE_LIBS) $(EE_SYS_LIBS)
+
+EE_OBJS = ps2_snes9x.o $(INTERFACE_OBJS)
 
 EE_OBJS += \
     ../fxinst.o \
@@ -114,7 +133,7 @@ ifdef SDD1_DECOMP
 EE_OBJS += ../sdd1emu.o
 endif
 
-ifdef NETPLAY
+ifdef NETPLAY_SUPPORT
 EE_OBJS += \
     ../netplay.o \
     ../server.o

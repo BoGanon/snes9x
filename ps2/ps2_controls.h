@@ -1,6 +1,8 @@
 #ifndef __PS2_CONTROLS_H__
 #define __PS2_CONTROLS_H__
 
+
+
 //    MSB  Device    Player Button
 //         Type      Number Mapping
 // 0x 1000 1111 1111 1111   1111 1111 1111 1111

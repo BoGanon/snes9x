@@ -383,10 +383,6 @@
 		<Unit filename="Makefile" />
 		<Unit filename="Makefile.eeglobal" />
 		<Unit filename="Makefile.pref" />
-		<Unit filename="paths/paths.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="paths/paths.h" />
 		<Unit filename="ps2_controls.h" />
 		<Unit filename="ps2_snes9x.cpp" />
 		<Unit filename="../reader.cpp" />
