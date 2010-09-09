@@ -1,0 +1,5 @@
+*.[oa]
+*.elf
+*.layout
+ps2/interface/
+
