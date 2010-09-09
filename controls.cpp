@@ -188,7 +188,7 @@
 #include "snapshot.h"
 #include "controls.h"
 #include "crosshairs.h"
-#ifdef MOVIE
+#ifdef MOVIE_SUPPORT
 #include "movie.h"
 #endif
 #include "display.h"
@@ -365,7 +365,7 @@ static const char	*speed_names[4] =
 static const int	ptrspeeds[4] = { 1, 1, 4, 8 };
 
 // Note: these should be in asciibetical order!
-#ifdef MOVIE
+#ifdef MOVIE_SUPPORT
 #define THE_COMMANDS \
 	S(BeginRecordingMovie), \
 	S(ClipWindows), \
@@ -2197,7 +2197,7 @@ void S9xApplyCommand (s9xcommand_t cmd, int16 data1, int16 data2)
 
 				if (data1)
 				{
-#ifdef MOVIE
+#ifdef MOVIE_SUPPORT
 					if (!Settings.UpAndDown && !S9xMoviePlaying()) // if up+down isn't allowed AND we are NOT playing a movie,
 #else
 					if (!Settings.UpAndDown)
@@ -2272,7 +2272,7 @@ void S9xApplyCommand (s9xcommand_t cmd, int16 data1, int16 data2)
 
 				superscope.next_buttons |= i & (SUPERSCOPE_FIRE | SUPERSCOPE_CURSOR | SUPERSCOPE_PAUSE);
 
-#ifdef MOVIE
+#ifdef MOVIE_SUPPORT
 				if (!S9xMovieActive()) // PPU modification during non-recordable command screws up movie synchronization
 #endif
 					if ((superscope.next_buttons & (SUPERSCOPE_FIRE | SUPERSCOPE_CURSOR)) && curcontrollers[1] == SUPERSCOPE && !(superscope.phys_buttons & SUPERSCOPE_OFFSCREEN))
@@ -2331,7 +2331,7 @@ void S9xApplyCommand (s9xcommand_t cmd, int16 data1, int16 data2)
 						break;
 
 					case SoftReset:
-#ifdef MOVIE
+#ifdef MOVIE_SUPPORT
 						S9xMovieUpdateOnReset();
 						if (S9xMoviePlaying())
 							S9xMovieStop(TRUE);
@@ -2591,7 +2591,7 @@ void S9xApplyCommand (s9xcommand_t cmd, int16 data1, int16 data2)
 						Settings.Transparency = !Settings.Transparency;
 						DisplayStateChange("Transparency effects", Settings.Transparency);
 						break;
-#ifdef MOVIE
+#ifdef MOVIE_SUPPORT
 					case BeginRecordingMovie:
 						if (S9xMovieActive())
 							S9xMovieStop(FALSE);
@@ -2647,7 +2647,7 @@ void S9xApplyCommand (s9xcommand_t cmd, int16 data1, int16 data2)
 
 						S9xSetInfoString(buf);
 						break;
-#ifdef MOVIE
+#ifdef MOVIE_SUPPORT
 					case SeekToFrame:
 						if (S9xMovieActive())
 						{
@@ -2886,7 +2886,7 @@ static void do_polling (int mp)
 {
 	set<uint32>::iterator	itr;
 
-#ifdef MOVIE
+#ifdef MOVIE_SUPPORT
 	if (S9xMoviePlaying())
 		return;
 #endif
@@ -3027,7 +3027,7 @@ void S9xSetJoypadLatch (bool latch)
 				case MOUSE0:
 				case MOUSE1:
 					do_polling(i);
-#ifdef MOVIE
+#ifdef MOVIE_SUPPORT
 					if (!S9xMoviePlaying())
 #endif
 						UpdatePolledMouse(i);
@@ -3223,7 +3223,7 @@ void S9xDoAutoJoypad (void)
 	S9xSetJoypadLatch(1);
 	S9xSetJoypadLatch(0);
 
-#ifdef MOVIE
+#ifdef MOVIE_SUPPORT
 	S9xMovieUpdate(false);
 #endif
 
@@ -3459,7 +3459,7 @@ void S9xControlEOF (void)
 
 	do_polling(POLL_ALL);
 
-#ifdef MOVIE
+#ifdef MOVIE_SUPPORT
 	S9xMovieUpdate();
 #endif
 

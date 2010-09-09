@@ -35,7 +35,7 @@ class LinearResampler : public Resampler
             if (ratio == 0.0)
                 ratio = 1.0;
             f__r_step = (uint32) (ratio * f__one);
-            f__inv_r_step = (uint32) (f__one / ratio);
+            f__inv_r_step = (uint32) (f__one / ratio); //ragnarok
             clear ();
         }
 

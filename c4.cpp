@@ -206,23 +206,23 @@ void C4TransfWireFrame (void)
 	c4z = (double) C4WFZVal - 0x95;
 
 	// Rotate X
-	tanval = -(double) C4WFX2Val * C4_PI * 2 / 128;
+	tanval = -(double) C4WFX2Val * C4_PI * 2 / 128;//ragnarok
 	c4y2 = c4y  *  cos(tanval) - c4z  * sin(tanval);
 	c4z2 = c4y  *  sin(tanval) + c4z  * cos(tanval);
 
 	// Rotate Y
-	tanval = -(double) C4WFY2Val * C4_PI * 2 / 128;
+	tanval = -(double) C4WFY2Val * C4_PI * 2 / 128;//ragnarok
 	c4x2 = c4x  *  cos(tanval) + c4z2 * sin(tanval);
 	c4z  = c4x  * -sin(tanval) + c4z2 * cos(tanval);
 
 	// Rotate Z
-	tanval = -(double) C4WFDist  * C4_PI * 2 / 128;
+	tanval = -(double) C4WFDist  * C4_PI * 2 / 128;//ragnarok
 	c4x  = c4x2 *  cos(tanval) - c4y2 * sin(tanval);
 	c4y  = c4x2 *  sin(tanval) + c4y2 * cos(tanval);
 
 	// Scale
-	C4WFXVal = (int16) (c4x * (double) C4WFScale / (0x90 * (c4z + 0x95)) * 0x95);
-	C4WFYVal = (int16) (c4y * (double) C4WFScale / (0x90 * (c4z + 0x95)) * 0x95);
+	C4WFXVal = (int16) (c4x * (double) C4WFScale / (0x90 * (c4z + 0x95)) * 0x95);//ragnarok
+	C4WFYVal = (int16) (c4y * (double) C4WFScale / (0x90 * (c4z + 0x95)) * 0x95);//ragnarok
 }
 
 void C4TransfWireFrame2 (void)
@@ -232,23 +232,23 @@ void C4TransfWireFrame2 (void)
 	c4z = (double) C4WFZVal;
 
 	// Rotate X
-	tanval = -(double) C4WFX2Val * C4_PI * 2 / 128;
+	tanval = -(double) C4WFX2Val * C4_PI * 2 / 128;//ragnarok
 	c4y2 = c4y  *  cos(tanval) - c4z  * sin(tanval);
 	c4z2 = c4y  *  sin(tanval) + c4z  * cos(tanval);
 
 	// Rotate Y
-	tanval = -(double) C4WFY2Val * C4_PI * 2 / 128;
+	tanval = -(double) C4WFY2Val * C4_PI * 2 / 128;//ragnarok
 	c4x2 = c4x  *  cos(tanval) + c4z2 * sin(tanval);
 	c4z  = c4x  * -sin(tanval) + c4z2 * cos(tanval);
 
 	// Rotate Z
-	tanval = -(double) C4WFDist  * C4_PI * 2 / 128;
+	tanval = -(double) C4WFDist  * C4_PI * 2 / 128;//ragnarok
 	c4x  = c4x2 *  cos(tanval) - c4y2 * sin(tanval);
 	c4y  = c4x2 *  sin(tanval) + c4y2 * cos(tanval);
 
 	// Scale
-	C4WFXVal = (int16) (c4x * (double) C4WFScale / 0x100);
-	C4WFYVal = (int16) (c4y * (double) C4WFScale / 0x100);
+	C4WFXVal = (int16) (c4x * (double) C4WFScale / 0x100);//ragnarok
+	C4WFYVal = (int16) (c4y * (double) C4WFScale / 0x100);//ragnarok
 }
 
 void C4CalcWireFrame (void)

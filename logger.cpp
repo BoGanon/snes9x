@@ -176,7 +176,7 @@
 
 
 #include "snes9x.h"
-#ifdef MOVIE
+#ifdef MOVIE_SUPPORT
 #include "movie.h"
 #endif
 #include "logger.h"
@@ -234,7 +234,7 @@ void S9xCloseLogger (void)
 
 void S9xVideoLogger (void *pixels, int width, int height, int depth, int bytes_per_line)
 {
-#ifdef MOVIE
+#ifdef MOVIE_SUPPORT
 	int	fc = S9xMovieGetFrameCounter();
 	if (fc > 0)
 		framecounter = fc;

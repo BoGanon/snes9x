@@ -184,7 +184,7 @@
 #include "srtc.h"
 #include "snapshot.h"
 #include "cheats.h"
-#ifdef LOGGER
+#ifdef LOGGER_SUPPORT
 #include "logger.h"
 #endif
 #ifdef DEBUGGER
@@ -271,7 +271,7 @@ static void S9xSoftResetCPU (void)
 void S9xReset (void)
 {
 	S9xResetSaveTimer(FALSE);
-#ifdef LOGGER
+#ifdef LOGGER_SUPPORT
 	S9xResetLogger();
 #endif
 	memset(Memory.RAM, 0x55, 0x20000);

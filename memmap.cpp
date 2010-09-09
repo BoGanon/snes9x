@@ -195,7 +195,7 @@
 #include "srtc.h"
 #include "controls.h"
 #include "cheats.h"
-#ifdef MOVIE
+#ifdef MOVIE_SUPPORT
 #include "movie.h"
 #endif
 #include "reader.h"
@@ -213,7 +213,7 @@
 #define min(a, b) (((a) < (b)) ? (a) : (b))
 #endif
 
-#ifdef MOVIE
+#ifdef MOVIE_SUPPORT
 static bool8	stopMovie = TRUE;
 #endif
 static char		LastRomFilename[PATH_MAX + 1] = "";
@@ -2217,9 +2217,11 @@ void CMemory::ParseSNESHeader (uint8 *RomHeader)
 
 	if (bs)
 	{
+	#ifdef DEBUG
 		if (!(((RomHeader[0x29] & 0x20) && CalculatedSize <  0x100000) ||
 			 (!(RomHeader[0x29] & 0x20) && CalculatedSize == 0x100000)))
 			printf("BS: Size mismatch\n");
+	#endif
 
 		// FIXME
 		int	p = 0;
@@ -2646,7 +2648,7 @@ void CMemory::InitROM (void)
 	Settings.ForceNTSC = FALSE;
 
 	Settings.TakeScreenshot = FALSE;
-#ifdef MOVIE
+#ifdef MOVIE_SUPPORT
 	if (stopMovie)
 		S9xMovieStop(TRUE);
 #endif
@@ -2902,7 +2904,9 @@ void CMemory::Map_Initialize (void)
 
 void CMemory::Map_LoROMMap (void)
 {
+#ifdef DEBUG
 	printf("Map_LoROMMap\n");
+#endif
 	map_System();
 
 	map_lorom(0x00, 0x3f, 0x8000, 0xffff, CalculatedSize);
@@ -2930,7 +2934,9 @@ void CMemory::Map_LoROMMap (void)
 
 void CMemory::Map_NoMAD1LoROMMap (void)
 {
+#ifdef DEBUG
 	printf("Map_NoMAD1LoROMMap\n");
+#endif
 	map_System();
 
 	map_lorom(0x00, 0x3f, 0x8000, 0xffff, CalculatedSize);
@@ -2949,7 +2955,9 @@ void CMemory::Map_NoMAD1LoROMMap (void)
 void CMemory::Map_JumboLoROMMap (void)
 {
 	// XXX: Which game uses this?
+#ifdef DEBUG
 	printf("Map_JumboLoROMMap\n");
+#endif
 	map_System();
 
 	map_lorom_offset(0x00, 0x3f, 0x8000, 0xffff, CalculatedSize - 0x400000, 0x400000);
@@ -2966,7 +2974,9 @@ void CMemory::Map_JumboLoROMMap (void)
 void CMemory::Map_ROM24MBSLoROMMap (void)
 {
 	// PCB: BSC-1A5M-01, BSC-1A7M-10
+#ifdef DEBUG
 	printf("Map_ROM24MBSLoROMMap\n");
+#endif
 	map_System();
 
 	map_lorom_offset(0x00, 0x1f, 0x8000, 0xffff, 0x100000, 0);
@@ -2982,7 +2992,9 @@ void CMemory::Map_ROM24MBSLoROMMap (void)
 
 void CMemory::Map_SRAM512KLoROMMap (void)
 {
+#ifdef DEBUG
 	printf("Map_SRAM512KLoROMMap\n");
+#endif
 	map_System();
 
 	map_lorom(0x00, 0x3f, 0x8000, 0xffff, CalculatedSize);
@@ -3002,7 +3014,9 @@ void CMemory::Map_SRAM512KLoROMMap (void)
 
 void CMemory::Map_SufamiTurboLoROMMap (void)
 {
+#ifdef DEBUG
 	printf("Map_SufamiTurboLoROMMap\n");
+#endif
 	map_System();
 
 	map_lorom_offset(0x00, 0x1f, 0x8000, 0xffff, 0x40000, 0);
@@ -3032,7 +3046,9 @@ void CMemory::Map_SufamiTurboLoROMMap (void)
 void CMemory::Map_SufamiTurboPseudoLoROMMap (void)
 {
 	// for combined images
+#ifdef DEBUG
 	printf("Map_SufamiTurboPseudoLoROMMap\n");
+#endif
 	map_System();
 
 	map_lorom_offset(0x00, 0x1f, 0x8000, 0xffff, 0x40000, 0);
@@ -3055,7 +3071,9 @@ void CMemory::Map_SufamiTurboPseudoLoROMMap (void)
 
 void CMemory::Map_SuperFXLoROMMap (void)
 {
+#ifdef DEBUG
 	printf("Map_SuperFXLoROMMap\n");
+#endif
 	map_System();
 
 	// Replicate the first 2Mb of the ROM at ROM + 2MB such that each 32K
@@ -3084,7 +3102,9 @@ void CMemory::Map_SuperFXLoROMMap (void)
 
 void CMemory::Map_SetaDSPLoROMMap (void)
 {
+#ifdef DEBUG
 	printf("Map_SetaDSPLoROMMap\n");
+#endif
 	map_System();
 
 	map_lorom(0x00, 0x3f, 0x8000, 0xffff, CalculatedSize);
@@ -3102,7 +3122,9 @@ void CMemory::Map_SetaDSPLoROMMap (void)
 
 void CMemory::Map_SDD1LoROMMap (void)
 {
+#ifdef DEBUG
 	printf("Map_SDD1LoROMMap\n");
+#endif
 	map_System();
 
 	map_lorom(0x00, 0x3f, 0x8000, 0xffff, CalculatedSize);
@@ -3120,7 +3142,9 @@ void CMemory::Map_SDD1LoROMMap (void)
 
 void CMemory::Map_SA1LoROMMap (void)
 {
+#ifdef DEBUG
 	printf("Map_SA1LoROMMap\n");
+#endif
 	map_System();
 
 	map_lorom(0x00, 0x3f, 0x8000, 0xffff, CalculatedSize);
@@ -3162,7 +3186,9 @@ void CMemory::Map_SA1LoROMMap (void)
 
 void CMemory::Map_HiROMMap (void)
 {
+#ifdef DEBUG
 	printf("Map_HiROMMap\n");
+#endif
 	map_System();
 
 	map_hirom(0x00, 0x3f, 0x8000, 0xffff, CalculatedSize);
@@ -3181,7 +3207,9 @@ void CMemory::Map_HiROMMap (void)
 
 void CMemory::Map_ExtendedHiROMMap (void)
 {
+#ifdef DEBUG
 	printf("Map_ExtendedHiROMMap\n");
+#endif
 	map_System();
 
 	map_hirom_offset(0x00, 0x3f, 0x8000, 0xffff, CalculatedSize - 0x400000, 0x400000);
@@ -3197,7 +3225,9 @@ void CMemory::Map_ExtendedHiROMMap (void)
 
 void CMemory::Map_SameGameHiROMMap (void)
 {
+#ifdef DEBUG
 	printf("Map_SameGameHiROMMap\n");
+#endif
 	map_System();
 
 	map_hirom_offset(0x00, 0x1f, 0x8000, 0xffff, Multi.cartSizeA, Multi.cartOffsetA);
@@ -3217,7 +3247,9 @@ void CMemory::Map_SameGameHiROMMap (void)
 
 void CMemory::Map_SPC7110HiROMMap (void)
 {
+#ifdef DEBUG
 	printf("Map_SPC7110HiROMMap\n");
+#endif
 	map_System();
 
 	map_index(0x00, 0x00, 0x6000, 0x7fff, MAP_HIROM_SRAM, MAP_TYPE_RAM);
@@ -3574,7 +3606,9 @@ void CMemory::ApplyROMFixes (void)
 		if (match_na("BATTLE GRANDPRIX")) // Battle Grandprix
 		{
 			Timings.DMACPUSync = 20;
+		#ifdef DEBUG
 			printf("DMA sync: %d\n", Timings.DMACPUSync);
+		#endif
 		}
 	}
 
@@ -3585,7 +3619,9 @@ void CMemory::ApplyROMFixes (void)
 		if (match_na("TRAVERSE")) // Traverse - Starlight & Prairie
 		{
 			Timings.IRQPendCount = 1;
+		#ifdef DEBUG
 			printf("IRQ count hack: %d\n", Timings.IRQPendCount);
+		#endif
 		}
 
 		// An infinite loop reads $4212 and waits V-blank end, whereas VIRQ is set V=0.
@@ -3595,13 +3631,17 @@ void CMemory::ApplyROMFixes (void)
 		if (match_na("Aero the AcroBat 2"))
 		{
 			Timings.IRQPendCount = 2;
+		#ifdef DEBUG
 			printf("IRQ count hack: %d\n", Timings.IRQPendCount);
+		#endif
 		}
 
 		if (match_na("BATTLE BLAZE"))
 		{
 			Timings.IRQPendCount = 1;
+		#ifdef DEBUG
 			printf("IRQ count hack: %d\n", Timings.IRQPendCount);
+		#endif
 		}
 	}
 
@@ -3611,7 +3651,9 @@ void CMemory::ApplyROMFixes (void)
 		if (match_na("X-MEN")) // Spider-Man and the X-Men
 		{
 			Settings.BlockInvalidVRAMAccess = FALSE;
+		#ifdef DEBUG
 			printf("Invalid VRAM access hack\n");
+		#endif
 		}
 	}
 
@@ -3631,8 +3673,10 @@ void CMemory::ApplyROMFixes (void)
 		match_nn("NHL")             ||
 		match_nc("MADDEN"))
 	{
+	#ifdef DEBUG
 		if (Settings.Shutdown)
 			printf("Disabled CPU shutdown hack.\n");
+	#endif
 		Settings.Shutdown = FALSE;
 	}
 
@@ -3885,7 +3929,9 @@ void CMemory::ApplyROMFixes (void)
 		if (match_nn("UNIRACERS")) // Uniracers
 		{
 			SNESGameFixes.Uniracers = TRUE;
+		#ifdef DEBUG
 			printf("Applied Uniracers hack.\n");
+		#endif
 		}
 	}
 }
@@ -4110,8 +4156,10 @@ static int unzFindExtension (unzFile &file, const char *ext, bool restart, bool 
 
 		if (len >= l + 1 && name[len - l - 1] == '.' && strcasecmp(name + len - l, ext) == 0 && unzOpenCurrentFile(file) == UNZ_OK)
 		{
+		#ifdef DEBUG
 			if (print)
 				printf("Using IPS or UPS patch %s", name);
+		#endif
 
 			return (port);
 		}
@@ -4143,18 +4191,24 @@ void CMemory::CheckForAnyPatch (const char *rom_filename, bool8 header, int32 &r
 
 	if ((patch_file = OPEN_STREAM(fname, "rb")) != NULL)
 	{
+	#ifdef DEBUG
 		printf("Using UPS patch %s", fname);
+	#endif
 
 		ret = ReadUPSPatch(new fReader(patch_file), 0, rom_size);
 		CLOSE_STREAM(patch_file);
 
 		if (ret)
 		{
+		#ifdef DEBUG
 			printf("!\n");
+		#endif
 			return;
 		}
+	#ifdef DEBUG
 		else
 			printf(" failed!\n");
+	#endif
 	}
 
 #ifdef UNZIP_SUPPORT
@@ -4166,15 +4220,19 @@ void CMemory::CheckForAnyPatch (const char *rom_filename, bool8 header, int32 &r
 			int	port = unzFindExtension(file, "ups");
 			if (port == UNZ_OK)
 			{
+			#ifdef DEBUG
 				printf(" in %s", rom_filename);
+			#endif
 
 				ret = ReadUPSPatch(new unzReader(file), offset, rom_size);
 				unzCloseCurrentFile(file);
 
+			#ifdef DEBUG
 				if (ret)
 					printf("!\n");
 				else
 					printf(" failed!\n");
+			#endif
 			}
 		}
 	}
@@ -4184,18 +4242,24 @@ void CMemory::CheckForAnyPatch (const char *rom_filename, bool8 header, int32 &r
 
 	if ((patch_file = OPEN_STREAM(n, "rb")) != NULL)
 	{
+	#ifdef DEBUG
 		printf("Using UPS patch %s", n);
+	#endif
 
 		ret = ReadUPSPatch(new fReader(patch_file), 0, rom_size);
 		CLOSE_STREAM(patch_file);
 
 		if (ret)
 		{
+		#ifdef DEBUG
 			printf("!\n");
+		#endif
 			return;
 		}
+	#ifdef DEBUG
 		else
 			printf(" failed!\n");
+	#endif
 	}
 
 	// IPS
@@ -4205,18 +4269,24 @@ void CMemory::CheckForAnyPatch (const char *rom_filename, bool8 header, int32 &r
 
 	if ((patch_file = OPEN_STREAM(fname, "rb")) != NULL)
 	{
+	#ifdef DEBUG
 		printf("Using IPS patch %s", fname);
+	#endif
 
 		ret = ReadIPSPatch(new fReader(patch_file), offset, rom_size);
 		CLOSE_STREAM(patch_file);
 
 		if (ret)
 		{
+		#ifdef DEBUG
 			printf("!\n");
+		#endif
 			return;
 		}
+	#ifdef DEBUG
 		else
 			printf(" failed!\n");
+	#endif
 	}
 
 	if (_MAX_EXT > 6)
@@ -4232,19 +4302,25 @@ void CMemory::CheckForAnyPatch (const char *rom_filename, bool8 header, int32 &r
 			if (!(patch_file = OPEN_STREAM(fname, "rb")))
 				break;
 
+		#ifdef DEBUG
 			printf("Using IPS patch %s", fname);
+		#endif
 
 			ret = ReadIPSPatch(new fReader(patch_file), offset, rom_size);
 			CLOSE_STREAM(patch_file);
 
 			if (ret)
 			{
+			#ifdef DEBUG
 				printf("!\n");
+			#endif
 				flag = true;
 			}
 			else
 			{
+			#ifdef DEBUG
 				printf(" failed!\n");
+			#endif
 				break;
 			}
 		} while (++i < 1000);
@@ -4268,19 +4344,25 @@ void CMemory::CheckForAnyPatch (const char *rom_filename, bool8 header, int32 &r
 			if (!(patch_file = OPEN_STREAM(fname, "rb")))
 				break;
 
+		#ifdef DEBUG
 			printf("Using IPS patch %s", fname);
+		#endif
 
 			ret = ReadIPSPatch(new fReader(patch_file), offset, rom_size);
 			CLOSE_STREAM(patch_file);
 
 			if (ret)
 			{
+			#ifdef DEBUG
 				printf("!\n");
+			#endif
 				flag = true;
 			}
 			else
 			{
+			#ifdef DEBUG
 				printf(" failed!\n");
+			#endif
 				break;
 			}
 		} while (++i != 0);
@@ -4302,19 +4384,25 @@ void CMemory::CheckForAnyPatch (const char *rom_filename, bool8 header, int32 &r
 			if (!(patch_file = OPEN_STREAM(fname, "rb")))
 				break;
 
+		#ifdef DEBUG
 			printf("Using IPS patch %s", fname);
+		#endif
 
 			ret = ReadIPSPatch(new fReader(patch_file), offset, rom_size);
 			CLOSE_STREAM(patch_file);
 
 			if (ret)
 			{
+			#ifdef DEBUG
 				printf("!\n");
+			#endif
 				flag = true;
 			}
 			else
 			{
+			#ifdef DEBUG
 				printf(" failed!\n");
+			#endif
 				break;
 			}
 		} while (++i < 10);
@@ -4332,18 +4420,24 @@ void CMemory::CheckForAnyPatch (const char *rom_filename, bool8 header, int32 &r
 			int	port = unzFindExtension(file, "ips");
 			while (port == UNZ_OK)
 			{
+			#ifdef DEBUG
 				printf(" in %s", rom_filename);
+			#endif
 
 				ret = ReadIPSPatch(new unzReader(file), offset, rom_size);
 				unzCloseCurrentFile(file);
 
 				if (ret)
 				{
+				#ifdef DEBUG
 					printf("!\n");
+				#endif
 					flag = true;
 				}
+			#ifdef DEBUG
 				else
 					printf(" failed!\n");
+			#endif
 
 				port = unzFindExtension(file, "ips", false);
 			}
@@ -4359,24 +4453,32 @@ void CMemory::CheckForAnyPatch (const char *rom_filename, bool8 header, int32 &r
 					if (unzFindExtension(file, ips) != UNZ_OK)
 						break;
 
+				#ifdef DEBUG
 					printf(" in %s", rom_filename);
+				#endif
 
 					ret = ReadIPSPatch(new unzReader(file), offset, rom_size);
 					unzCloseCurrentFile(file);
 
 					if (ret)
 					{
+					#ifdef DEBUG
 						printf("!\n");
+					#endif
 						flag = true;
 					}
 					else
 					{
+					#ifdef DEBUG
 						printf(" failed!\n");
+					#endif
 						break;
 					}
 
+				#ifdef DEBUG
 					if (unzFindExtension(file, ips, false, false) == UNZ_OK)
 						printf("WARNING: Ignoring extra .%s files!\n", ips);
+				#endif
 				} while (++i < 1000);
 			}
 
@@ -4393,24 +4495,32 @@ void CMemory::CheckForAnyPatch (const char *rom_filename, bool8 header, int32 &r
 					if (unzFindExtension(file, ips) != UNZ_OK)
 						break;
 
+				#ifdef DEBUG
 					printf(" in %s", rom_filename);
+				#endif
 
 					ret = ReadIPSPatch(new unzReader(file), offset, rom_size);
 					unzCloseCurrentFile(file);
 
 					if (ret)
 					{
+					#ifdef DEBUG
 						printf("!\n");
+					#endif
 						flag = true;
 					}
 					else
 					{
+					#ifdef DEBUG
 						printf(" failed!\n");
+					#endif
 						break;
 					}
 
+				#ifdef DEBUG
 					if (unzFindExtension(file, ips, false, false) == UNZ_OK)
 						printf("WARNING: Ignoring extra .%s files!\n", ips);
+				#endif
 				} while (++i != 0);
 			}
 
@@ -4425,24 +4535,32 @@ void CMemory::CheckForAnyPatch (const char *rom_filename, bool8 header, int32 &r
 					if (unzFindExtension(file, ips) != UNZ_OK)
 						break;
 
+				#ifdef DEBUG
 					printf(" in %s", rom_filename);
+				#endif
 
 					ret = ReadIPSPatch(new unzReader(file), offset, rom_size);
 					unzCloseCurrentFile(file);
 
 					if (ret)
 					{
+					#ifdef DEBUG
 						printf("!\n");
+					#endif
 						flag = true;
 					}
 					else
 					{
+					#ifdef DEBUG
 						printf(" failed!\n");
+					#endif
 						break;
 					}
 
+				#ifdef DEBUG
 					if (unzFindExtension(file, ips, false, false) == UNZ_OK)
 						printf("WARNING: Ignoring extra .%s files!\n", ips);
+				#endif
 				} while (++i < 10);
 			}
 
@@ -4458,18 +4576,24 @@ void CMemory::CheckForAnyPatch (const char *rom_filename, bool8 header, int32 &r
 
 	if ((patch_file = OPEN_STREAM(n, "rb")) != NULL)
 	{
+	#ifdef DEBUG
 		printf("Using IPS patch %s", n);
+	#endif
 
 		ret = ReadIPSPatch(new fReader(patch_file), offset, rom_size);
 		CLOSE_STREAM(patch_file);
 
 		if (ret)
 		{
+		#ifdef DEBUG
 			printf("!\n");
+		#endif
 			return;
 		}
+	#ifdef DEBUG
 		else
 			printf(" failed!\n");
+	#endif
 	}
 
 	if (_MAX_EXT > 6)
@@ -4485,19 +4609,25 @@ void CMemory::CheckForAnyPatch (const char *rom_filename, bool8 header, int32 &r
 			if (!(patch_file = OPEN_STREAM(n, "rb")))
 				break;
 
+		#ifdef DEBUG
 			printf("Using IPS patch %s", n);
+		#endif
 
 			ret = ReadIPSPatch(new fReader(patch_file), offset, rom_size);
 			CLOSE_STREAM(patch_file);
 
 			if (ret)
 			{
+			#ifdef DEBUG
 				printf("!\n");
+			#endif
 				flag = true;
 			}
 			else
 			{
+			#ifdef DEBUG
 				printf(" failed!\n");
+			#endif
 				break;
 			}
 		} while (++i < 1000);
@@ -4521,19 +4651,25 @@ void CMemory::CheckForAnyPatch (const char *rom_filename, bool8 header, int32 &r
 			if (!(patch_file = OPEN_STREAM(n, "rb")))
 				break;
 
+		#ifdef DEBUG
 			printf("Using IPS patch %s", n);
+		#endif
 
 			ret = ReadIPSPatch(new fReader(patch_file), offset, rom_size);
 			CLOSE_STREAM(patch_file);
 
 			if (ret)
 			{
+		#ifdef DEBUG
 				printf("!\n");
+		#endif
 				flag = true;
 			}
 			else
 			{
+			#ifdef DEBUG
 				printf(" failed!\n");
+			#endif
 				break;
 			}
 		} while (++i != 0);
@@ -4555,19 +4691,25 @@ void CMemory::CheckForAnyPatch (const char *rom_filename, bool8 header, int32 &r
 			if (!(patch_file = OPEN_STREAM(n, "rb")))
 				break;
 
+		#ifdef DEBUG
 			printf("Using IPS patch %s", n);
+		#endif
 
 			ret = ReadIPSPatch(new fReader(patch_file), offset, rom_size);
 			CLOSE_STREAM(patch_file);
 
 			if (ret)
 			{
+			#ifdef DEBUG
 				printf("!\n");
+			#endif
 				flag = true;
 			}
 			else
 			{
+			#ifdef DEBUG
 				printf(" failed!\n");
+			#endif
 				break;
 			}
 		} while (++i < 10);

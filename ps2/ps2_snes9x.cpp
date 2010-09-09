@@ -249,7 +249,7 @@ const char *S9xChooseFilename (bool8 read_only)
 	return NULL;
 }
 
-#ifdef MOVIE
+#ifdef MOVIE_SUPPORT
 const char *S9xChooseMovieFilename (bool8 read_only)
 {
 	return NULL;

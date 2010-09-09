@@ -827,7 +827,7 @@ loop:
 		
 		if ( y < x * 2 )
 		{
-			a = ya / x;
+			a = ya / x;//ragnarok
 			y = ya - a * x;
 		}
 		else

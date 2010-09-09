@@ -1,23 +1,25 @@
 SUBDIRS =
 
+#DEBUG=1
+#MOVIE_SUPPORT=1
 #JMA_SUPPORT=1
 #DEBUGGER=1
-#LOGGER=1
-#SNES_OBJ=1
+#LOGGER_SUPPORT=1
+#CONFFILE_SUPPORT=1
 #NETPLAY=1
-#HAVE_LIBPNG=1
+HAVE_LIBPNG=1
 ZLIB=1
 UNZIP_SUPPORT=1
 SDD1_DECOMP=1
 
-SNES9X_FLAGS = -DZLIB -DCORRECT_VRAM_READS -DSDD_DECOMP -DUNZIP_SUPPORT -fno-inline -ffast-math
+SNES9X_FLAGS = -DHAVE_LIBPNG -DZLIB -DCORRECT_VRAM_READS -DSDD_DECOMP -DUNZIP_SUPPORT -fno-inline -ffast-math
 EE_BIN = snes9x.elf
 EE_CFLAGS = $(SNES9X_FLAGS)
 EE_CXXFLAGS = $(SNES9X_FLAGS) -fno-exceptions -fno-rtti
 
 EE_INCS = -I.. -I../apu -I../unzip -I$(PS2SDK)/ports/include
 EE_LDFLAGS = -L$(PS2SDK)/ports/lib
-EE_LIBS = -lz -lmf -lc
+EE_LIBS = -lpng -lz -lmf -lc
 
 EE_OBJS = ps2_snes9x.o paths/paths.o 
 
@@ -74,26 +76,6 @@ EE_OBJS += \
     ../snapshot.o \
     ../screenshot.o \
 
-ifdef DEBUGGER
-EE_OBJS += ../debug.o
-endif
-
-ifdef LOGGER
-EE_OBJS += ../logger.o
-endif
-
-ifdef SNES9X_OBJ
-EE_OBJS += ../snes9x.o
-endif
-
-ifdef CONFFILE
-EE_OBJS += ../conffile.o
-endif
-
-ifdef MOVIE
-EE_OBJS += ../movie.o
-endif
-
 # ASMCPU Doesn't exist anymore.
 EE_OBJS += \
     ../cpuops.o \
@@ -104,6 +86,30 @@ EE_OBJS += \
     ../cheats.o \
     ../cheats2.o
 
+# Zip support is nonconfigurable.
+EE_OBJS += \
+    ../loadzip.o \
+    ../unzip/unzip.o \
+    ../unzip/ioapi.o \
+    ../unzip/zip.o
+
+ifdef DEBUGGER
+EE_OBJS += ../debug.o
+endif
+
+ifdef LOGGER_SUPPORT
+EE_OBJS += ../logger.o
+endif
+
+ifdef CONFFILE_SUPPORT
+EE_OBJS += ../conffile.o
+EE_OBJS += ../snes9x.o
+endif
+
+ifdef MOVIE_SUPPORT
+EE_OBJS += ../movie.o
+endif
+
 ifdef SDD1_DECOMP
 EE_OBJS += ../sdd1emu.o
 endif
@@ -113,13 +119,6 @@ EE_OBJS += \
     ../netplay.o \
     ../server.o
 endif
-
-# Zip support is nonconfigurable.
-EE_OBJS += \
-    ../loadzip.o \
-    ../unzip/unzip.o \
-    ../unzip/ioapi.o \
-    ../unzip/zip.o
 
 ifdef JMA_SUPPORT
 EE_LDFLAGS = libjma.a

@@ -183,7 +183,7 @@
 #include "sdd1.h"
 #include "srtc.h"
 #include "controls.h"
-#ifdef MOVIE
+#ifdef MOVIE_SUPPORT
 #include "movie.h"
 #endif
 #include "display.h"

@@ -186,7 +186,7 @@
 #include "srtc.h"
 #include "snapshot.h"
 #include "controls.h"
-#ifdef MOVIE
+#ifdef MOVIE_SUPPORT
 #include "movie.h"
 #endif
 #include "display.h"
@@ -1125,7 +1125,7 @@ static FreezeData	SnapScreenshot[] =
 #undef STRUCT
 #define STRUCT	struct SnapshotMovieInfo
 
-#ifdef MOVIE
+#ifdef MOVIE_SUPPORT
 static FreezeData	SnapMovie[] =
 {
 	INT_ENTRY(6, MovieInputDataSize)
@@ -1195,7 +1195,7 @@ static int UnfreezeBlock (STREAM stream, const char *name, uint8 *block, unsigne
 
 //static int UnfreezeBlock (STREAM, const char *, uint8 *, int);
 static int UnfreezeBlockCopy (STREAM, const char *, uint8 **, int);
-#ifdef MOVIE
+#ifdef MOVIE_SUPPORT
 static int UnfreezeStruct (STREAM, const char *, void *, FreezeData *, int, int);
 #endif
 static int UnfreezeStructCopy (STREAM, const char *, uint8 **, FreezeData *, int, int);
@@ -1234,7 +1234,7 @@ bool8 S9xFreezeGame (const char *filename)
 		S9xResetSaveTimer(TRUE);
 
 		const char *base = S9xBasename(filename);
-#ifdef MOVIE
+#ifdef MOVIE_SUPPORT
 		if (S9xMovieActive())
 			sprintf(String, MOVIE_INFO_SNAPSHOT " %s", base);
 		else
@@ -1299,7 +1299,7 @@ bool8 S9xUnfreezeGame (const char *filename)
 
 			return (FALSE);
 		}
-#ifdef MOVIE
+#ifdef MOVIE_SUPPORT
 		if (S9xMovieActive())
 		{
 			if (S9xMovieReadOnly())
@@ -1456,7 +1456,7 @@ void S9xFreezeToStream (STREAM stream)
 
 		delete ssi;
 	}
-#ifdef MOVIE
+#ifdef MOVIE_SUPPORT
 	if (S9xMovieActive())
 	{
 		uint8	*movie_freeze_buf;
@@ -1640,7 +1640,7 @@ int S9xUnfreezeFromStream (STREAM stream)
 
 		result = UnfreezeStructCopy(stream, "SHO", &local_screenshot, SnapScreenshot, COUNT(SnapScreenshot), version);
 
-#ifdef MOVIE
+#ifdef MOVIE_SUPPORT
 		SnapshotMovieInfo	mi;
 
 		result = UnfreezeStruct(stream, "MOV", &mi, SnapMovie, COUNT(SnapMovie), version);
@@ -1810,7 +1810,7 @@ int S9xUnfreezeFromStream (STREAM stream)
 
 		if (local_bsx_data)
 			S9xBSXPostLoadState();
-#ifdef MOVIE
+#ifdef MOVIE_SUPPORT
 		if (local_movie_data)
 		{
 			// restore last displayed pad_read status
@@ -2097,7 +2097,7 @@ static int UnfreezeBlockCopy (STREAM stream, const char *name, uint8 **block, in
 
 	return (SUCCESS);
 }
-#ifdef MOVIE
+#ifdef MOVIE_SUPPORT
 static int UnfreezeStruct (STREAM stream, const char *name, void *base, FreezeData *fields, int num_fields, int version)
 {
 	int		result;

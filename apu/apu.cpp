@@ -413,7 +413,7 @@ static void UpdatePlaybackRate (void)
 	if (Settings.SoundInputRate == 0)
 		Settings.SoundInputRate = APU_DEFAULT_INPUT_RATE;
 
-	double time_ratio = (double) Settings.SoundInputRate * spc::timing_hack_numerator / (Settings.SoundPlaybackRate * spc::timing_hack_denominator);
+	double time_ratio = (double) Settings.SoundInputRate * spc::timing_hack_numerator / (double)(Settings.SoundPlaybackRate * spc::timing_hack_denominator);
 	spc::resampler->time_ratio(time_ratio);
 }
 
@@ -439,7 +439,9 @@ bool8 S9xInitSound (int buffer_ms, int lag_ms)
 	if (Settings.SixteenBitSound)
 		spc::buffer_size <<= 1;
 
+#ifdef DEBUG
 	printf("Sound buffer size: %d (%d samples)\n", spc::buffer_size, sample_count);
+#endif
 
 	if (spc::landing_buffer)
 		delete[] spc::landing_buffer;
@@ -490,7 +492,9 @@ void S9xDumpSPCSnapshot (void)
 static void SPCSnapshotCallback (void)
 {
 	S9xSPCDump(S9xGetFilenameInc((".spc"), SPC_DIR));
+#ifdef DEBUG
 	printf("Dumped key-on triggered spc snapshot.\n");
+#endif
 }
 
 bool8 S9xInitAPU (void)
@@ -585,15 +589,17 @@ void S9xAPUEndScanline (void)
 
 void S9xAPUTimingSetSpeedup (int ticks)
 {
+#ifdef DEBUG
 	if (ticks != 0)
 		printf("APU speedup hack: %d\n", ticks);
+#endif
 
 	spc::timing_hack_denominator = SNES_SPC::tempo_unit - ticks;
 	spc_core->set_tempo(spc::timing_hack_denominator);
 
 	spc::ratio_numerator = Settings.PAL ? APU_NUMERATOR_PAL : APU_NUMERATOR_NTSC;
 	spc::ratio_denominator = Settings.PAL ? APU_DENOMINATOR_PAL : APU_DENOMINATOR_NTSC;
-	spc::ratio_denominator = spc::ratio_denominator * spc::timing_hack_denominator / spc::timing_hack_numerator;
+	spc::ratio_denominator = spc::ratio_denominator * spc::timing_hack_denominator / spc::timing_hack_numerator; //ragnarok
 
 	UpdatePlaybackRate();
 }

@@ -181,7 +181,7 @@
 #include "controls.h"
 #include "crosshairs.h"
 #include "cheats.h"
-#ifdef MOVIE
+#ifdef MOVIE_SUPPORT
 #include "movie.h"
 #endif
 #include "screenshot.h"
@@ -2181,7 +2181,7 @@ void S9xDisplayMessages (uint16 *screen, int ppl, int width, int height, int sca
 
 	if (Settings.DisplayPressedKeys)
 		DisplayPressedKeys();
-#ifdef MOVIE
+#ifdef MOVIE_SUPPORT
 	if (Settings.DisplayMovieFrame && S9xMovieActive())
 		S9xDisplayString(GFX.FrameDisplayString, 1, 1, false);
 #endif

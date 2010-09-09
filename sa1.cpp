@@ -361,7 +361,9 @@ uint8 S9xGetSA1 (uint32 address)
 		}
 
 		default:
+		#ifdef DEBUGGER
 			printf("R: %04x\n", address);
+		#endif
 			break;
 	}
 
@@ -610,7 +612,7 @@ void S9xSetSA1 (uint8 byte, uint32 address)
 			printf("DMA priority %s\n", (byte & 0x40) ? "DMA" : "SA1");
 			printf("DMA %s\n", (byte & 0x20) ? "char conv" : "normal");
 			printf("DMA type %s\n", (byte & 0x10) ? "BW-RAM -> I-RAM" : "SA1 -> I-RAM");
-			printf("DMA distination %s\n", (byte & 4) ? "BW-RAM" : "I-RAM");
+			printf("DMA destination %s\n", (byte & 4) ? "BW-RAM" : "I-RAM");
 			printf("DMA source %s\n", DMAsource[byte & 3]);
 		#endif
 			break;

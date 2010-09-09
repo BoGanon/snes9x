@@ -59,7 +59,7 @@ SNES_SPC::Timer* SNES_SPC::run_timer_( Timer* t, rel_time_t time )
 		int over = elapsed - remain;
 		if ( over >= 0 )
 		{
-			int n = over / t->period;
+			int n = over / t->period; //ragnarok
 			t->counter = (t->counter + 1 + n) & 0x0F;
 			divider = over - n * t->period;
 		}
@@ -333,7 +333,7 @@ void SNES_SPC::cpu_write_smp_reg_( int data, rel_time_t time, int addr )
 		if ( !SPC_MORE_ACCURACY )
 			dprintf( "SPC wrote to counter %d\n", (int) addr - r_t0out );
 		
-		if ( data < no_read_before_write  / 2 )
+		if ( data < no_read_before_write  / 2 ) //ragnarok
 			run_timer( &m.timers [addr - r_t0out], time - 1 )->counter = 0;
 		break;
 	

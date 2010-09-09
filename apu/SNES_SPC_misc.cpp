@@ -97,7 +97,7 @@ void SNES_SPC::set_tempo( int t )
 			t = 1;
 		int const timer2_rate  = 1 << timer2_shift;
 		int rate = (timer2_rate * tempo_unit + (t >> 1)) / t;
-		if ( rate < timer2_rate / 4 )
+		if ( rate < timer2_rate / 4 ) //ragnarok
 			rate = timer2_rate / 4; // max 4x tempo
 		m.timers [2].prescaler = rate;
 		m.timers [1].prescaler = rate << other_shift;
@@ -271,7 +271,7 @@ void SNES_SPC::reset_buf()
 {
 	// Start with half extra buffer of silence
 	sample_t* out = m.extra_buf;
-	while ( out < &m.extra_buf [extra_size / 2] )
+	while ( out < &m.extra_buf [extra_size / 2] )//ragnarok
 		*out++ = 0;
 	
 	m.extra_pos = out;
@@ -346,7 +346,7 @@ blargg_err_t SNES_SPC::play( int count, sample_t* out )
 	if ( count )
 	{
 		set_output( out, count );
-		end_frame( count * (clocks_per_sample / 2) );
+		end_frame( count * (clocks_per_sample / 2) );//ragnarok
 	}
 	
 	const char* err = m.cpu_error;
