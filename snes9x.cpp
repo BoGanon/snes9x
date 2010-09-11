@@ -913,10 +913,8 @@ char * S9xParseArgs (char **argv, int argc)
 			{
 				// Do nothing, S9xLoadConfigFiles() handled it.
 			}
-#ifndef _EE
 			else
 				S9xParseArg(argv, i, argc);
-#endif
 		}
 		else
 			rom_filename = argv[i];
