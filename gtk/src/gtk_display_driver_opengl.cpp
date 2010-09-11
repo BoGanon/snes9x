@@ -786,7 +786,7 @@ S9xOpenGLDisplayDriver::init_glx (void)
 {
     int glx_attribs[] = { GLX_RGBA, GLX_DOUBLEBUFFER, None };
 
-    display = GDK_DISPLAY ();
+    display = GDK_DISPLAY_XDISPLAY (gdk_display_get_default ());
 
     vi = glXChooseVisual (display, DefaultScreen (display), glx_attribs);
 
@@ -990,8 +990,9 @@ int
 S9xOpenGLDisplayDriver::query_availability (void)
 {
     int errorBase, eventBase;
+    Display *display = GDK_DISPLAY_XDISPLAY (gdk_display_get_default ());
 
-    if (glXQueryExtension (GDK_DISPLAY (), &errorBase, &eventBase) == False)
+    if (glXQueryExtension (display, &errorBase, &eventBase) == False)
     {
         if (gui_config->hw_accel == HWA_OPENGL)
             gui_config->hw_accel = HWA_NONE;

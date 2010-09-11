@@ -1499,7 +1499,7 @@ Snes9xWindow::reset_screensaver (void)
     if (!focused)
         return;
 
-    XResetScreenSaver (GDK_DISPLAY ());
+    XResetScreenSaver (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()));
 
     config->screensaver_needs_reset = FALSE;
 
@@ -1711,7 +1711,6 @@ Snes9xWindow::draw_background (int rect_x, int rect_y, int rect_w, int rect_h)
                      (h - gdk_pixbuf_get_height (splash)) / 2,
                      gdk_pixbuf_get_width (splash),
                      gdk_pixbuf_get_height (splash));
-    cairo_clip_preserve (cr);
     cairo_fill (cr);
 
     cairo_pattern_destroy (pattern);

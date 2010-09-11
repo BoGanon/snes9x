@@ -124,7 +124,6 @@ S9xGTKDisplayDriver::output (void *src,
     gdk_cairo_set_source_pixbuf (cr, pixbuf, x, y);
 
     cairo_rectangle (cr, x, y, dst_width, dst_height);
-    cairo_clip_preserve (cr);
     cairo_fill (cr);
     cairo_destroy (cr);
 
@@ -236,7 +235,6 @@ S9xGTKDisplayDriver::clear (void)
         cairo_rectangle (cr, 0, y + h, width, height - (y + h));
     }
 
-    cairo_clip_preserve (cr);
     cairo_fill (cr);
     cairo_destroy (cr);
 

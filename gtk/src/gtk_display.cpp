@@ -71,7 +71,7 @@ S9xGetAspect (void)
 
 void
 S9xApplyAspect (int &s_width,  /* Output: x */
-                int &s_height, /* Output: y */ 
+                int &s_height, /* Output: y */
                 int &d_width,  /* Output: width */
                 int &d_height) /* Output: height */
 {
@@ -126,12 +126,12 @@ S9xApplyAspect (int &s_width,  /* Output: x */
         w = d_width;
         h = d_height;
     }
-    
+
     s_width = x;
     s_height = y;
     d_width = w;
     d_height = h;
-    
+
     return;
 }
 
@@ -1522,17 +1522,17 @@ internal_threaded_filter (uint8 *src_buffer,
     for (i = 0; i < gui_config->num_threads - 1; i++)
     {
         job[i].operation_type = JOB_FILTER;
-        job[i].complete = 0;        
+        job[i].complete = 0;
         job[i].width = width;
         job[i].src_pitch = src_pitch;
         job[i].dst_pitch = dst_pitch;
         job[i].src_buffer = src_buffer + (src_pitch * src_coverage);
         job[i].dst_buffer = dst_buffer + (dst_pitch * dst_coverage);
-        
+
         job[i].height = (height / gui_config->num_threads) & ~3; /* Cut to multiple of 4 */
         src_coverage += job[i].height;
         dst_coverage += job[i].height * height_scale;
-        
+
 
         g_thread_pool_push (pool, (gpointer) &(job[i]), NULL);
     }
@@ -1543,7 +1543,7 @@ internal_threaded_filter (uint8 *src_buffer,
     job[i].dst_pitch = dst_pitch;
     job[i].src_buffer = src_buffer + (src_pitch * src_coverage);
     job[i].dst_buffer = dst_buffer + (dst_pitch * dst_coverage);
-    
+
     job[i].height = height - src_coverage;
 
     thread_worker ((gpointer) &(job[i]), NULL);
@@ -1768,10 +1768,11 @@ S9xQueryDrivers (void)
 
 #ifdef USE_XRANDR
     int error_base_p, event_base_p;
+    Display *display = GDK_DISPLAY_XDISPLAY (gdk_display_get_default ());
 
     gui_config->allow_xrandr = 1;
 
-    if (!XRRQueryExtension (GDK_DISPLAY (), &event_base_p, &error_base_p))
+    if (!XRRQueryExtension (display, &event_base_p, &error_base_p))
     {
         gui_config->allow_xrandr = 0;
         gui_config->change_display_resolution = FALSE;
@@ -1779,8 +1780,8 @@ S9xQueryDrivers (void)
 
     if (gui_config->allow_xrandr)
     {
-        gui_config->xrr_config = XRRGetScreenInfo (GDK_DISPLAY (),
-                                               DefaultRootWindow (GDK_DISPLAY ()));
+        gui_config->xrr_config = XRRGetScreenInfo (display,
+                                                   DefaultRootWindow (display));
         gui_config->xrr_original_size =
             XRRConfigCurrentConfiguration (gui_config->xrr_config,
                                            &(gui_config->xrr_rotation));
@@ -1891,7 +1892,7 @@ S9xInitDisplay (int argc, char **argv)
 #ifdef USE_HQ2X
     S9xBlitHQ2xFilterInit ();
 #endif /* USE_HQ2SX */
-    
+
     S9xQueryDrivers ();
     S9xInitDriver ();
     S9xGraphicsInit ();

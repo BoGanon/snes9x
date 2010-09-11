@@ -162,6 +162,13 @@ S9xGetDirectory (enum s9x_getdirtype dirtype)
             path[0] = '\0';
     }
 
+    /* Try and mkdir, whether it exists or not */
+    if (dirtype != HOME_DIR && path[0] != '\0')
+    {
+        mkdir (path, 0755);
+        chmod (path, 0755);
+    }
+
     /* Anything else, use ROM filename path */
     if (path[0] == '\0')
     {
@@ -182,13 +189,6 @@ S9xGetDirectory (enum s9x_getdirtype dirtype)
             {
                 path[loc - path] = '\0';
             }
-    }
-
-    /* Try and mkdir, whether it exists or not */
-    if (dirtype != HOME_DIR && path[0] != '\0')
-    {
-        mkdir (path, 0755);
-        chmod (path, 0755);
     }
 
     return path;
