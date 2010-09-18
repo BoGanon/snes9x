@@ -130,7 +130,7 @@ SNES9X_OBJS += \
 endif
 
 INTERFACE_OBJS = \
-    interface/src/config.o \
+    interface/src/cfg.o \
     interface/src/gui.o \
     interface/src/gzip.o \
     interface/src/hdd.o \
@@ -143,7 +143,7 @@ INTERFACE_INCS = \
 
 EE_BIN = snes9x.elf
 
-EE_OBJS = ps2_snes9x.o $(INTERFACE_OBJS) $(SNES9X_OBJS)
+EE_OBJS = ps2_snes9x.o snes9x_cfg.o $(INTERFACE_OBJS) $(SNES9X_OBJS)
 
 EE_CFLAGS = $(SNES9X_FLAGS)
 EE_CXXFLAGS = $(SNES9X_FLAGS) -fno-exceptions -fno-rtti

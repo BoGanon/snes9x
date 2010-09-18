@@ -9,12 +9,14 @@
 
 // Ported headers
 #include <zlib.h>
+#include <libconfig.h>
 
 // Settings
 #if 0
 #include <settings.h>
 #endif
 
+#include <init.h>
 #include <paths.h>
 
 // Snes9x headers
@@ -23,8 +25,9 @@
 #include <memmap.h>
 #include <apu.h>
 #include <controls.h>
-#include <conffile.h>
 
+
+#include <snes9x_cfg.h>
 
 unsigned int palette[256];
 
@@ -38,14 +41,31 @@ settings_t *settings;
 
 int main(int argc, char **argv)
 {
+
+	config_t *cfg;
+
+	init_bios_modules();
+
+	S9xInitSettings();
+
+	cfg = cfg_open("mc0:/SYS-CONF/snes9x.cfg");
+
+	S9xParseCFG(cfg);
+
+	cfg_close(cfg);
+
+	S9xSaveSettingsToCFG("mc0:/SYS-CONF/snes9x.cfg");
+
 	return 0;
 }
 
 // conffile.h
+#ifdef CONFFILE_SUPPORT
 void S9xParsePortConfig(ConfigFile &, int pass)
 {
-	
+	return;
 }
+#endif
 
 // controls.h
 void S9xHandlePortCommand (s9xcommand_t cmd, int16 data1, int16 data2)
