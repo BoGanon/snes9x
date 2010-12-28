@@ -376,8 +376,8 @@ static void C4ConvOAM (void)
 
 		for (int i = Memory.C4RAM[0x0620]; i > 0 && SprCount > 0; i--, srcptr += 16)
 		{
-			SprX = READ_WORD(srcptr)     - globalX;
-			SprY = READ_WORD(srcptr + 2) - globalY;
+			SprX = READ_WORD_ALIGNED(srcptr)     - globalX;
+			SprY = READ_WORD_ALIGNED(srcptr + 2) - globalY;
 			SprName = srcptr[5];
 			SprAttr = srcptr[4] | srcptr[0x06]; // XXX: mask bits?
 
@@ -458,11 +458,11 @@ static void C4DoScaleRotate (int row_padding)
 	if (XScale & 0x8000)
 		XScale = 0x7fff;
 
-	int32	YScale = READ_WORD(Memory.C4RAM + 0x1f92);
+	int32	YScale = READ_WORD_ALIGNED(Memory.C4RAM + 0x1f92);
 	if (YScale & 0x8000)
 		YScale = 0x7fff;
 
-	if (READ_WORD(Memory.C4RAM + 0x1f80) == 0)		// no rotation
+	if (READ_WORD_ALIGNED(Memory.C4RAM + 0x1f80) == 0)		// no rotation
 	{
 		// XXX: only do this for C and D?
 		// XXX: and then only when YScale is 0x1000?
@@ -472,7 +472,7 @@ static void C4DoScaleRotate (int row_padding)
 		D = (int16) YScale;
 	}
 	else
-	if (READ_WORD(Memory.C4RAM + 0x1f80) == 128)	// 90 degree rotation
+	if (READ_WORD_ALIGNED(Memory.C4RAM + 0x1f80) == 128)	// 90 degree rotation
 	{
 		// XXX: Really do this?
 		A = 0;
@@ -481,7 +481,7 @@ static void C4DoScaleRotate (int row_padding)
 		D = 0;
 	}
 	else
-	if (READ_WORD(Memory.C4RAM + 0x1f80) == 256)	// 180 degree rotation
+	if (READ_WORD_ALIGNED(Memory.C4RAM + 0x1f80) == 256)	// 180 degree rotation
 	{
 		// XXX: Really do this?
 		A = (int16) (-XScale);
@@ -490,7 +490,7 @@ static void C4DoScaleRotate (int row_padding)
 		D = (int16) (-YScale);
 	}
 	else
-	if (READ_WORD(Memory.C4RAM + 0x1f80) == 384)	// 270 degree rotation
+	if (READ_WORD_ALIGNED(Memory.C4RAM + 0x1f80) == 384)	// 270 degree rotation
 	{
 		// XXX: Really do this?
 		A = 0;
@@ -500,10 +500,10 @@ static void C4DoScaleRotate (int row_padding)
 	}
 	else
 	{
-		A = (int16)   SAR(C4CosTable[READ_WORD(Memory.C4RAM + 0x1f80) & 0x1ff] * XScale, 15);
-		B = (int16) (-SAR(C4SinTable[READ_WORD(Memory.C4RAM + 0x1f80) & 0x1ff] * YScale, 15));
-		C = (int16)   SAR(C4SinTable[READ_WORD(Memory.C4RAM + 0x1f80) & 0x1ff] * XScale, 15);
-		D = (int16)   SAR(C4CosTable[READ_WORD(Memory.C4RAM + 0x1f80) & 0x1ff] * YScale, 15);
+		A = (int16)   SAR(C4CosTable[READ_WORD_ALIGNED(Memory.C4RAM + 0x1f80) & 0x1ff] * XScale, 15);
+		B = (int16) (-SAR(C4SinTable[READ_WORD_ALIGNED(Memory.C4RAM + 0x1f80) & 0x1ff] * YScale, 15));
+		C = (int16)   SAR(C4SinTable[READ_WORD_ALIGNED(Memory.C4RAM + 0x1f80) & 0x1ff] * XScale, 15);
+		D = (int16)   SAR(C4CosTable[READ_WORD_ALIGNED(Memory.C4RAM + 0x1f80) & 0x1ff] * YScale, 15);
 	}
 
 	// Calculate Pixel Resolution
@@ -518,7 +518,7 @@ static void C4DoScaleRotate (int row_padding)
 	memset(Memory.C4RAM, 0, (w + row_padding / 4) * h / 2);
 
 	int32	Cx = (int16) READ_WORD(Memory.C4RAM + 0x1f83);
-	int32	Cy = (int16) READ_WORD(Memory.C4RAM + 0x1f86);
+	int32	Cy = (int16) READ_WORD_ALIGNED(Memory.C4RAM + 0x1f86);
 
 #ifdef DEBUGGER
 	if (Memory.C4RAM[0x1f97] != 0)
@@ -696,7 +696,7 @@ static void C4TransformLines (void)
 	// Transform vertices
 	uint8	*ptr = Memory.C4RAM;
 
-	for (int i = READ_WORD(Memory.C4RAM + 0x1f80); i > 0; i--, ptr += 0x10)
+	for (int i = READ_WORD_ALIGNED(Memory.C4RAM + 0x1f80); i > 0; i--, ptr += 0x10)
 	{
 		C4WFXVal = READ_WORD(ptr + 1);
 		C4WFYVal = READ_WORD(ptr + 5);
@@ -708,26 +708,26 @@ static void C4TransformLines (void)
 		WRITE_WORD(ptr + 5, C4WFYVal + 0x50);
 	}
 
-	WRITE_WORD(Memory.C4RAM + 0x600,       23);
-	WRITE_WORD(Memory.C4RAM + 0x602,     0x60);
-	WRITE_WORD(Memory.C4RAM + 0x605,     0x40);
-	WRITE_WORD(Memory.C4RAM + 0x600 + 8,   23);
-	WRITE_WORD(Memory.C4RAM + 0x602 + 8, 0x60);
+	WRITE_WORD_ALIGNED(Memory.C4RAM + 0x600,       23);
+	WRITE_WORD_ALIGNED(Memory.C4RAM + 0x602,     0x60);
+	WRITE_WORD_ALIGNED(Memory.C4RAM + 0x605,     0x40);
+	WRITE_WORD_ALIGNED(Memory.C4RAM + 0x600 + 8,   23);
+	WRITE_WORD_ALIGNED(Memory.C4RAM + 0x602 + 8, 0x60);
 	WRITE_WORD(Memory.C4RAM + 0x605 + 8, 0x40);
 
 	ptr = Memory.C4RAM + 0xb02;
 	uint8	*ptr2 = Memory.C4RAM;
 
-	for (int i = READ_WORD(Memory.C4RAM + 0xb00); i > 0; i--, ptr += 2, ptr2 += 8)
+	for (int i = READ_WORD_ALIGNED(Memory.C4RAM + 0xb00); i > 0; i--, ptr += 2, ptr2 += 8)
 	{
-		C4WFXVal  = READ_WORD(Memory.C4RAM + (ptr[0] << 4) + 1);
-		C4WFYVal  = READ_WORD(Memory.C4RAM + (ptr[0] << 4) + 5);
-		C4WFX2Val = READ_WORD(Memory.C4RAM + (ptr[1] << 4) + 1);
-		C4WFY2Val = READ_WORD(Memory.C4RAM + (ptr[1] << 4) + 5);
+		C4WFXVal  = READ_WORD_ALIGNED(Memory.C4RAM + (ptr[0] << 4) + 1);
+		C4WFYVal  = READ_WORD_ALIGNED(Memory.C4RAM + (ptr[0] << 4) + 5);
+		C4WFX2Val = READ_WORD_ALIGNED(Memory.C4RAM + (ptr[1] << 4) + 1);
+		C4WFY2Val = READ_WORD_ALIGNED(Memory.C4RAM + (ptr[1] << 4) + 5);
 		C4CalcWireFrame();
 
-		WRITE_WORD(ptr2 + 0x600, C4WFDist ? C4WFDist : 1);
-		WRITE_WORD(ptr2 + 0x602, C4WFXVal);
+		WRITE_WORD_ALIGNED(ptr2 + 0x600, C4WFDist ? C4WFDist : 1);
+		WRITE_WORD_ALIGNED(ptr2 + 0x602, C4WFXVal);
 		WRITE_WORD(ptr2 + 0x605, C4WFYVal);
 	}
 }
@@ -765,7 +765,7 @@ static void C4BitPlaneWave (void)
 				if (height >= 0)
 				{
 					if (height < 8)
-						tmp |= mask1 & READ_WORD(Memory.C4RAM + 0xa00 + height * 2);
+						tmp |= mask1 & READ_WORD_ALIGNED(Memory.C4RAM + 0xa00 + height * 2);
 					else
 						tmp |= mask1 & 0xff00;
 				}
@@ -793,7 +793,7 @@ static void C4BitPlaneWave (void)
 				if (height >= 0)
 				{
 					if (height < 8)
-						tmp |= mask1 & READ_WORD(Memory.C4RAM + 0xa10 + height * 2);
+						tmp |= mask1 & READ_WORD_ALIGNED(Memory.C4RAM + 0xa10 + height * 2);
 					else
 						tmp |= mask1 & 0xff00;
 				}
@@ -823,7 +823,7 @@ static void C4SprDisintegrate (void)
 
 	width  = Memory.C4RAM[0x1f89];
 	height = Memory.C4RAM[0x1f8c];
-	Cx = (int16) READ_WORD(Memory.C4RAM + 0x1f80);
+	Cx = (int16) READ_WORD_ALIGNED(Memory.C4RAM + 0x1f80);
 	Cy = (int16) READ_WORD(Memory.C4RAM + 0x1f83);
 
 #ifdef DEBUGGER
@@ -831,7 +831,7 @@ static void C4SprDisintegrate (void)
 		printf("Center is not middle of image for disintegrate! (%d, %d) != (%d, %d)\n", Cx, Cy, width / 2, height / 2);
 #endif
 
-	scaleX = (int16) READ_WORD(Memory.C4RAM + 0x1f86);
+	scaleX = (int16) READ_WORD_ALIGNED(Memory.C4RAM + 0x1f86);
 	scaleY = (int16) READ_WORD(Memory.C4RAM + 0x1f8f);
 	StartX = -Cx * scaleX + (Cx << 8);
 	StartY = -Cy * scaleY + (Cy << 8);
@@ -987,7 +987,7 @@ void S9xSetC4 (uint8 byte, uint16 Address)
 					if (READ_WORD(Memory.C4RAM + 0x1f83))
 						tmp = SAR((tmp / READ_WORD(Memory.C4RAM + 0x1f83)) * READ_WORD(Memory.C4RAM + 0x1f81), 8);
 
-					WRITE_WORD(Memory.C4RAM + 0x1f80, (uint16) tmp);
+					WRITE_WORD_ALIGNED(Memory.C4RAM + 0x1f80, (uint16) tmp);
 					break;
 				}
 
@@ -997,12 +997,12 @@ void S9xSetC4 (uint8 byte, uint16 Address)
 					if (Memory.C4RAM[0x1f4d] != 2)
 						printf("$7f4d=%02x, expected 02 for command 0d %02x\n", Memory.C4RAM[0x1f4d], Memory.C4RAM[0x1f4d]);
 				#endif
-					C41FXVal    = READ_WORD(Memory.C4RAM + 0x1f80);
+					C41FXVal    = READ_WORD_ALIGNED(Memory.C4RAM + 0x1f80);
 					C41FYVal    = READ_WORD(Memory.C4RAM + 0x1f83);
-					C41FDistVal = READ_WORD(Memory.C4RAM + 0x1f86);
+					C41FDistVal = READ_WORD_ALIGNED(Memory.C4RAM + 0x1f86);
 					C4Op0D();
 					WRITE_WORD(Memory.C4RAM + 0x1f89, C41FXVal);
-					WRITE_WORD(Memory.C4RAM + 0x1f8c, C41FYVal);
+					WRITE_WORD_ALIGNED(Memory.C4RAM + 0x1f8c, C41FYVal);
 					break;
 
 				case 0x10: // Polar to rectangluar
@@ -1013,9 +1013,9 @@ void S9xSetC4 (uint8 byte, uint16 Address)
 						printf("$7f4d=%02x, expected 02 for command 10 %02x\n", Memory.C4RAM[0x1f4d], Memory.C4RAM[0x1f4d]);
 				#endif
 					int32	tmp;
-					tmp = SAR((int32) READ_WORD(Memory.C4RAM + 0x1f83) * C4CosTable[READ_WORD(Memory.C4RAM + 0x1f80) & 0x1ff] * 2, 16);
-					WRITE_3WORD(Memory.C4RAM + 0x1f86, tmp);
-					tmp = SAR((int32) READ_WORD(Memory.C4RAM + 0x1f83) * C4SinTable[READ_WORD(Memory.C4RAM + 0x1f80) & 0x1ff] * 2, 16);
+					tmp = SAR((int32) READ_WORD(Memory.C4RAM + 0x1f83) * C4CosTable[READ_WORD_ALIGNED(Memory.C4RAM + 0x1f80) & 0x1ff] * 2, 16);
+					WRITE_3WORD_ALIGNED(Memory.C4RAM + 0x1f86, tmp);
+					tmp = SAR((int32) READ_WORD(Memory.C4RAM + 0x1f83) * C4SinTable[READ_WORD_ALIGNED(Memory.C4RAM + 0x1f80) & 0x1ff] * 2, 16);
 					WRITE_3WORD(Memory.C4RAM + 0x1f89, (tmp - SAR(tmp, 6)));
 					break;
 				}
@@ -1028,9 +1028,9 @@ void S9xSetC4 (uint8 byte, uint16 Address)
 						printf("$7f4d=%02x, expected 02 for command 13 %02x\n", Memory.C4RAM[0x1f4d], Memory.C4RAM[0x1f4d]);
 				#endif
 					int32	tmp;
-					tmp = SAR((int32) READ_WORD(Memory.C4RAM + 0x1f83) * C4CosTable[READ_WORD(Memory.C4RAM + 0x1f80) & 0x1ff] * 2, 8);
-					WRITE_3WORD(Memory.C4RAM + 0x1f86, tmp);
-					tmp = SAR((int32) READ_WORD(Memory.C4RAM + 0x1f83) * C4SinTable[READ_WORD(Memory.C4RAM + 0x1f80) & 0x1ff] * 2, 8);
+					tmp = SAR((int32) READ_WORD(Memory.C4RAM + 0x1f83) * C4CosTable[READ_WORD_ALIGNED(Memory.C4RAM + 0x1f80) & 0x1ff] * 2, 8);
+					WRITE_3WORD_ALIGNED(Memory.C4RAM + 0x1f86, tmp);
+					tmp = SAR((int32) READ_WORD(Memory.C4RAM + 0x1f83) * C4SinTable[READ_WORD_ALIGNED(Memory.C4RAM + 0x1f80) & 0x1ff] * 2, 8);
 					WRITE_3WORD(Memory.C4RAM + 0x1f89, tmp);
 					break;
 				}
@@ -1041,11 +1041,11 @@ void S9xSetC4 (uint8 byte, uint16 Address)
 					if (Memory.C4RAM[0x1f4d] != 2)
 						printf("$7f4d=%02x, expected 02 for command 15 %02x\n", Memory.C4RAM[0x1f4d], Memory.C4RAM[0x1f4d]);
 				#endif
-					C41FXVal = READ_WORD(Memory.C4RAM + 0x1f80);
+					C41FXVal = READ_WORD_ALIGNED(Memory.C4RAM + 0x1f80);
 					C41FYVal = READ_WORD(Memory.C4RAM + 0x1f83);
 					//C4Op15(); // optimized to:
 					C41FDist = (int16) sqrt((double) C41FXVal * C41FXVal + (double) C41FYVal * C41FYVal);
-					WRITE_WORD(Memory.C4RAM + 0x1f80, C41FDist);
+					WRITE_WORD_ALIGNED(Memory.C4RAM + 0x1f80, C41FDist);
 					break;
 
 				case 0x1f: // atan
@@ -1054,10 +1054,10 @@ void S9xSetC4 (uint8 byte, uint16 Address)
 					if (Memory.C4RAM[0x1f4d] != 2)
 						printf("$7f4d=%02x, expected 02 for command 1f %02x\n", Memory.C4RAM[0x1f4d], Memory.C4RAM[0x1f4d]);
 				#endif
-					C41FXVal = READ_WORD(Memory.C4RAM + 0x1f80);
+					C41FXVal = READ_WORD_ALIGNED(Memory.C4RAM + 0x1f80);
 					C41FYVal = READ_WORD(Memory.C4RAM + 0x1f83);
 					C4Op1F();
-					WRITE_WORD(Memory.C4RAM + 0x1f86, C41FAngleRes);
+					WRITE_WORD_ALIGNED(Memory.C4RAM + 0x1f86, C41FAngleRes);
 					break;
 
 				case 0x22: // Trapezoid
@@ -1067,7 +1067,7 @@ void S9xSetC4 (uint8 byte, uint16 Address)
 					if (Memory.C4RAM[0x1f4d] != 2)
 						printf("$7f4d=%02x, expected 02 for command 22 %02x\n", Memory.C4RAM[0x1f4d], Memory.C4RAM[0x1f4d]);
 				#endif
-					int16	angle1 = READ_WORD(Memory.C4RAM + 0x1f8c) & 0x1ff;
+					int16	angle1 = READ_WORD_ALIGNED(Memory.C4RAM + 0x1f8c) & 0x1ff;
 					int16	angle2 = READ_WORD(Memory.C4RAM + 0x1f8f) & 0x1ff;
 
 				#ifdef DEBUGGER
@@ -1087,8 +1087,8 @@ void S9xSetC4 (uint8 byte, uint16 Address)
 					{
 						if (y >= 0)
 						{
-							left  = SAR((int32) tan1 * y, 16) - READ_WORD(Memory.C4RAM + 0x1f80) + READ_WORD(Memory.C4RAM + 0x1f86);
-							right = SAR((int32) tan2 * y, 16) - READ_WORD(Memory.C4RAM + 0x1f80) + READ_WORD(Memory.C4RAM + 0x1f86) + READ_WORD(Memory.C4RAM + 0x1f93);
+							left  = SAR((int32) tan1 * y, 16) - READ_WORD_ALIGNED(Memory.C4RAM + 0x1f80) + READ_WORD_ALIGNED(Memory.C4RAM + 0x1f86);
+							right = SAR((int32) tan2 * y, 16) - READ_WORD_ALIGNED(Memory.C4RAM + 0x1f80) + READ_WORD_ALIGNED(Memory.C4RAM + 0x1f86) + READ_WORD(Memory.C4RAM + 0x1f93);
 
 							if (left < 0 && right < 0)
 							{
@@ -1136,10 +1136,10 @@ void S9xSetC4 (uint8 byte, uint16 Address)
 					if (Memory.C4RAM[0x1f4d] != 2)
 						printf("$7f4d=%02x, expected 02 for command 25 %02x\n", Memory.C4RAM[0x1f4d], Memory.C4RAM[0x1f4d]);
 				#endif
-					int32	foo = READ_3WORD(Memory.C4RAM + 0x1f80);
+					int32	foo = READ_3WORD_ALIGNED(Memory.C4RAM + 0x1f80);
 					int32	bar = READ_3WORD(Memory.C4RAM + 0x1f83);
 					foo *= bar;
-					WRITE_3WORD(Memory.C4RAM + 0x1f80, foo);
+					WRITE_3WORD_ALIGNED(Memory.C4RAM + 0x1f80, foo);
 					break;
 				}
 
@@ -1150,18 +1150,18 @@ void S9xSetC4 (uint8 byte, uint16 Address)
 						printf("$7f4d=%02x, expected 02 for command 2d %02x\n", Memory.C4RAM[0x1f4d], Memory.C4RAM[0x1f4d]);
 					if (READ_3WORD(Memory.C4RAM + 0x1f8f) & 0xff00ff)
 						printf("2d transform coords: Unexpected value in $7f8f: %06x\n", READ_3WORD(Memory.C4RAM + 0x1f8f));
-					if (READ_3WORD(Memory.C4RAM + 0x1f8c) != 0x001000)
+					if (READ_3WORD_ALIGNED(Memory.C4RAM + 0x1f8c) != 0x001000)
 						printf("0d transform coords: Unexpected value in $7f8c: %06x\n", READ_3WORD(Memory.C4RAM + 0x1f8c));
 				#endif
 					C4WFXVal  = READ_WORD(Memory.C4RAM + 0x1f81);
-					C4WFYVal  = READ_WORD(Memory.C4RAM + 0x1f84);
+					C4WFYVal  = READ_WORD_ALIGNED(Memory.C4RAM + 0x1f84);
 					C4WFZVal  = READ_WORD(Memory.C4RAM + 0x1f87);
 					C4WFX2Val = Memory.C4RAM[0x1f89];
 					C4WFY2Val = Memory.C4RAM[0x1f8a];
 					C4WFDist  = Memory.C4RAM[0x1f8b];
-					C4WFScale = READ_WORD(Memory.C4RAM + 0x1f90);
+					C4WFScale = READ_WORD_ALIGNED(Memory.C4RAM + 0x1f90);
 					C4TransfWireFrame2();
-					WRITE_WORD(Memory.C4RAM + 0x1f80, C4WFXVal);
+					WRITE_WORD_ALIGNED(Memory.C4RAM + 0x1f80, C4WFXVal);
 					WRITE_WORD(Memory.C4RAM + 0x1f83, C4WFYVal);
 					break;
 
@@ -1174,7 +1174,7 @@ void S9xSetC4 (uint8 byte, uint16 Address)
 				#endif
 					uint16	sum = 0;
 					for (int i = 0; i < 0x800; sum += Memory.C4RAM[i++]) ;
-					WRITE_WORD(Memory.C4RAM + 0x1f80, sum);
+					WRITE_WORD_ALIGNED(Memory.C4RAM + 0x1f80, sum);
 					break;
 				}
 
@@ -1185,7 +1185,7 @@ void S9xSetC4 (uint8 byte, uint16 Address)
 					if (Memory.C4RAM[0x1f4d] != 0x0e)
 						printf("$7f4d=%02x, expected 0e for command 54 %02x\n", Memory.C4RAM[0x1f4d], Memory.C4RAM[0x1f4d]);
 				#endif
-					int64	a = SAR((int64) READ_3WORD(Memory.C4RAM + 0x1f80) << 40, 40);
+					int64	a = SAR((int64) READ_3WORD_ALIGNED(Memory.C4RAM + 0x1f80) << 40, 40);
 					//printf("%08X%08X\n", (uint32) (a>>32), (uint32) (a&0xFFFFFFFF));
 					a *= a;
 					//printf("%08X%08X\n", (uint32) (a>>32), (uint32) (a&0xFFFFFFFF));
@@ -1233,6 +1233,6 @@ void S9xSetC4 (uint8 byte, uint16 Address)
 		if (READ_WORD(Memory.C4RAM + 0x1f45) < 0x6000 || (READ_WORD(Memory.C4RAM + 0x1f45) + READ_WORD(Memory.C4RAM + 0x1f43)) > 0x6c00)
 			printf("C4 load: Dest unusual! It's %04x\n", READ_WORD(Memory.C4RAM + 0x1f45));
 	#endif
-		memmove(Memory.C4RAM + (READ_WORD(Memory.C4RAM + 0x1f45) & 0x1fff), C4GetMemPointer(READ_3WORD(Memory.C4RAM + 0x1f40)), READ_WORD(Memory.C4RAM + 0x1f43));
+		memmove(Memory.C4RAM + (READ_WORD(Memory.C4RAM + 0x1f45) & 0x1fff), C4GetMemPointer(READ_3WORD_ALIGNED(Memory.C4RAM + 0x1f40)), READ_WORD(Memory.C4RAM + 0x1f43));
 	}
 }

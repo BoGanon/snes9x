@@ -3236,9 +3236,9 @@ void S9xDoAutoJoypad (void)
 				for (i = 0; i < 2; i++, j++)
 				{
 					if (mp5[n].pads[j] == NONE)
-						WRITE_WORD(Memory.FillRAM + 0x4218 + n * 2 + i * 4, 0);
+						WRITE_WORD_ALIGNED(Memory.FillRAM + 0x4218 + n * 2 + i * 4, 0);
 					else
-						WRITE_WORD(Memory.FillRAM + 0x4218 + n * 2 + i * 4, joypad[mp5[n].pads[j] - JOYPAD0].buttons);
+						WRITE_WORD_ALIGNED(Memory.FillRAM + 0x4218 + n * 2 + i * 4, joypad[mp5[n].pads[j] - JOYPAD0].buttons);
 				}
 
 				read_idx[n][FLAG_IOBIT(n) ? 0 : 1] = 16;
@@ -3253,15 +3253,15 @@ void S9xDoAutoJoypad (void)
 			case JOYPAD6:
 			case JOYPAD7:
 				read_idx[n][0] = 16;
-				WRITE_WORD(Memory.FillRAM + 0x4218 + n * 2, joypad[i - JOYPAD0].buttons);
-				WRITE_WORD(Memory.FillRAM + 0x421c + n * 2, 0);
+				WRITE_WORD_ALIGNED(Memory.FillRAM + 0x4218 + n * 2, joypad[i - JOYPAD0].buttons);
+				WRITE_WORD_ALIGNED(Memory.FillRAM + 0x421c + n * 2, 0);
 				break;
 
 			case MOUSE0:
 			case MOUSE1:
 				read_idx[n][0] = 16;
-				WRITE_WORD(Memory.FillRAM + 0x4218 + n * 2, mouse[i - MOUSE0].buttons);
-				WRITE_WORD(Memory.FillRAM + 0x421c + n * 2, 0);
+				WRITE_WORD_ALIGNED(Memory.FillRAM + 0x4218 + n * 2, mouse[i - MOUSE0].buttons);
+				WRITE_WORD_ALIGNED(Memory.FillRAM + 0x421c + n * 2, 0);
 				break;
 
 			case SUPERSCOPE:
@@ -3274,13 +3274,13 @@ void S9xDoAutoJoypad (void)
 			case ONE_JUSTIFIER:
 			case TWO_JUSTIFIERS:
 				read_idx[n][0] = 16;
-				WRITE_WORD(Memory.FillRAM + 0x4218 + n * 2, 0x000e);
-				WRITE_WORD(Memory.FillRAM + 0x421c + n * 2, 0);
+				WRITE_WORD_ALIGNED(Memory.FillRAM + 0x4218 + n * 2, 0x000e);
+				WRITE_WORD_ALIGNED(Memory.FillRAM + 0x421c + n * 2, 0);
 				break;
 
 			default:
-				WRITE_WORD(Memory.FillRAM + 0x4218 + n * 2, 0);
-				WRITE_WORD(Memory.FillRAM + 0x421c + n * 2, 0);
+				WRITE_WORD_ALIGNED(Memory.FillRAM + 0x4218 + n * 2, 0);
+				WRITE_WORD_ALIGNED(Memory.FillRAM + 0x421c + n * 2, 0);
 				break;
 		}
 	}

@@ -795,10 +795,10 @@ void S9xSetPPU (uint8 Byte, uint16 Address)
 					uint32 addr = PPU.VMA.Address;
 					uint32 rem = addr & PPU.VMA.Mask1;
 					uint32 address = (addr & ~PPU.VMA.Mask1) + (rem >> PPU.VMA.Shift) + ((rem & (PPU.VMA.FullGraphicCount - 1)) << 3);
-					IPPU.VRAMReadBuffer = READ_WORD(Memory.VRAM + ((address << 1) & 0xffff));
+					IPPU.VRAMReadBuffer = READ_WORD_ALIGNED(Memory.VRAM + ((address << 1) & 0xffff));
 				}
 				else
-					IPPU.VRAMReadBuffer = READ_WORD(Memory.VRAM + ((PPU.VMA.Address << 1) & 0xffff));
+					IPPU.VRAMReadBuffer = READ_WORD_ALIGNED(Memory.VRAM + ((PPU.VMA.Address << 1) & 0xffff));
 			#else
 				IPPU.FirstVRAMRead = TRUE;
 			#endif
@@ -813,10 +813,10 @@ void S9xSetPPU (uint8 Byte, uint16 Address)
 					uint32 addr = PPU.VMA.Address;
 					uint32 rem = addr & PPU.VMA.Mask1;
 					uint32 address = (addr & ~PPU.VMA.Mask1) + (rem >> PPU.VMA.Shift) + ((rem & (PPU.VMA.FullGraphicCount - 1)) << 3);
-					IPPU.VRAMReadBuffer = READ_WORD(Memory.VRAM + ((address << 1) & 0xffff));
+					IPPU.VRAMReadBuffer = READ_WORD_ALIGNED(Memory.VRAM + ((address << 1) & 0xffff));
 				}
 				else
-					IPPU.VRAMReadBuffer = READ_WORD(Memory.VRAM + ((PPU.VMA.Address << 1) & 0xffff));
+					IPPU.VRAMReadBuffer = READ_WORD_ALIGNED(Memory.VRAM + ((PPU.VMA.Address << 1) & 0xffff));
 			#else
 				IPPU.FirstVRAMRead = TRUE;
 			#endif
@@ -1393,10 +1393,10 @@ uint8 S9xGetPPU (uint16 Address)
 						uint32 addr = PPU.VMA.Address;
 						uint32 rem = addr & PPU.VMA.Mask1;
 						uint32 address = (addr & ~PPU.VMA.Mask1) + (rem >> PPU.VMA.Shift) + ((rem & (PPU.VMA.FullGraphicCount - 1)) << 3);
-						IPPU.VRAMReadBuffer = READ_WORD(Memory.VRAM + ((address << 1) & 0xffff));
+						IPPU.VRAMReadBuffer = READ_WORD_ALIGNED(Memory.VRAM + ((address << 1) & 0xffff));
 					}
 					else
-						IPPU.VRAMReadBuffer = READ_WORD(Memory.VRAM + ((PPU.VMA.Address << 1) & 0xffff));
+						IPPU.VRAMReadBuffer = READ_WORD_ALIGNED(Memory.VRAM + ((PPU.VMA.Address << 1) & 0xffff));
 
 					PPU.VMA.Address += PPU.VMA.Increment;
 				}
@@ -1435,10 +1435,10 @@ uint8 S9xGetPPU (uint16 Address)
 						uint32 addr = PPU.VMA.Address;
 						uint32 rem = addr & PPU.VMA.Mask1;
 						uint32 address = (addr & ~PPU.VMA.Mask1) + (rem >> PPU.VMA.Shift) + ((rem & (PPU.VMA.FullGraphicCount - 1)) << 3);
-						IPPU.VRAMReadBuffer = READ_WORD(Memory.VRAM + ((address << 1) & 0xffff));
+						IPPU.VRAMReadBuffer = READ_WORD_ALIGNED(Memory.VRAM + ((address << 1) & 0xffff));
 					}
 					else
-						IPPU.VRAMReadBuffer = READ_WORD(Memory.VRAM + ((PPU.VMA.Address << 1) & 0xffff));
+						IPPU.VRAMReadBuffer = READ_WORD_ALIGNED(Memory.VRAM + ((PPU.VMA.Address << 1) & 0xffff));
 
 					PPU.VMA.Address += PPU.VMA.Increment;
 				}

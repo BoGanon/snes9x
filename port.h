@@ -348,7 +348,7 @@ void WinDisplayStringFromBottom(const char *string, int linesFromBottom, int pix
 
 #if defined(__i386__) || defined(__i486__) || defined(__i586__) || defined(__i686__) || defined(__x86_64__) || defined(__alpha__) || defined(__MIPSEL__) || defined(_M_IX86)
 #define LSB_FIRST
-#define FAST_LSB_WORD_ACCESS
+//#define FAST_LSB_WORD_ACCESS
 #else
 #define MSB_FIRST
 #endif
@@ -361,13 +361,29 @@ void WinDisplayStringFromBottom(const char *string, int linesFromBottom, int pix
 #define WRITE_3WORD(s, d)	*(uint16 *) (s) = (uint16) (d), *((uint8 *) (s) + 2) = (uint8) ((d) >> 16)
 #define WRITE_DWORD(s, d)	*(uint32 *) (s) = (d)
 #else
-#define READ_WORD(s)		(*(uint8 *) (s) | (*((uint8 *) (s) + 1) << 8))
-#define READ_3WORD(s)		(*(uint8 *) (s) | (*((uint8 *) (s) + 1) << 8) | (*((uint8 *) (s) + 2) << 16))
-#define READ_DWORD(s)		(*(uint8 *) (s) | (*((uint8 *) (s) + 1) << 8) | (*((uint8 *) (s) + 2) << 16) | (*((uint8 *) (s) + 3) << 24))
-#define WRITE_WORD(s, d)	*(uint8 *) (s) = (uint8) (d), *((uint8 *) (s) + 1) = (uint8) ((d) >> 8)
-#define WRITE_3WORD(s, d)	*(uint8 *) (s) = (uint8) (d), *((uint8 *) (s) + 1) = (uint8) ((d) >> 8), *((uint8 *) (s) + 2) = (uint8) ((d) >> 16)
-#define WRITE_DWORD(s, d)	*(uint8 *) (s) = (uint8) (d), *((uint8 *) (s) + 1) = (uint8) ((d) >> 8), *((uint8 *) (s) + 2) = (uint8) ((d) >> 16), *((uint8 *) (s) + 3) = (uint8) ((d) >> 24)
+#define READ_WORD(s)		(((uint8 *)(s))[0] | (((uint8 *)(s))[1] << 8))
+#define READ_3WORD(s)		(((uint8 *)(s))[0] | (((uint8 *)(s))[1] << 8) | (((uint8 *)(s))[2] << 16))
+#define READ_DWORD(s)		(((uint8 *)(s))[0] | (((uint8 *)(s))[1] << 8) | (((uint8 *)(s))[2] << 16) | (((uint8 *)(s))[3] << 24))
+#define WRITE_WORD(s, d)	((uint8 *)(s))[0] = (uint8)(d), ((uint8 *)(s))[1] = (uint8) ((d) >> 8)
+#define WRITE_3WORD(s, d)	((uint8 *)(s))[0] = (uint8)(d), ((uint8 *)(s))[1] = (uint8) ((d) >> 8), ((uint8 *)(s))[2] = (uint8) ((d) >> 16)
+#define WRITE_DWORD(s, d)	((uint8 *)(s))[0] = (uint8)(d), ((uint8 *)(s))[1] = (uint8) ((d) >> 8), ((uint8 *)(s))[2] = (uint8) ((d) >> 16), ((uint8 *)(s))[3] = (uint8) ((d) >> 24)
 #endif
+
+//#define READ_WORD_ALIGNED(s)		READ_WORD(s)
+//#define READ_3WORD_ALIGNED(s)		READ_3WORD(s)
+//#define READ_DWORD_ALIGNED(s)		READ_DWORD(s)
+//#define WRITE_WORD_ALIGNED(s, d)	WRITE_WORD(s,d)
+//#define WRITE_3WORD_ALIGNED(s, d)	WRITE_3WORD(s,d)
+//#define WRITE_DWORD_ALIGNED(s, d)	WRITE_DWORD(s,d)
+
+// If the memory areas are aligned to an even boundary
+// then even byte offets will be aligned
+#define READ_WORD_ALIGNED(s)		(*(uint16 *) (s))
+#define READ_3WORD_ALIGNED(s)		(*(uint32 *) (s) & 0x00ffffff)
+#define READ_DWORD_ALIGNED(s)		(*(uint32 *) (s))
+#define WRITE_WORD_ALIGNED(s, d)	*(uint16 *) (s) = (d)
+#define WRITE_3WORD_ALIGNED(s, d)	*(uint16 *) (s) = (uint16) (d), *((uint8 *) (s) + 2) = (uint8) ((d) >> 16)
+#define WRITE_DWORD_ALIGNED(s, d)	*(uint32 *) (s) = (d)
 
 #define SWAP_WORD(s)		(s) = (((s) & 0xff) <<  8) | (((s) & 0xff00) >> 8)
 #define SWAP_DWORD(s)		(s) = (((s) & 0xff) << 24) | (((s) & 0xff00) << 8) | (((s) & 0xff0000) >> 8) | (((s) & 0xff000000) >> 24)

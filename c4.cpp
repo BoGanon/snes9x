@@ -334,7 +334,7 @@ START_EXTERN_C
 
 void C4LoaDMem (char *C4RAM)
 {
-	memmove(C4RAM + (READ_WORD(C4RAM + 0x1f45) & 0x1fff), C4GetMemPointer(READ_3WORD(C4RAM + 0x1f40)), READ_WORD(C4RAM + 0x1f43));
+	memmove(C4RAM + (READ_WORD(C4RAM + 0x1f45) & 0x1fff), C4GetMemPointer(READ_3WORD_ALIGNED(C4RAM + 0x1f40)), READ_WORD(C4RAM + 0x1f43));
 }
 
 END_EXTERN_C

@@ -178,6 +178,9 @@
 #ifndef _CPUADDR_H_
 #define _CPUADDR_H_
 
+extern "C"
+{
+
 typedef enum
 {
 	NONE   = 0,
@@ -221,7 +224,7 @@ static inline uint16 Immediate16Slow (AccessMode a)
 
 static inline uint16 Immediate16 (AccessMode a)
 {
-	uint16	val = READ_WORD(CPU.PCBase + Registers.PCw);
+	uint16	val = READ_WORD(CPU.PCBase + Registers.PCw); //crash
 	if (a & READ)
 		OpenBus = (uint8) (val >> 8);
 	AddCycles(CPU.MemSpeedx2);
@@ -686,5 +689,7 @@ static inline uint32 StackRelativeIndirectIndexed (AccessMode a)		// (d,S),Y
 
 	return (addr);
 }
+
+};
 
 #endif

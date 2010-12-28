@@ -1061,26 +1061,26 @@ static void S9xDeinterleaveGD24 (int size, uint8 *base)
 
 bool8 CMemory::Init (void)
 {
-    RAM	 = (uint8 *) malloc(0x20000);
-    SRAM = (uint8 *) malloc(0x20000);
-    VRAM = (uint8 *) malloc(0x10000);
-    ROM  = (uint8 *) malloc(MAX_ROM_SIZE + 0x200 + 0x8000);
+	RAM	 = (uint8 *) memalign(64,0x20000);
+	SRAM = (uint8 *) memalign(64,0x20000);
+	VRAM = (uint8 *) memalign(64,0x10000);
+	ROM  = (uint8 *) memalign(64,MAX_ROM_SIZE + 0x200 + 0x8000);
 
-	IPPU.TileCache[TILE_2BIT]       = (uint8 *) malloc(MAX_2BIT_TILES * 64);
-	IPPU.TileCache[TILE_4BIT]       = (uint8 *) malloc(MAX_4BIT_TILES * 64);
-	IPPU.TileCache[TILE_8BIT]       = (uint8 *) malloc(MAX_8BIT_TILES * 64);
-	IPPU.TileCache[TILE_2BIT_EVEN]  = (uint8 *) malloc(MAX_2BIT_TILES * 64);
-	IPPU.TileCache[TILE_2BIT_ODD]   = (uint8 *) malloc(MAX_2BIT_TILES * 64);
-	IPPU.TileCache[TILE_4BIT_EVEN]  = (uint8 *) malloc(MAX_4BIT_TILES * 64);
-	IPPU.TileCache[TILE_4BIT_ODD]   = (uint8 *) malloc(MAX_4BIT_TILES * 64);
+	IPPU.TileCache[TILE_2BIT]       = (uint8 *) memalign(64,MAX_2BIT_TILES * 64);
+	IPPU.TileCache[TILE_4BIT]       = (uint8 *) memalign(64,MAX_4BIT_TILES * 64);
+	IPPU.TileCache[TILE_8BIT]       = (uint8 *) memalign(64,MAX_8BIT_TILES * 64);
+	IPPU.TileCache[TILE_2BIT_EVEN]  = (uint8 *) memalign(64,MAX_2BIT_TILES * 64);
+	IPPU.TileCache[TILE_2BIT_ODD]   = (uint8 *) memalign(64,MAX_2BIT_TILES * 64);
+	IPPU.TileCache[TILE_4BIT_EVEN]  = (uint8 *) memalign(64,MAX_4BIT_TILES * 64);
+	IPPU.TileCache[TILE_4BIT_ODD]   = (uint8 *) memalign(64,MAX_4BIT_TILES * 64);
 
-	IPPU.TileCached[TILE_2BIT]      = (uint8 *) malloc(MAX_2BIT_TILES);
-	IPPU.TileCached[TILE_4BIT]      = (uint8 *) malloc(MAX_4BIT_TILES);
-	IPPU.TileCached[TILE_8BIT]      = (uint8 *) malloc(MAX_8BIT_TILES);
-	IPPU.TileCached[TILE_2BIT_EVEN] = (uint8 *) malloc(MAX_2BIT_TILES);
-	IPPU.TileCached[TILE_2BIT_ODD]  = (uint8 *) malloc(MAX_2BIT_TILES);
-	IPPU.TileCached[TILE_4BIT_EVEN] = (uint8 *) malloc(MAX_4BIT_TILES);
-	IPPU.TileCached[TILE_4BIT_ODD]  = (uint8 *) malloc(MAX_4BIT_TILES);
+	IPPU.TileCached[TILE_2BIT]      = (uint8 *) memalign(64,MAX_2BIT_TILES);
+	IPPU.TileCached[TILE_4BIT]      = (uint8 *) memalign(64,MAX_4BIT_TILES);
+	IPPU.TileCached[TILE_8BIT]      = (uint8 *) memalign(64,MAX_8BIT_TILES);
+	IPPU.TileCached[TILE_2BIT_EVEN] = (uint8 *) memalign(64,MAX_2BIT_TILES);
+	IPPU.TileCached[TILE_2BIT_ODD]  = (uint8 *) memalign(64,MAX_2BIT_TILES);
+	IPPU.TileCached[TILE_4BIT_EVEN] = (uint8 *) memalign(64,MAX_4BIT_TILES);
+	IPPU.TileCached[TILE_4BIT_ODD]  = (uint8 *) memalign(64,MAX_4BIT_TILES);
 
 	if (!RAM || !SRAM || !VRAM || !ROM ||
 		!IPPU.TileCache[TILE_2BIT]       ||
@@ -1097,10 +1097,10 @@ bool8 CMemory::Init (void)
 		!IPPU.TileCached[TILE_2BIT_ODD]  ||
 		!IPPU.TileCached[TILE_4BIT_EVEN] ||
 		!IPPU.TileCached[TILE_4BIT_ODD])
-    {
+	{
 		Deinit();
 		return (FALSE);
-    }
+	}
 
 	ZeroMemory(RAM,  0x20000);
 	ZeroMemory(SRAM, 0x20000);
@@ -1386,7 +1386,7 @@ uint32 CMemory::FileLoader (uint8 *buffer, const char *filename, int32 maxsize)
     char	drive[_MAX_DRIVE + 1], dir[_MAX_DIR + 1], name[_MAX_FNAME + 1], exts[_MAX_EXT + 1];
 	char	*ext;
 
-#if defined(__WIN32__) || defined(__MACOSX__)
+#if defined(__WIN32__) || defined(__MACOSX__) || defined(_EE)
 	ext = &exts[1];
 #else
 	ext = &exts[0];
@@ -1448,6 +1448,7 @@ uint32 CMemory::FileLoader (uint8 *buffer, const char *filename, int32 maxsize)
 		default:
 		{
 			STREAM	fp = OPEN_STREAM(fname, "rb");
+			
 			if (!fp)
 				return (0);
 
@@ -1495,10 +1496,10 @@ uint32 CMemory::FileLoader (uint8 *buffer, const char *filename, int32 maxsize)
 		}
 	}
 
-    if (HeaderCount == 0)
+	if (HeaderCount == 0)
 		S9xMessage(S9X_INFO, S9X_HEADERS_INFO, "No ROM file header found.");
-    else
-    if (HeaderCount == 1)
+	else
+	if (HeaderCount == 1)
 		S9xMessage(S9X_INFO, S9X_HEADERS_INFO, "Found ROM file header (and ignored it).");
 	else
 		S9xMessage(S9X_INFO, S9X_HEADERS_INFO, "Found multiple ROM file headers (and ignored them).");
@@ -2005,6 +2006,7 @@ bool8 CMemory::LoadSRAM (const char *filename)
 	if (size)
 	{
 		file = fopen(sramName, "rb");
+
 		if (file)
 		{
 			len = fread((char *) SRAM, 1, 0x20000, file);
