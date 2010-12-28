@@ -9,6 +9,9 @@
 #include <cfg.h>
 #include <libconfig.h>
 
+int buffer_ms = 96;
+int lag_ms = 0;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -153,8 +156,8 @@ void S9xInitSettings(void)
 	Settings.FrameTimeNTSC = 16667;
 	Settings.SixteenBitSound = TRUE;
 	Settings.Stereo = TRUE;
-	Settings.SoundPlaybackRate = 32000;
-	Settings.SoundInputRate = 32000;
+	Settings.SoundPlaybackRate = 48000;
+	Settings.SoundInputRate = 16000;
 	Settings.SupportHiRes = TRUE;
 	Settings.Transparency = TRUE;
 	Settings.AutoDisplayMessages = TRUE;
@@ -179,8 +182,8 @@ void S9xInitSettings(void)
 
 void S9xParseCFG(config_t *config)
 {
-	//create config, too
-	const char snes9x[7] = "Snes9x";
+
+	const char snes9x[7] = "Snes9X";
 
 	bool8 autoframeskip = FALSE;
 	char section_path[256];
@@ -200,7 +203,7 @@ void S9xParseCFG(config_t *config)
 	Settings.ApplyCheats =                 cfg_get_bool(setting, FALSE);
 
 	sprintf(setting,"%s%s",section_path,"Patch");
-	Settings.NoPatch =                    !cfg_get_bool(setting, TRUE);
+	Settings.NoPatch =                    !cfg_get_bool(setting, FALSE);
 
 	sprintf(setting,"%s%s",section_path,"LoROM");
 	Settings.ForceLoROM =                  cfg_get_bool(setting, FALSE);
@@ -226,20 +229,37 @@ void S9xParseCFG(config_t *config)
 
 	sprintf(setting,"%s%s",section_path,"Header");
 	Settings.ForceHeader =                 cfg_get_bool(setting, FALSE);
-	Settings.ForceNoHeader = !Settings.ForceHeader;
+
+	sprintf(setting,"%s%s",section_path,"NoHeader");
+	Settings.ForceNoHeader =               cfg_get_bool(setting, FALSE);
+
+	if (Settings.ForceHeader)
+	{
+		Settings.ForceNoHeader = !Settings.ForceHeader;
+	}
 
 	sprintf(setting,"%s%s",section_path,"Interleaved");
 	Settings.ForceInterleaved =            cfg_get_bool(setting, FALSE);
-	Settings.ForceNotInterleaved = !Settings.ForceInterleaved;
+
+	if (Settings.ForceInterleaved)
+	{
+		Settings.ForceNotInterleaved = !Settings.ForceInterleaved;
+	}
 
 	/// Sound
 	strcpy(section_path,snes9x);
 	strcat(section_path,".Sound.");
 
+	sprintf(setting,"%s%s",section_path,"BufferMS");
+	buffer_ms =                            cfg_get_uint(setting, 96);
+
+	sprintf(setting,"%s%s",section_path,"LagMS");
+	lag_ms =                               cfg_get_uint(setting, 0);
+
 	sprintf(setting,"%s%s",section_path,"Sync");
 	Settings.SoundSync =                   cfg_get_bool(setting, TRUE);
 
-	sprintf(setting,"%s%s",section_path,"16BitSound");
+	sprintf(setting,"%s%s",section_path,"SixteenBitSound");
 	Settings.SixteenBitSound =             cfg_get_bool(setting, TRUE);
 
 	sprintf(setting,"%s%s",section_path,"Stereo");
@@ -249,10 +269,10 @@ void S9xParseCFG(config_t *config)
 	Settings.ReverseStereo =               cfg_get_bool(setting, FALSE);
 
 	sprintf(setting,"%s%s",section_path,"Rate");
-	Settings.SoundPlaybackRate =           cfg_get_uint(setting, 32000);
+	Settings.SoundPlaybackRate =           cfg_get_uint(setting, 48000);
 
 	sprintf(setting,"%s%s",section_path,"InputRate");
-	Settings.SoundInputRate =              cfg_get_uint(setting, 32000);
+	Settings.SoundInputRate =              cfg_get_uint(setting, 22000);
 
 	sprintf(setting,"%s%s",section_path,"Mute");
 	Settings.Mute =                        cfg_get_bool(setting, FALSE);
@@ -271,7 +291,7 @@ void S9xParseCFG(config_t *config)
 	Settings.DisableGraphicWindows  =     !cfg_get_bool(setting, TRUE);
 
 	sprintf(setting,"%s%s",section_path,"DisplayFrameRate");
-	Settings.DisplayFrameRate =            cfg_get_bool(setting, FALSE);
+	Settings.DisplayFrameRate =            cfg_get_bool(setting, TRUE);
 
 	sprintf(setting,"%s%s",section_path,"DisplayWatchedAddresses");
 	Settings.DisplayWatchedAddresses =     cfg_get_bool(setting, FALSE);
@@ -338,7 +358,7 @@ void S9xParseCFG(config_t *config)
 	else
 	{
 		sprintf(setting,"%s%s",section_path,"FrameSkip");
-		Settings.SkipFrames =              cfg_get_uint(setting, 0) + 1;
+		Settings.SkipFrames =              cfg_get_uint(setting, 1) + 1;
 	}
 
 	/// Controls
@@ -453,24 +473,15 @@ void S9xParseCFG(config_t *config)
 
 }
 
-void S9xSaveSettingsToCFG(char *path)
+void S9xAddSettingsToCFG(config_t *config)
 {
-
-	FILE *file;
-
-	// Initialize a blank config so we don't run into problems
-	config_t config;
-
-	config_init(&config);
-
-	config_set_tab_width(&config,0);
 
 	config_setting_t *root;
 	config_setting_t *group;
 	config_setting_t *subgroup;
 	config_setting_t *setting;
 
-	root = config_root_setting(&config);
+	root = config_root_setting(config);
 
 	group = config_setting_add(root,"Snes9x", CONFIG_TYPE_GROUP);
 	{
@@ -488,7 +499,7 @@ void S9xSaveSettingsToCFG(char *path)
 			config_setting_set_bool(setting,Settings.ApplyCheats);
 
 			setting = config_setting_add(subgroup,"Patch",CONFIG_TYPE_BOOL);
-			config_setting_set_bool(setting,Settings.NoPatch);
+			config_setting_set_bool(setting,!Settings.NoPatch);
 
 			setting = config_setting_add(subgroup,"LoROM",CONFIG_TYPE_BOOL);
 			config_setting_set_bool(setting,Settings.ForceLoROM);
@@ -505,6 +516,9 @@ void S9xSaveSettingsToCFG(char *path)
 			setting = config_setting_add(subgroup,"Header",CONFIG_TYPE_BOOL);
 			config_setting_set_bool(setting,Settings.ForceHeader);
 
+			setting = config_setting_add(subgroup,"NoHeader",CONFIG_TYPE_BOOL);
+			config_setting_set_bool(setting,Settings.ForceNoHeader);
+
 			setting = config_setting_add(subgroup,"Interleaved",CONFIG_TYPE_BOOL);
 			config_setting_set_bool(setting,Settings.ForceInterleaved);
 
@@ -516,7 +530,7 @@ void S9xSaveSettingsToCFG(char *path)
 			setting = config_setting_add(subgroup,"Sync",CONFIG_TYPE_BOOL);
 			config_setting_set_bool(setting,Settings.SoundSync);
 
-			setting = config_setting_add(subgroup,"16BitSound",CONFIG_TYPE_BOOL);
+			setting = config_setting_add(subgroup,"SixteenBitSound",CONFIG_TYPE_BOOL);
 			config_setting_set_bool(setting,Settings.SixteenBitSound);
 
 			setting = config_setting_add(subgroup,"Stereo",CONFIG_TYPE_BOOL);
@@ -546,7 +560,7 @@ void S9xSaveSettingsToCFG(char *path)
 			config_setting_set_bool(setting,Settings.Transparency);
 
 			setting = config_setting_add(subgroup,"GraphicWindows",CONFIG_TYPE_BOOL);
-			config_setting_set_bool(setting,Settings.DisableGraphicWindows);
+			config_setting_set_bool(setting,!Settings.DisableGraphicWindows);
 
 			setting = config_setting_add(subgroup,"DisplayFrameRate",CONFIG_TYPE_BOOL);
 			config_setting_set_bool(setting,Settings.DisplayFrameRate);
@@ -668,10 +682,10 @@ void S9xSaveSettingsToCFG(char *path)
 		{
 
 			setting = config_setting_add(subgroup,"EnableGameSpecificHacks",CONFIG_TYPE_BOOL);
-			config_setting_set_bool(setting,Settings.DisableGameSpecificHacks);
+			config_setting_set_bool(setting,!Settings.DisableGameSpecificHacks);
 
 			setting = config_setting_add(subgroup,"AllowInvalidVRAMAccess",CONFIG_TYPE_BOOL);
-			config_setting_set_bool(setting,Settings.BlockInvalidVRAMAccess);
+			config_setting_set_bool(setting,!Settings.BlockInvalidVRAMAccess);
 
 			setting = config_setting_add(subgroup,"SpeedHacks",CONFIG_TYPE_BOOL);
 			config_setting_set_bool(setting,Settings.ShutdownMaster);
@@ -716,6 +730,28 @@ void S9xSaveSettingsToCFG(char *path)
 
 	}
 
+}
+
+void S9xLoadCFG(char *path)
+{
+
+	config_t *cfg = cfg_open(path);
+
+	S9xParseCFG(cfg);
+
+	cfg_close(cfg);
+
+}
+
+void S9xSaveCFG(char *path)
+{
+
+	FILE *file;
+
+	config_t *cfg = cfg_open(NULL);
+
+	S9xAddSettingsToCFG(cfg);
+
 	file = fopen(path,"w+");
 
 	if (file == NULL)
@@ -723,12 +759,10 @@ void S9xSaveSettingsToCFG(char *path)
 		return;
 	}
 
-	config_write(&config,file);
-
-	fflush(file);
+	config_write(cfg,file);
 
 	fclose(file);
 
-	config_destroy(&config);
+	cfg_close(cfg);
 
 }
