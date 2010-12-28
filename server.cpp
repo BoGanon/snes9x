@@ -1445,6 +1445,7 @@ void S9xNPServerQueueSendingLoadROMRequest (const char *filename)
 }
 
 #ifndef __WIN32__
+#ifndef _EE
 uint32 S9xGetMilliTime ()
 {
     static bool8 first = TRUE;
@@ -1459,5 +1460,28 @@ uint32 S9xGetMilliTime ()
     }
     return ((uint32) ((tv.tv_sec - start_sec) * 1000 + tv.tv_usec / 1000));
 }
+#else /*_EE*/
+uint32 S9xGetMilliTime ()
+{
+	static bool8 first = TRUE;
+	static unsigned long start_sec;
+	unsigned long ms, sec;
+
+	ms = (unsigned long)(((float)clock()) / 576.0f);
+	sec = (unsigned long)(((float)ms) / 1000.0f);
+
+	if (first)
+	{
+		start_sec = sec;
+		first = FALSE;
+	}
+
+	return ((uint32) ((sec - start_sec) * 1000 + (ms));
+}
+#endif /*_EE*/
+
 #endif
+
+
+
 #endif
