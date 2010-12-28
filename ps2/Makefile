@@ -14,7 +14,8 @@ ZLIB=1
 UNZIP_SUPPORT=1
 SDD1_DECOMP=1
 
-SNES9X_FLAGS = -DHAVE_LIBPNG -DZLIB -DCORRECT_VRAM_READS -DSDD_DECOMP -DUNZIP_SUPPORT -fno-inline -ffast-math
+SNES9X_FLAGS = -DRIGHTSHIFT_IS_SAR -DDEBUG -DZLIB -DHAVE_LIBPNG -DCORRECT_VRAM_READS -DSDD1_DECOMP -DUNZIP_SUPPORT -fshort-double -mhard-float -ffast-math -mno-check-zero-division -mno-flush-func 
+#-fforce-addr -foptimize-sibling-calls -fno-trapv
 SNES9X_INCS = -I.. -I../apu -I../unzip
 
 SNES9X_OBJS = \
@@ -126,7 +127,9 @@ SNES9X_OBJS += \
     ../jma/lzma.o \
     ../jma/lzmadec.o \
     ../jma/winout.o
-#EE_CXXFLAGS = -fexceptions
+EE_CXXFLAGS = -fexceptions
+else
+EE_CXXFLAGS = -fno-exceptions
 endif
 
 INTERFACE_OBJS = \
@@ -136,24 +139,25 @@ INTERFACE_OBJS = \
     interface/src/hdd.o \
     interface/src/init.o \
     interface/src/paths.o \
-    interface/src/tar.o
+    interface/src/tar.o \
+    interface/src/video.o
 
 INTERFACE_INCS = \
     -Iinterface/include
 
 EE_BIN = snes9x.elf
 
-EE_OBJS = ps2_snes9x.o snes9x_cfg.o $(INTERFACE_OBJS) $(SNES9X_OBJS)
+EE_OBJS = ps2_snes9x.o modules_tgz.o snes9x_cfg.o ps2_controls.o ps2_video.o ps2_sound_driver_audsrv.o $(INTERFACE_OBJS) $(SNES9X_OBJS)
 
 EE_CFLAGS = $(SNES9X_FLAGS)
-EE_CXXFLAGS = $(SNES9X_FLAGS) -fno-exceptions -fno-rtti
+EE_CXXFLAGS += $(SNES9X_FLAGS) -fno-rtti -fno-implicit-inline-templates
 
 EE_INCS = $(INTERFACE_INCS) $(SNES9X_INCS) -I$(PS2SDK)/ports/include
 EE_LDFLAGS = -L$(PS2SDK)/ports/lib
 
 EE_GFX_LIBS = -ldma -lpacket -lgraph -lfont -ldraw -limage
 EE_FILE_LIBS = -lfileXio
-EE_SYS_LIBS = -lmc -lmtap -lpadx -lpoweroff -lpatches -lmf -lc
+EE_SYS_LIBS = -laudsrv -linputx -lmc -lmtap -lpadx -lpoweroff -lpatches -lmf -lc
 
 EE_LIBS = $(EE_GFX_LIBS) $(EE_PAD_LIBS) -lconfig -lpng -lz $(EE_FILE_LIBS) $(EE_SYS_LIBS)
 
@@ -161,6 +165,9 @@ all: $(EE_BIN)
 
 clean:
 	rm -f $(EE_OBJS) $(EE_BIN)
+
+%_tgz.s:
+	bin2s $*.tgz $*_tgz.s $*_tgz
 
 include Makefile.eeglobal
 include Makefile.pref
