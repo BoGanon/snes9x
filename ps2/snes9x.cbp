@@ -100,7 +100,6 @@
 		<Unit filename="../docs/controls.txt" />
 		<Unit filename="../docs/gpl-2.0.txt" />
 		<Unit filename="../docs/lgpl-2.1.txt" />
-		<Unit filename="../docs/porting.html" />
 		<Unit filename="../docs/snapshots.txt" />
 		<Unit filename="../docs/snes9x-license.txt" />
 		<Unit filename="../docs/snes9x.conf.default" />
@@ -383,8 +382,16 @@
 		<Unit filename="Makefile" />
 		<Unit filename="Makefile.eeglobal" />
 		<Unit filename="Makefile.pref" />
+		<Unit filename="ps2_controls.cpp" />
 		<Unit filename="ps2_controls.h" />
 		<Unit filename="ps2_snes9x.cpp" />
+		<Unit filename="ps2_sound_driver_audsrv.cpp" />
+		<Unit filename="ps2_sound_driver_audsrv.h" />
+		<Unit filename="ps2_video.cpp" />
+		<Unit filename="ps2_video.h" />
+		<Unit filename="snes9x_cfg.cpp" />
+		<Unit filename="snes9x_cfg.h" />
+		<Unit filename="snes9x_sound_driver.h" />
 		<Unit filename="../reader.cpp" />
 		<Unit filename="../reader.h" />
 		<Unit filename="../sa1.cpp" />
