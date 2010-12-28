@@ -778,7 +778,7 @@ PHASE(17)  V(V1,0)                            V(V7,5)V(V4,6)\
 PHASE(18)                                     V(V8_V5_V2,5)\
 PHASE(19)                                     V(V9_V6_V3,5)\
 PHASE(20)         V(V1,1)                            V(V7,6)V(V4,7)\
-PHASE(21)                                            V(V8,6)V(V5,7)  V(V2,0)  /* t_brr_next_addr order dependency */\
+PHASE(21)                                            V(V8,6)V(V5,7)  V(V2,0)\
 PHASE(22)  V(V3a,0)                                  V(V9,6)V(V6,7)  echo_22();\
 PHASE(23)                                                   V(V7,7)  echo_23();\
 PHASE(24)                                                   V(V8,7)  echo_24();\
@@ -790,6 +790,7 @@ PHASE(29) misc_29();                                                 echo_29();\
 PHASE(30) misc_30();V(V3c,0)                                         echo_30();\
 PHASE(31)  V(V4,0)       V(V1,2)\
 
+/* PHASE(21)                                            V(V8,6)V(V5,7)  V(V2,0) t_brr_next_addr order dependency */
 #if !SPC_DSP_CUSTOM_RUN
 
 void SPC_DSP::run( int clocks_remain )

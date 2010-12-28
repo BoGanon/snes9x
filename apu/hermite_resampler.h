@@ -29,15 +29,15 @@ class HermiteResampler : public Resampler
             mu2 = mu1 * mu1;
             mu3 = mu2 * mu1;
 
-            m0  = (b - a) * (1 + bias) * (1 - tension) / 2;
-            m0 += (c - b) * (1 - bias) * (1 - tension) / 2;
-            m1  = (c - b) * (1 + bias) * (1 - tension) / 2;
-            m1 += (d - c) * (1 - bias) * (1 - tension) / 2;
+            m0  = (b - a) * (1.0f + bias) * (1.0f - tension) / 2.0f;
+            m0 += (c - b) * (1.0f - bias) * (1.0f - tension) / 2.0f;
+            m1  = (c - b) * (1.0f + bias) * (1.0f - tension) / 2.0f;
+            m1 += (d - c) * (1.0f - bias) * (1.0f - tension) / 2.0f;
 
-            a0 = +2 * mu3 - 3 * mu2 + 1;
-            a1 =      mu3 - 2 * mu2 + mu1;
-            a2 =      mu3 -     mu2;
-            a3 = -2 * mu3 + 3 * mu2;
+            a0 = +2.0f * mu3 - 3.0f * mu2 + 1.0f;
+            a1 =         mu3 - 2.0f * mu2 + mu1;
+            a2 =         mu3 -        mu2;
+            a3 = -2.0f * mu3 + 3.0f * mu2;
 
             return (a0 * b) + (a1 * m0) + (a2 * m1) + (a3 * c);
         }
@@ -63,7 +63,7 @@ class HermiteResampler : public Resampler
         clear (void)
         {
             ring_buffer::clear ();
-            r_frac = 1.0;
+            r_frac = 1.0f;
             r_left [0] = r_left [1] = r_left [2] = r_left [3] = 0;
             r_right[0] = r_right[1] = r_right[2] = r_right[3] = 0;
         }
@@ -83,7 +83,7 @@ class HermiteResampler : public Resampler
                 int max_samples = buffer_size >> 1;
                 const double margin_of_error = 1.0e-10;
 
-                if (fabs(r_step - 1.0) < margin_of_error)
+                if (fabs(r_step - 1.0f) < margin_of_error)
                 {
                     data[o_position] = (short) s_left;
                     data[o_position + 1] = (short) s_right;
@@ -97,7 +97,7 @@ class HermiteResampler : public Resampler
                     continue;
                 }
 
-                while (r_frac <= 1.0 && o_position < num_samples)
+                while (r_frac <= 1.0f && o_position < num_samples)
                 {
                     data[o_position]     = SHORT_CLAMP (hermite (r_frac, r_left [0], r_left [1], r_left [2], r_left [3]));
                     data[o_position + 1] = SHORT_CLAMP (hermite (r_frac, r_right[0], r_right[1], r_right[2], r_right[3]));
@@ -119,7 +119,7 @@ class HermiteResampler : public Resampler
                     r_right[2] = r_right[3];
                     r_right[3] = s_right;                    
                     
-                    r_frac -= 1.0;
+                    r_frac -= 1.0f;
                     
                     i_position += 2;
                     if (i_position >= max_samples)
