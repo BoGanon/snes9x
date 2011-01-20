@@ -3,4 +3,6 @@
 
 void S9xInitGFX(void);
 
+void S9xDeinitGFX(void);
+
 #endif /*__PS2_VIDEO_H__*/

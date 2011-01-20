@@ -4,7 +4,7 @@ SUBDIRS =
 #SYS_CONFIG_FILE=1
 #DEBUG=1
 #MOVIE_SUPPORT=1
-#JMA_SUPPORT=1
+JMA_SUPPORT=1
 #DEBUGGER=1
 #LOGGER_SUPPORT=1
 #CONFFILE_SUPPORT=1
@@ -14,8 +14,9 @@ ZLIB=1
 UNZIP_SUPPORT=1
 SDD1_DECOMP=1
 
-SNES9X_FLAGS = -DRIGHTSHIFT_IS_SAR -DDEBUG -DZLIB -DHAVE_LIBPNG -DCORRECT_VRAM_READS -DSDD1_DECOMP -DUNZIP_SUPPORT -fshort-double -mhard-float -ffast-math -mno-check-zero-division -mno-flush-func 
-#-fforce-addr -foptimize-sibling-calls -fno-trapv
+PS2SDK_FLAGS = -DNEW_PADMAN -UPS2LINK -fshort-double -mhard-float -ffast-math -mno-check-zero-division
+SNES9X_FLAGS = $(PS2SDK_FLAGS) -DRIGHTSHIFT_IS_SAR -DDEBUG -DZLIB -DHAVE_LIBPNG -DCORRECT_VRAM_READS -DSDD1_DECOMP -DUNZIP_SUPPORT -DJMA_SUPPORT
+
 SNES9X_INCS = -I.. -I../apu -I../unzip
 
 SNES9X_OBJS = \
@@ -132,13 +133,19 @@ else
 EE_CXXFLAGS = -fno-exceptions
 endif
 
+
 INTERFACE_OBJS = \
+    interface/src/browser.o \
     interface/src/cfg.o \
     interface/src/gui.o \
     interface/src/gzip.o \
     interface/src/hdd.o \
     interface/src/init.o \
+    interface/src/interface.o \
+    interface/src/lists.o \
     interface/src/paths.o \
+    interface/src/settings.o \
+    interface/src/strkat.o \
     interface/src/tar.o \
     interface/src/video.o
 
@@ -147,9 +154,14 @@ INTERFACE_INCS = \
 
 EE_BIN = snes9x.elf
 
-EE_OBJS = ps2_snes9x.o modules_tgz.o snes9x_cfg.o ps2_controls.o ps2_video.o ps2_sound_driver_audsrv.o $(INTERFACE_OBJS) $(SNES9X_OBJS)
+EE_OBJS = ps2_snes9x.o modules_tgz.o skin_tgz.o snes9x_cfg.o ps2_controls.o ps2_video.o ps2_sound_driver_audsrv.o $(INTERFACE_OBJS) $(SNES9X_OBJS)
 
 EE_CFLAGS = $(SNES9X_FLAGS)
+EE_CFLAGS += -fno-builtin-memcmp -fno-builtin-memcpy -fno-builtin-memset
+EE_CFLAGS += -fno-builtin-printf -fno-builtin-strcat -fno-builtin-strchr
+EE_CFLAGS += -fno-builtin-strcmp -fno-builtin-strcpy -fno-builtin-strlen
+EE_CFLAGS += -fno-builtin-strncpy -fno-builtin-strrchr -fno-builtin-strncmp
+
 EE_CXXFLAGS += $(SNES9X_FLAGS) -fno-rtti -fno-implicit-inline-templates
 
 EE_INCS = $(INTERFACE_INCS) $(SNES9X_INCS) -I$(PS2SDK)/ports/include
@@ -157,7 +169,7 @@ EE_LDFLAGS = -L$(PS2SDK)/ports/lib
 
 EE_GFX_LIBS = -ldma -lpacket -lgraph -lfont -ldraw -limage
 EE_FILE_LIBS = -lfileXio
-EE_SYS_LIBS = -laudsrv -linputx -lmc -lmtap -lpadx -lpoweroff -lpatches -lmf -lc
+EE_SYS_LIBS = -lSMSCDVD -laudsrv -linputx -lmc -lmtap -lpadx -lpoweroff -lpatches -lmf -lc -lm
 
 EE_LIBS = $(EE_GFX_LIBS) $(EE_PAD_LIBS) -lconfig -lpng -lz $(EE_FILE_LIBS) $(EE_SYS_LIBS)
 

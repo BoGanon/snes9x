@@ -9,6 +9,7 @@
 #include <time.h>
 
 // ps2sdk headers
+#include <input.h>
 #include <audsrv.h>
 #include <fileXio_rpc.h>
 #include <dma.h>
@@ -21,14 +22,12 @@
 #include <zlib.h>
 #include <libconfig.h>
 
-// Settings
-#if 0
-#include <settings.h>
-#endif
-
-#include <video.h>
+// Interface headers
+#include <browser.h>
 #include <init.h>
+#include <interface.h>
 #include <paths.h>
+#include <settings.h>
 
 // Snes9x headers
 #include <snes9x.h>
@@ -42,55 +41,28 @@
 #include <ps2_video.h>
 #include <ps2_sound_driver_audsrv.h>
 
-//int syncing = 0;
+int stop_emulation = 0;
 
-// Needs to be global
-#if 0
-settings_t *settings;
-#endif
+S9xSoundDriver *driver;
 
 void make_s9x_dirs();
 
 bool8 S9xInitSoundDevice(void);
+void S9xDeinitSoundDevice(void);
 
 void S9xSyncSpeedFinish();
 
-int main(int argc, char **argv)
+void S9xInit()
 {
-	int last_ms = 0;
-	int current_ms;
-	int frames = 0;
-
-	// hardcoded dir
-	char dir[50] = "mc0:/SYS-CONF";
-
-	std::ios::sync_with_stdio(false);
-
-	reset_iop();
-
-	init_basic_modules(NULL);
-
-	dma_channel_initialize(DMA_CHANNEL_GIF,NULL,0);
-	dma_channel_fast_waits(DMA_CHANNEL_GIF);
-
-	S9xInitSettings();
-
-	init_sound_modules(NULL);
-
-	// hardcoded dir
-	S9xLoadCFG("mc0:/SYS-CONF/snes9x.cfg");
-
-	// hardcoded dir
-	ps2_input_cfg("mc0:/SYS-CONF/snes9x.cfg");
+	char *path;
 
 	ps2_input_open_pads();
 
-	make_s9x_dirs();
+	path = check_boot("snes9x.cfg");
 
-	if (!Memory.Init () || !S9xInitAPU ())
-	{
-		printf("Out of Memory\n");
-	}
+	S9xLoadCFG(path);
+
+	ps2_input_cfg(path);
 
 	S9xInitGFX();
 
@@ -105,30 +77,90 @@ int main(int argc, char **argv)
 		printf("Out of Memory\n");
 	}
 
-	// hardcoded rom
+}
 
-	//if (!Memory.LoadROM("mc0:SYS-CONF/rom.smc"))
-	//if (!Memory.LoadROM("mc0:smrpg_us.smc"))
-	if (!Memory.LoadROM("mc0:/SYS-CONF/SuperMar.smc"))
+void S9xDeinit()
+{
+
+	browser_reset_path();
+
+	stop_emulation = 0;
+
+	S9xGraphicsDeinit();
+
+	S9xDeinitGFX();
+
+	S9xDeinitSoundDevice();
+
+	ps2_input_close_pads();
+
+}
+
+
+
+
+
+int main(int argc, char **argv)
+{
+	int loaded = 0;
+
+	std::ios::sync_with_stdio(false);
+
+	parse_args(argc,argv);
+
+	init("snes9x.cfg");
+	init_sound_modules(NULL);
+
+	S9xInitSettings();
+
+	make_s9x_dirs();
+
+	if (!Memory.Init () || !S9xInitAPU ())
 	{
-		printf("Something's wrong\n");
-		SleepThread();
+		printf("Out of Memory\n");
 	}
-
-	Memory.LoadSRAM(S9xGetFilename(".srm", SRAM_DIR));
 
 	while (1)
-	//for (i = 0; i < 200; i++)
 	{
 
-		S9xMainLoop();
+		interface_open();
 
-		//printf("samples = %d\n",S9xGetSampleCount());
-		ps2_input_report_pads();
+		interface_run();
+
+		interface_close();
+
+		S9xInit();
+
+		printf("rom = %s\n",browser_get_path());
+
+		loaded = Memory.LoadROM(browser_get_path());
+
+		if (loaded)
+		{
+			printf("Loading SRAM: %s\n", S9xGetFilename(".srm", SRAM_DIR));
+			printf("loaded = %d\n",Memory.LoadSRAM(S9xGetFilename(".srm", SRAM_DIR)));
+		}
+		else
+		{
+			stop_emulation = 1;
+			S9xReset();
+		}
+
+		while (!stop_emulation)
+		{
+
+			S9xMainLoop();
+
+			ps2_input_report_pads();
+
+		}
+
+		printf("Saving SRAM: %s\n",S9xGetFilename(".srm",SRAM_DIR));
+		printf("saved = %d\n",Memory.SaveSRAM(S9xGetFilename(".srm", SRAM_DIR)));
+
+		S9xDeinit();
 
 	}
-
-	//exit(0);
 
 	return 0;
 }
@@ -201,7 +233,7 @@ void S9xCloseSnapshotFile (STREAM file)
 
 void S9xExit (void)
 {
-	//longjmp(somewhere,buf);
+	stop_emulation = 1;
 }
 
 bool8 S9xInitUpdate (void)
@@ -213,8 +245,6 @@ void S9xMessage (int type, int number, const char *message)
 {
 	printf("%s\n",message);
 }
-
-S9xSoundDriver *driver;
 
 bool8 S9xInitSoundDevice(void)
 {
@@ -240,6 +270,12 @@ bool8 S9xInitSoundDevice(void)
 	}
 
 	return TRUE;
+}
+
+void S9xDeinitSoundDevice(void)
+{
+	driver->terminate();
+	delete driver;
 }
 
 bool8 S9xOpenSoundDevice (void)
@@ -294,20 +330,19 @@ void make_s9x_dirs(void)
 const char *S9xGetDirectory (enum s9x_getdirtype dirtype)
 {
 	static char directory[PATH_MAX+1];
+	settings_t settings = settings_get();
 
-	//strcpy(directory,settings->home);
-	strcpy(directory,"mc0:/SYS-CONF");
+	// Initialize directory with base directory
+	strcpy(directory,settings.home.directory);
 
+	// Make path for subdirectories
 	if (dir_types[dirtype][0])
 	{
-#if 0
-		//sprintf(directory,"%s/%s",settings->home,dir_types[dirtype]);
-#endif
-		sprintf(directory,"%s/%s","mc0:/SYS-CONF",dir_types[dirtype]);
-		//strcat(directory,"/");
-		//strcat(directory,dir_types[dirtype]);
+		sprintf(directory,"%s/%s",settings.home.directory,dir_types[dirtype]);
 	}
-	printf("directory = %s\n",directory);
+
+	printf("directory = %s\n", directory);
+
 	return directory;
 
 }
@@ -380,6 +415,7 @@ const char *S9xChooseMovieFilename (bool8 read_only)
 const char *S9xBasename (const char *path)
 {
 	char base[256];
+
 	strcpy(base,path);
 
 	return basename(base);
@@ -387,6 +423,7 @@ const char *S9xBasename (const char *path)
 
 void S9xAutoSaveSRAM (void)
 {
+	printf("Saving SRAM\n");
 	Memory.SaveSRAM(S9xGetFilename(".srm", SRAM_DIR));
 }
 
@@ -593,6 +630,7 @@ static unsigned int next_sec = 0;
 
 #undef TIMER_DIFF
 #define TIMER_DIFF(a, b) (long)(((a##_sec - b##_sec) * 1000) + a##_ms - b##_ms)
+
 void S9xSyncSpeedFinish (void)
 {
 	if (!syncing)

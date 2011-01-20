@@ -1,5 +1,7 @@
 #include <ps2_sound_driver_audsrv.h>
 
+#include <settings.h>
+
 #include <apu.h>
 
 static void audsrv_samples_available(void *data)
@@ -46,20 +48,22 @@ void S9xAudsrvSoundDriver::terminate(void)
 
 void S9xAudsrvSoundDriver::start(void)
 {
-	// hardcoded volume
-	audsrv_set_volume(100);
+	settings_t settings = settings_get();
+	audsrv_set_volume(settings.sound.volume);
 	return;
 }
 
 void S9xAudsrvSoundDriver::stop(void)
 {
 	audsrv_set_volume(0);
+	audsrv_stop_audio();
 	return;
 }
 
 bool8 S9xAudsrvSoundDriver::open_device(void)
 {
 
+	settings_t settings = settings_get();
 	format = (audsrv_fmt_t*)malloc(sizeof(audsrv_fmt_t));
 
 	if (!format)
@@ -80,8 +84,7 @@ bool8 S9xAudsrvSoundDriver::open_device(void)
 		return FALSE;
 	}
 
-	// hardcoded volume
-	audsrv_set_volume(100);
+	audsrv_set_volume(settings.sound.volume);
 
 	S9xSetSamplesAvailableCallback(audsrv_samples_available, this);
 

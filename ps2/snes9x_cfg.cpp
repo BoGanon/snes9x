@@ -9,6 +9,8 @@
 #include <cfg.h>
 #include <libconfig.h>
 
+#include <snes9x_cfg.h>
+
 int buffer_ms = 96;
 int lag_ms = 0;
 
@@ -183,15 +185,12 @@ void S9xInitSettings(void)
 void S9xParseCFG(config_t *config)
 {
 
-	const char snes9x[7] = "Snes9X";
-
 	bool8 autoframeskip = FALSE;
 	char section_path[256];
 	char setting[256];
 
 	/// ROM
-	strcpy(section_path,snes9x);
-	strcat(section_path,".ROM.");
+	sprintf(section_path,"%s%s",SNES9X_SECTION,".ROM.");
 
 	sprintf(setting,"%s%s",section_path,"Interleaved2");
 	Settings.ForceInterleaved2 =           cfg_get_bool(setting, FALSE);
@@ -247,14 +246,13 @@ void S9xParseCFG(config_t *config)
 	}
 
 	/// Sound
-	strcpy(section_path,snes9x);
-	strcat(section_path,".Sound.");
+	sprintf(section_path,"%s%s",SNES9X_SECTION,".Sound.");
 
 	sprintf(setting,"%s%s",section_path,"BufferMS");
-	buffer_ms =                            cfg_get_uint(setting, 96);
+	buffer_ms =                  (unsigned int)cfg_string_to_int(cfg_get_string(setting, "96"));
 
 	sprintf(setting,"%s%s",section_path,"LagMS");
-	lag_ms =                               cfg_get_uint(setting, 0);
+	lag_ms =                     (unsigned int)cfg_string_to_int(cfg_get_string(setting, "0"));
 
 	sprintf(setting,"%s%s",section_path,"Sync");
 	Settings.SoundSync =                   cfg_get_bool(setting, TRUE);
@@ -269,17 +267,16 @@ void S9xParseCFG(config_t *config)
 	Settings.ReverseStereo =               cfg_get_bool(setting, FALSE);
 
 	sprintf(setting,"%s%s",section_path,"Rate");
-	Settings.SoundPlaybackRate =           cfg_get_uint(setting, 48000);
+	Settings.SoundPlaybackRate = (unsigned int)cfg_string_to_int(cfg_get_string(setting, "48000"));
 
 	sprintf(setting,"%s%s",section_path,"InputRate");
-	Settings.SoundInputRate =              cfg_get_uint(setting, 22000);
+	Settings.SoundInputRate =    (unsigned int)cfg_string_to_int(cfg_get_string(setting, "22000"));
 
 	sprintf(setting,"%s%s",section_path,"Mute");
 	Settings.Mute =                        cfg_get_bool(setting, FALSE);
 
 	/// Display
-	strcpy(section_path,snes9x);
-	strcat(section_path,".Display.");
+	sprintf(section_path,"%s%s",SNES9X_SECTION,".Display.");
 
 	sprintf(setting,"%s%s",section_path,"HiRes");
 	Settings.SupportHiRes =                cfg_get_bool(setting, TRUE);
@@ -306,11 +303,10 @@ void S9xParseCFG(config_t *config)
 	Settings.AutoDisplayMessages =         cfg_get_bool(setting, TRUE);
 
 	sprintf(setting,"%s%s",section_path,"MessageDisplayTime");
-	Settings.InitialInfoStringTimeout =    cfg_get_int(setting,  120);
+	Settings.InitialInfoStringTimeout =        cfg_string_to_int(cfg_get_string(setting,  "120"));
 
 	/// Settings
-	strcpy(section_path,snes9x);
-	strcat(section_path,".Settings.");
+	sprintf(section_path,"%s%s",SNES9X_SECTION,".Settings.");
 
 	sprintf(setting,"%s%s",section_path,"BSXBootup");
 	Settings.BSXBootup =                   cfg_get_bool(setting, FALSE);
@@ -319,7 +315,7 @@ void S9xParseCFG(config_t *config)
 	Settings.TurboMode =                   cfg_get_bool(setting, FALSE);
 
 	sprintf(setting,"%s%s",section_path,"TurboFrameSkip");
-	Settings.TurboSkipFrames =             cfg_get_uint(setting, 15);
+	Settings.TurboSkipFrames =   (unsigned int)cfg_string_to_int(cfg_get_string(setting, "15"));
 
 	sprintf(setting,"%s%s",section_path,"MovieTruncateAtEnd");
 	Settings.MovieTruncate =               cfg_get_bool(setting, FALSE);
@@ -331,7 +327,7 @@ void S9xParseCFG(config_t *config)
 	Settings.WrongMovieStateProtection =   cfg_get_bool(setting, TRUE);
 
 	sprintf(setting,"%s%s",section_path,"StretchScreenshots");
-	Settings.StretchScreenshots =          cfg_get_int(setting,  1);
+	Settings.StretchScreenshots =              cfg_string_to_int(cfg_get_string(setting,  "1"));
 
 	sprintf(setting,"%s%s",section_path,"SnapshotScreenshots");
 	Settings.SnapshotScreenshots =         cfg_get_bool(setting, TRUE);
@@ -340,13 +336,13 @@ void S9xParseCFG(config_t *config)
 	Settings.DontSaveOopsSnapshot =        cfg_get_bool(setting, FALSE);
 
 	sprintf(setting,"%s%s",section_path,"AutoSaveDelay");
-	Settings.AutoSaveDelay =               cfg_get_uint(setting, 0);
+	Settings.AutoSaveDelay =     (unsigned int)cfg_string_to_int(cfg_get_string(setting, "0"));
 
 	sprintf(setting,"%s%s",section_path,"FrameTimePAL");
-	Settings.FrameTimePAL =                cfg_get_uint(setting, 20000);
+	Settings.FrameTimePAL =      (unsigned int)cfg_string_to_int(cfg_get_string(setting, "20000"));
 
 	sprintf(setting,"%s%s",section_path,"FrameTimeNTSC");
-	Settings.FrameTimeNTSC =               cfg_get_uint(setting, 16667);
+	Settings.FrameTimeNTSC =     (unsigned int)cfg_string_to_int(cfg_get_string(setting, "16667"));
 
 	sprintf(setting,"%s%s",section_path,"AutoFrameSkip");
 	autoframeskip =                        cfg_get_bool(setting, FALSE);
@@ -358,12 +354,11 @@ void S9xParseCFG(config_t *config)
 	else
 	{
 		sprintf(setting,"%s%s",section_path,"FrameSkip");
-		Settings.SkipFrames =              cfg_get_uint(setting, 1) + 1;
+		Settings.SkipFrames =    (unsigned int)cfg_string_to_int(cfg_get_string(setting, "1")) + 1;
 	}
 
 	/// Controls
-	strcpy(section_path,snes9x);
-	strcat(section_path,".Controls.");
+	sprintf(section_path,"%s%s",SNES9X_SECTION,".Controls.");
 
 	sprintf(setting,"%s%s",section_path,"MouseMaster");
 	Settings.MouseMaster =                 cfg_get_bool(setting, TRUE);
@@ -409,8 +404,7 @@ void S9xParseCFG(config_t *config)
 	parse_crosshair_spec(X_JUSTIFIER2,control_settings.xhair[4]);
 
 	/// Hacks
-	strcpy(section_path,snes9x);
-	strcat(section_path,".Hacks.");
+	sprintf(section_path,"%s%s",SNES9X_SECTION,".Hacks.");
 
 	sprintf(setting,"%s%s",section_path,"EnableGameSpecificHacks");
 	Settings.DisableGameSpecificHacks =   !cfg_get_bool(setting, TRUE);
@@ -428,18 +422,17 @@ void S9xParseCFG(config_t *config)
 	Settings.DisableHDMA =                 cfg_get_bool(setting, FALSE);
 
 	sprintf(setting,"%s%s",section_path,"HDMATiming");
-	Settings.HDMATimingHack =              cfg_get_int(setting,  100);
+	Settings.HDMATimingHack =              cfg_string_to_int(cfg_get_string(setting, "100"));
 
 #ifdef NETPLAY_SUPPORT
 	/// Netplay
-	strcpy(section_path,snes9x);
-	strcat(section_path,".Netplay.");
+	sprintf(section_path,"%s%s",SNES9X_SECTION,".Netplay.");
 
 	sprintf(setting,"%s%s",section_path,"Enable");
 	Settings.NetPlay =                     cfg_get_bool(setting, FALSE);
 
 	sprintf(setting,"%s%s",section_path,"Port");
-	Settings.Port =                       -cfg_get_int("Netplay::Port",NP_DEFAULT_PORT);
+	Settings.Port =                       -cfg_string_to_int(cfg_get_string(setting,NP_DEFAULT_PORT));
 
 	sprintf(setting,"%s%s",section_path,"Server");
 	Settings.ServerName[0] = '\0';
@@ -449,8 +442,7 @@ void S9xParseCFG(config_t *config)
 
 #ifdef DEBUGGER
 	/// Debug
-	strcpy(section_path,snes9x);
-	strcat(section_path,".DEBUG.");
+	sprintf(section_path,"%s%s",SNES9X_SECTION,".DEBUG.");
 
 	sprintf(setting,"%s%s",section_path,"Debugger");
 	debug_settings[0] =                    cfg_get_bool(setting, FALSE);
@@ -476,6 +468,7 @@ void S9xParseCFG(config_t *config)
 void S9xAddSettingsToCFG(config_t *config)
 {
 
+	char value[256];
 	config_setting_t *root;
 	config_setting_t *group;
 	config_setting_t *subgroup;
@@ -483,7 +476,7 @@ void S9xAddSettingsToCFG(config_t *config)
 
 	root = config_root_setting(config);
 
-	group = config_setting_add(root,"Snes9x", CONFIG_TYPE_GROUP);
+	group = config_setting_add(root,SNES9X_SECTION, CONFIG_TYPE_GROUP);
 	{
 
 		subgroup = config_setting_add(group,"ROM",CONFIG_TYPE_GROUP);
@@ -527,6 +520,14 @@ void S9xAddSettingsToCFG(config_t *config)
 		subgroup = config_setting_add(group,"Sound",CONFIG_TYPE_GROUP);
 		{
 
+			setting = config_setting_add(subgroup,"BufferMS",CONFIG_TYPE_STRING);
+			cfg_int_to_string(value,buffer_ms);
+			config_setting_set_string(setting,value);
+
+			setting = config_setting_add(subgroup,"LagMS",CONFIG_TYPE_STRING);
+			cfg_int_to_string(value,lag_ms);
+			config_setting_set_string(setting,value);
+
 			setting = config_setting_add(subgroup,"Sync",CONFIG_TYPE_BOOL);
 			config_setting_set_bool(setting,Settings.SoundSync);
 
@@ -539,11 +540,13 @@ void S9xAddSettingsToCFG(config_t *config)
 			setting = config_setting_add(subgroup,"ReverseStereo",CONFIG_TYPE_BOOL);
 			config_setting_set_bool(setting,Settings.ReverseStereo);
 
-			setting = config_setting_add(subgroup,"Rate",CONFIG_TYPE_INT);
-			config_setting_set_int(setting,(int)Settings.SoundPlaybackRate);
+			setting = config_setting_add(subgroup,"Rate",CONFIG_TYPE_STRING);
+			cfg_int_to_string(value,(int)Settings.SoundPlaybackRate);
+			config_setting_set_string(setting,value);
 
-			setting = config_setting_add(subgroup,"InputRate",CONFIG_TYPE_INT);
-			config_setting_set_int(setting,(int)Settings.SoundInputRate);
+			setting = config_setting_add(subgroup,"InputRate",CONFIG_TYPE_STRING);
+			cfg_int_to_string(value,(int)Settings.SoundInputRate);
+			config_setting_set_string(setting,value);
 
 			setting = config_setting_add(subgroup,"Mute",CONFIG_TYPE_BOOL);
 			config_setting_set_bool(setting,Settings.Mute);
@@ -577,8 +580,9 @@ void S9xAddSettingsToCFG(config_t *config)
 			setting = config_setting_add(subgroup,"MessagesInImage",CONFIG_TYPE_BOOL);
 			config_setting_set_bool(setting,Settings.AutoDisplayMessages);
 
-			setting = config_setting_add(subgroup,"MessageDisplayTime",CONFIG_TYPE_INT);
-			config_setting_set_int(setting,Settings.InitialInfoStringTimeout);
+			setting = config_setting_add(subgroup,"MessageDisplayTime",CONFIG_TYPE_STRING);
+			cfg_int_to_string(value,Settings.InitialInfoStringTimeout);
+			config_setting_set_string(setting,value);
 
 		}
 
@@ -591,8 +595,9 @@ void S9xAddSettingsToCFG(config_t *config)
 			setting = config_setting_add(subgroup,"TurboMode",CONFIG_TYPE_BOOL);
 			config_setting_set_bool(setting,Settings.TurboMode);
 
-			setting = config_setting_add(subgroup,"TurboFrameSkip",CONFIG_TYPE_INT);
-			config_setting_set_int(setting,(int)Settings.TurboSkipFrames);
+			setting = config_setting_add(subgroup,"TurboFrameSkip",CONFIG_TYPE_STRING);
+			cfg_int_to_string(value,(int)Settings.TurboSkipFrames);
+			config_setting_set_string(setting,value);
 
 			setting = config_setting_add(subgroup,"MovieTruncateAtEnd",CONFIG_TYPE_BOOL);
 			config_setting_set_bool(setting,Settings.MovieTruncate);
@@ -603,8 +608,9 @@ void S9xAddSettingsToCFG(config_t *config)
 			setting = config_setting_add(subgroup,"WrongMovieStateProtection",CONFIG_TYPE_BOOL);
 			config_setting_set_bool(setting,Settings.WrongMovieStateProtection);
 
-			setting = config_setting_add(subgroup,"StretchScreenshots",CONFIG_TYPE_INT);
-			config_setting_set_int(setting,Settings.StretchScreenshots);
+			setting = config_setting_add(subgroup,"StretchScreenshots",CONFIG_TYPE_STRING);
+			cfg_int_to_string(value,Settings.StretchScreenshots);
+			config_setting_set_string(setting,value);
 
 			setting = config_setting_add(subgroup,"SnapshotScreenshots",CONFIG_TYPE_BOOL);
 			config_setting_set_bool(setting,Settings.SnapshotScreenshots);
@@ -612,14 +618,17 @@ void S9xAddSettingsToCFG(config_t *config)
 			setting = config_setting_add(subgroup,"DontSaveOopsSnapshot",CONFIG_TYPE_BOOL);
 			config_setting_set_bool(setting,Settings.DontSaveOopsSnapshot);
 
-			setting = config_setting_add(subgroup,"AutoSaveDelay",CONFIG_TYPE_INT);
-			config_setting_set_int(setting,(int)Settings.AutoSaveDelay);
+			setting = config_setting_add(subgroup,"AutoSaveDelay",CONFIG_TYPE_STRING);
+			cfg_int_to_string(value,(int)Settings.AutoSaveDelay);
+			config_setting_set_string(setting,value);
 
-			setting = config_setting_add(subgroup,"FrameTimePAL",CONFIG_TYPE_INT);
-			config_setting_set_int(setting,(int)Settings.FrameTimePAL);
+			setting = config_setting_add(subgroup,"FrameTimePAL",CONFIG_TYPE_STRING);
+			cfg_int_to_string(value,(int)Settings.FrameTimePAL);
+			config_setting_set_string(setting,value);
 
-			setting = config_setting_add(subgroup,"FrameTimeNTSC",CONFIG_TYPE_INT);
-			config_setting_set_int(setting,(int)Settings.FrameTimeNTSC);
+			setting = config_setting_add(subgroup,"FrameTimeNTSC",CONFIG_TYPE_STRING);
+			cfg_int_to_string(value,(int)Settings.FrameTimeNTSC);
+			config_setting_set_string(setting,value);
 
 			
 			if (Settings.SkipFrames == AUTO_FRAMERATE)
@@ -632,8 +641,9 @@ void S9xAddSettingsToCFG(config_t *config)
 				setting = config_setting_add(subgroup,"AutoFrameSkip",CONFIG_TYPE_BOOL);
 				config_setting_set_bool(setting,0);
 
-				setting = config_setting_add(subgroup,"FrameSkip",CONFIG_TYPE_INT);
-				config_setting_set_int(setting,(int)Settings.SkipFrames-1);
+				setting = config_setting_add(subgroup,"FrameSkip",CONFIG_TYPE_STRING);
+				cfg_int_to_string(value,(int)Settings.SkipFrames-1);
+				config_setting_set_string(setting,value);
 			}
 		}
 
@@ -696,8 +706,9 @@ void S9xAddSettingsToCFG(config_t *config)
 			setting = config_setting_add(subgroup,"DisableHDMA",CONFIG_TYPE_BOOL);
 			config_setting_set_bool(setting,Settings.DisableHDMA);
 
-			setting = config_setting_add(subgroup,"HDMATiming",CONFIG_TYPE_INT);
-			config_setting_set_int(setting,Settings.HDMATimingHack);
+			setting = config_setting_add(subgroup,"HDMATiming",CONFIG_TYPE_STRING);
+			cfg_int_to_string(value,Settings.HDMATimingHack);
+			config_setting_set_string(setting,value);
 
 		}
 
@@ -707,8 +718,9 @@ void S9xAddSettingsToCFG(config_t *config)
 			setting = config_setting_add(subgroup,"Enable",CONFIG_TYPE_BOOL);
 			config_setting_set_bool(setting,Settings.NetPlay);
 
-			setting = config_setting_add(subgroup,"Port",CONFIG_TYPE_INT);
-			config_setting_set_int(setting,Settings.Port);
+			setting = config_setting_add(subgroup,"Port",CONFIG_TYPE_STRING);
+			cfg_int_to_string(value,Settings.Port);
+			config_setting_set_string(setting,value);
 
 			setting = config_setting_add(subgroup,"Server",CONFIG_TYPE_STRING);
 			config_setting_set_string(setting,Settings.ServerName);

@@ -71,11 +71,10 @@ enum
 	k_R_H
 };
 
-extern int ps2_pads;
+void ps2_input_open_pads(void);
+void ps2_input_close_pads(void);
 
-void ps2_input_report_pads();
+void ps2_input_report_pads(void);
 void ps2_input_cfg(char *path);
-
-void ps2_input_open_pads();
 
 #endif /*__PS2_CONTROLS_H__*/

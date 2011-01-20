@@ -382,6 +382,55 @@
 		<Unit filename="Makefile" />
 		<Unit filename="Makefile.eeglobal" />
 		<Unit filename="Makefile.pref" />
+		<Unit filename="interface/include/browser.h" />
+		<Unit filename="interface/include/cfg.h" />
+		<Unit filename="interface/include/gui.h" />
+		<Unit filename="interface/include/gui_skin.h" />
+		<Unit filename="interface/include/gzip.h" />
+		<Unit filename="interface/include/hdd.h" />
+		<Unit filename="interface/include/init.h" />
+		<Unit filename="interface/include/interface.h" />
+		<Unit filename="interface/include/lists.h" />
+		<Unit filename="interface/include/paths.h" />
+		<Unit filename="interface/include/settings.h" />
+		<Unit filename="interface/include/tar.h" />
+		<Unit filename="interface/include/video.h" />
+		<Unit filename="interface/src/browser.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="interface/src/cfg.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="interface/src/gui.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="interface/src/gzip.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="interface/src/hdd.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="interface/src/init.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="interface/src/interface.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="interface/src/lists.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="interface/src/paths.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="interface/src/settings.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="interface/src/tar.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="interface/src/video.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="ps2_controls.cpp" />
 		<Unit filename="ps2_controls.h" />
 		<Unit filename="ps2_snes9x.cpp" />

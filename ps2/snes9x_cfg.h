@@ -7,6 +7,8 @@
 extern int buffer_ms;
 extern int lag_ms;
 
+#define SNES9X_SECTION "Snes9X"
+
 // Initializes Settings values
 void S9xInitSettings(void);
 
