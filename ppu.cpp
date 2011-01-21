@@ -461,6 +461,9 @@ void S9xFixColourBrightness (void)
 	}
 }
 
+#ifdef _EE
+#include "ps2/opti/ppu_setppu.h"
+#else
 void S9xSetPPU (uint8 Byte, uint16 Address)
 {
 	// MAP_PPU: $2000-$3FFF
@@ -1258,7 +1261,11 @@ void S9xSetPPU (uint8 Byte, uint16 Address)
 
 	Memory.FillRAM[Address] = Byte;
 }
+#endif
 
+#ifdef _EE
+#include "ps2/opti/ppu_getppu.h"
+#else
 uint8 S9xGetPPU (uint16 Address)
 {
 	// MAP_PPU: $2000-$3FFF
@@ -1562,6 +1569,7 @@ uint8 S9xGetPPU (uint16 Address)
 		}
 	}
 }
+#endif
 
 void S9xSetCPU (uint8 Byte, uint16 Address)
 {
