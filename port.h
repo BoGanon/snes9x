@@ -181,9 +181,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
+
 #ifndef _EE
 #include <memory.h>
-#endif // _EE
+#endif
+
 #include <time.h>
 #include <string.h>
 #ifdef HAVE_STRINGS_H
@@ -387,6 +389,21 @@ void WinDisplayStringFromBottom(const char *string, int linesFromBottom, int pix
 
 #define SWAP_WORD(s)		(s) = (((s) & 0xff) <<  8) | (((s) & 0xff00) >> 8)
 #define SWAP_DWORD(s)		(s) = (((s) & 0xff) << 24) | (((s) & 0xff00) << 8) | (((s) & 0xff0000) >> 8) | (((s) & 0xff000000) >> 24)
+
+#ifdef _EE
+
+#undef GFX_MULTI_FORMAT
+#define PIXEL_FORMAT BGR555
+
+#define UCAB_SEG(A) \
+   ((void *)(((u32)(A)) | 0x30000000))
+
+#include <kernel.h>
+#include "prefetch.h"
+
+#define PREFETCHING
+
+#endif
 
 #include "pixform.h"
 

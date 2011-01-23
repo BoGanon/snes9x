@@ -461,8 +461,8 @@ void S9xFixColourBrightness (void)
 	}
 }
 
-#ifdef _EE
-#include "ps2/opti/ppu_setppu.h"
+#ifdef _OPTI_PPU
+	#include "ps2/opti/ppu_setppu.h"
 #else
 void S9xSetPPU (uint8 Byte, uint16 Address)
 {
@@ -1263,8 +1263,8 @@ void S9xSetPPU (uint8 Byte, uint16 Address)
 }
 #endif
 
-#ifdef _EE
-#include "ps2/opti/ppu_getppu.h"
+#ifdef _OPTI_PPU
+	#include "ps2/opti/ppu_getppu.h"
 #else
 uint8 S9xGetPPU (uint16 Address)
 {
@@ -1927,7 +1927,7 @@ uint8 S9xGetCPU (uint16 Address)
 				return (OpenBus);
 		}
 	}
-	else
+
 	if ((Address & 0xff80) == 0x4300)
 	{
 		if (CPU.InDMAorHDMA)
@@ -1983,65 +1983,64 @@ uint8 S9xGetCPU (uint16 Address)
 				return (OpenBus);
 		}
 	}
-	else
+
+
+	uint8	byte;
+
+	switch (Address)
 	{
-		uint8	byte;
+		case 0x4210: // RDNMI
+		#ifdef CPU_SHUTDOWN
+			CPU.WaitAddress = CPU.PBPCAtOpcodeStart;
+		#endif
+			byte = Memory.FillRAM[0x4210];
+			Memory.FillRAM[0x4210] = Model->_5A22;
+			return ((byte & 0x80) | (OpenBus & 0x70) | Model->_5A22);
 
-		switch (Address)
-		{
-			case 0x4210: // RDNMI
-			#ifdef CPU_SHUTDOWN
-				CPU.WaitAddress = CPU.PBPCAtOpcodeStart;
-			#endif
-				byte = Memory.FillRAM[0x4210];
-				Memory.FillRAM[0x4210] = Model->_5A22;
-				return ((byte & 0x80) | (OpenBus & 0x70) | Model->_5A22);
+		case 0x4211: // TIMEUP
+			byte = (CPU.IRQActive & PPU_IRQ_SOURCE) ? 0x80 : 0;
+			S9xClearIRQ(PPU_IRQ_SOURCE);
+			return (byte | (OpenBus & 0x7f));
 
-			case 0x4211: // TIMEUP
-				byte = (CPU.IRQActive & PPU_IRQ_SOURCE) ? 0x80 : 0;
-				S9xClearIRQ(PPU_IRQ_SOURCE);
-				return (byte | (OpenBus & 0x7f));
+		case 0x4212: // HVBJOY
+		#ifdef CPU_SHUTDOWN
+			CPU.WaitAddress = CPU.PBPCAtOpcodeStart;
+		#endif
+			return (REGISTER_4212() | (OpenBus & 0x3e));
 
-			case 0x4212: // HVBJOY
-			#ifdef CPU_SHUTDOWN
-				CPU.WaitAddress = CPU.PBPCAtOpcodeStart;
-			#endif
-				return (REGISTER_4212() | (OpenBus & 0x3e));
+		case 0x4213: // RDIO
+			return (Memory.FillRAM[0x4213]);
 
-			case 0x4213: // RDIO
-				return (Memory.FillRAM[0x4213]);
+		case 0x4214: // RDDIVL
+		case 0x4215: // RDDIVH
+		case 0x4216: // RDMPYL
+		case 0x4217: // RDMPYH
+			return (Memory.FillRAM[Address]);
 
-			case 0x4214: // RDDIVL
-			case 0x4215: // RDDIVH
-			case 0x4216: // RDMPYL
-			case 0x4217: // RDMPYH
+		case 0x4218: // JOY1L
+		case 0x4219: // JOY1H
+		case 0x421a: // JOY2L
+		case 0x421b: // JOY2H
+		case 0x421c: // JOY3L
+		case 0x421d: // JOY3H
+		case 0x421e: // JOY4L
+		case 0x421f: // JOY4H
+		#ifdef SNES_JOY_READ_CALLBACKS
+			extern bool8 pad_read;
+			if (Memory.FillRAM[0x4200] & 1)
+			{
+				S9xOnSNESPadRead();
+				pad_read = TRUE;
+			}
+		#endif
+			return (Memory.FillRAM[Address]);
+
+		default:
+			if (Settings.SPC7110 && Address >= 0x4800)
+				return (S9xGetSPC7110(Address));
+			if (Settings.SDD1 && Address >= 0x4800 && Address <= 0x4807)
 				return (Memory.FillRAM[Address]);
-
-			case 0x4218: // JOY1L
-			case 0x4219: // JOY1H
-			case 0x421a: // JOY2L
-			case 0x421b: // JOY2H
-			case 0x421c: // JOY3L
-			case 0x421d: // JOY3H
-			case 0x421e: // JOY4L
-			case 0x421f: // JOY4H
-			#ifdef SNES_JOY_READ_CALLBACKS
-				extern bool8 pad_read;
-				if (Memory.FillRAM[0x4200] & 1)
-				{
-					S9xOnSNESPadRead();
-					pad_read = TRUE;
-				}
-			#endif
-				return (Memory.FillRAM[Address]);
-
-			default:
-				if (Settings.SPC7110 && Address >= 0x4800)
-					return (S9xGetSPC7110(Address));
-				if (Settings.SDD1 && Address >= 0x4800 && Address <= 0x4807)
-					return (Memory.FillRAM[Address]);
-				return (OpenBus);
-		}
+			return (OpenBus);
 	}
 }
 

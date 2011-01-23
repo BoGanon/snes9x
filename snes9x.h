@@ -186,7 +186,7 @@
 #include "65c816.h"
 #include "messages.h"
 
-#define S9X_ACCURACY_LEVEL		3
+#define S9X_ACCURACY_LEVEL		1
 
 #ifdef ZLIB
 #include <zlib.h>

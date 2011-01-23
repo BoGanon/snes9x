@@ -411,8 +411,10 @@ extern SnesModel	M2SNES;
 
 static inline void FLUSH_REDRAW (void)
 {
-	if (IPPU.PreviousLine != IPPU.CurrentLine)
-		S9xUpdateScreen();
+	if (IPPU.PreviousLine == IPPU.CurrentLine)
+		return;
+
+	S9xUpdateScreen();
 }
 
 static inline void REGISTER_2104 (uint8 Byte)

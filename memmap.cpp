@@ -179,6 +179,10 @@
 #include <numeric>
 #include <assert.h>
 
+#ifdef _EE
+#include <kernel.h>
+#endif
+
 #ifdef UNZIP_SUPPORT
 #include "unzip/unzip.h"
 #endif
@@ -1061,10 +1065,36 @@ static void S9xDeinterleaveGD24 (int size, uint8 *base)
 
 bool8 CMemory::Init (void)
 {
-	RAM	 = (uint8 *) memalign(64,0x20000);
-	SRAM = (uint8 *) memalign(64,0x20000);
-	VRAM = (uint8 *) memalign(64,0x10000);
-	ROM  = (uint8 *) memalign(64,MAX_ROM_SIZE + 0x200 + 0x8000);
+#ifdef _EE
+	RAM	 = (uint8 *) UNCACHED_SEG(memalign(64,0x20000));
+	InvalidDCache(RAM,RAM+0x20000);
+	SRAM = (uint8 *) UNCACHED_SEG(memalign(64,0x20000));
+	InvalidDCache(SRAM,SRAM+0x20000);
+	VRAM = (uint8 *) UNCACHED_SEG(memalign(64,0x10000));
+	InvalidDCache(VRAM,VRAM+0x10000);
+	ROM  = (uint8 *) UNCACHED_SEG(memalign(64,MAX_ROM_SIZE + 0x200 + 0x8000));
+	InvalidDCache(ROM,ROM+(MAX_ROM_SIZE + 0x200 + 0x8000));
+
+	IPPU.TileCache[TILE_2BIT]       = (uint8 *) UNCACHED_SEG(memalign(64,MAX_2BIT_TILES * 64));
+	IPPU.TileCache[TILE_4BIT]       = (uint8 *) UNCACHED_SEG(memalign(64,MAX_4BIT_TILES * 64));
+	IPPU.TileCache[TILE_8BIT]       = (uint8 *) UNCACHED_SEG(memalign(64,MAX_8BIT_TILES * 64));
+	IPPU.TileCache[TILE_2BIT_EVEN]  = (uint8 *) UNCACHED_SEG(memalign(64,MAX_2BIT_TILES * 64));
+	IPPU.TileCache[TILE_2BIT_ODD]   = (uint8 *) UNCACHED_SEG(memalign(64,MAX_2BIT_TILES * 64));
+	IPPU.TileCache[TILE_4BIT_EVEN]  = (uint8 *) UNCACHED_SEG(memalign(64,MAX_4BIT_TILES * 64));
+	IPPU.TileCache[TILE_4BIT_ODD]   = (uint8 *) UNCACHED_SEG(memalign(64,MAX_4BIT_TILES * 64));
+
+	IPPU.TileCached[TILE_2BIT]      = (uint8 *) UNCACHED_SEG(memalign(64,MAX_2BIT_TILES));
+	IPPU.TileCached[TILE_4BIT]      = (uint8 *) UNCACHED_SEG(memalign(64,MAX_4BIT_TILES));
+	IPPU.TileCached[TILE_8BIT]      = (uint8 *) UNCACHED_SEG(memalign(64,MAX_8BIT_TILES));
+	IPPU.TileCached[TILE_2BIT_EVEN] = (uint8 *) UNCACHED_SEG(memalign(64,MAX_2BIT_TILES));
+	IPPU.TileCached[TILE_2BIT_ODD]  = (uint8 *) UNCACHED_SEG(memalign(64,MAX_2BIT_TILES));
+	IPPU.TileCached[TILE_4BIT_EVEN] = (uint8 *) UNCACHED_SEG(memalign(64,MAX_4BIT_TILES));
+	IPPU.TileCached[TILE_4BIT_ODD]  = (uint8 *) UNCACHED_SEG(memalign(64,MAX_4BIT_TILES));
+#else
+	RAM	 = memalign(64,0x20000);
+	SRAM = memalign(64,0x20000);
+	VRAM = memalign(64,0x10000);
+	ROM  = memalign(64,MAX_ROM_SIZE + 0x200 + 0x8000);
 
 	IPPU.TileCache[TILE_2BIT]       = (uint8 *) memalign(64,MAX_2BIT_TILES * 64);
 	IPPU.TileCache[TILE_4BIT]       = (uint8 *) memalign(64,MAX_4BIT_TILES * 64);
@@ -1081,6 +1111,7 @@ bool8 CMemory::Init (void)
 	IPPU.TileCached[TILE_2BIT_ODD]  = (uint8 *) memalign(64,MAX_2BIT_TILES);
 	IPPU.TileCached[TILE_4BIT_EVEN] = (uint8 *) memalign(64,MAX_4BIT_TILES);
 	IPPU.TileCached[TILE_4BIT_ODD]  = (uint8 *) memalign(64,MAX_4BIT_TILES);
+#endif
 
 	if (!RAM || !SRAM || !VRAM || !ROM ||
 		!IPPU.TileCache[TILE_2BIT]       ||

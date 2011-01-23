@@ -431,6 +431,8 @@
 		<Unit filename="interface/src/video.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="opti/ppu_getppu.h" />
+		<Unit filename="opti/ppu_setppu.h" />
 		<Unit filename="ps2_controls.cpp" />
 		<Unit filename="ps2_controls.h" />
 		<Unit filename="ps2_snes9x.cpp" />

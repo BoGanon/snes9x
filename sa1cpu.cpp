@@ -185,7 +185,8 @@
 #define S9xGetByte						S9xSA1GetByte
 #define S9xGetWord						S9xSA1GetWord
 #define S9xSetByte						S9xSA1SetByte
-#define S9xSetWord						S9xSA1SetWord
+#define S9xSetWord01					S9xSA1SetWord01
+#define S9xSetWord10					S9xSA1SetWord10
 #define S9xSetPCBase					S9xSA1SetPCBase
 #define S9xOpcodesM1X1					S9xSA1OpcodesM1X1
 #define S9xOpcodesM1X0					S9xSA1OpcodesM1X0

@@ -263,56 +263,9 @@ static uint8 GetPPU_213F (uint16 Address)
 	return (PPU.OpenBus2 = byte);
 }
 
-// shouldn't be needed
 static uint8 GetPPU_APUR (uint16 Address)
 {
-/*
-	uint8 byte=0;
-
-//	CPU.Flags |= DEBUG_MODE_FLAG;
-#ifdef SPC700_SHUTDOWN	
-	(IAPUuncached->APUExecuting) = Settings.APUEnabled;
-	(IAPUuncached->WaitCounter)++;
-#endif
-	if (Settings.APUEnabled) {
-#ifdef CPU_SHUTDOWN
-//		CPU.WaitAddress = CPU.PCAtOpcodeStart;
-#endif	
-		if (SNESGameFixes.APU_OutPorts_ReturnValueFix && Address >= 0x2140 && Address <= 0x2143 && !CPU.V_Counter) {
-			return (uint8)((Address & 1) ? ((rand() & 0xff00) >> 8) :  (rand() & 0xff));
-		}
-		return ((APUuncached->OutPorts) [Address & 3]);
-	}
-
-	switch (Settings.SoundSkipMethod) {
-		case 0:
-	  case 1:
-			CPU.BranchSkip = TRUE;
-			break;
-	  case 2:
-			break;
-	  case 3:
-			CPU.BranchSkip = TRUE;
-			break;
-	}
-	if (Address & 3 < 2) {
-		int r = rand ();
-		if (r & 2) {		
-			if (r & 4){	    
-				return (Address & 3 == 1 ? 0xaa : 0xbb);
-			} else {		    
-				return ((r >> 3) & 0xff);
-			}
-		}
-	} else {
-		int r = rand ();
-		if (r & 2) {
-			return ((r >> 3) & 0xff);
-		}
-	}
-	return (Memory.FillRAM[Address]);
-*/
-	return (OpenBus);
+	return (S9xAPUReadPort(Address & 3));
 }
 
 static uint8 GetPPU_2180 (uint16 Address)
@@ -397,10 +350,10 @@ uint8 S9xGetPPU (uint16 Address)
 		}
 	}
 
-	if ((Address & 0xffc0) == 0x2140) // APUIO0, APUIO1, APUIO2, APUIO3
+	//if ((Address & 0xffc0) == 0x2140) // APUIO0, APUIO1, APUIO2, APUIO3
 		// read_port will run the APU until given APU time before reading value
-		return (S9xAPUReadPort(Address & 3));
-	else
+		//return (S9xAPUReadPort(Address & 3));
+	//else
 	if (Address <= 0x2183){
 		return GetPPU[Address - 0x2100](Address);
 	}

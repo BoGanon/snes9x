@@ -187,7 +187,6 @@
 #include "missing.h"
 #endif
 
-
 void S9xMainLoop (void)
 {
 	for (;;)

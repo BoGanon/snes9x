@@ -708,7 +708,13 @@ void S9xUpdateScreen (void)
 						register uint16	*q = GFX.Screen + y * GFX.PPL + 510;
 
 						for (register int x = 255; x >= 0; x--, p--, q -= 2)
+						{
+						#ifdef PREFETCHING
+							prefetch(q-2);
+							prefetch(p-1);
+						#endif
 							*q = *(q + 1) = *p;
+						}
 					}
 				}
 
@@ -724,7 +730,13 @@ void S9xUpdateScreen (void)
 				GFX.DoInterlace = 2;
 
 				for (register int32 y = (int32) GFX.StartY - 1; y >= 0; y--)
+				{
+				#ifdef PREFETCHING
+					prefetch(GFX.Screen + (y-1 * GFX.PPL));
+					prefetch(GFX.Screen + (y-1 * GFX.RealPPL));
+				#endif
 					memmove(GFX.Screen + y * GFX.PPL, GFX.Screen + y * GFX.RealPPL, IPPU.RenderedScreenWidth * sizeof(uint16));
+				}
 			}
 		}
 
@@ -749,7 +761,12 @@ void S9xUpdateScreen (void)
 
 		for (uint32 l = GFX.StartY; l <= GFX.EndY; l++, GFX.S += GFX.PPL)
 			for (int x = 0; x < IPPU.RenderedScreenWidth; x++)
+			{
+			#ifdef PREFETCHING
+				prefetch(GFX.S + x-1);
+			#endif
 				GFX.S[x] = black;
+			}
 	}
 
 	IPPU.PreviousLine = IPPU.CurrentLine;
@@ -1098,6 +1115,9 @@ static void DrawBackground (int bg, uint8 Zh, uint8 Zl)
 
 	for (int clip = 0; clip < GFX.Clip[bg].Count; clip++)
 	{
+	#ifdef PREFETCHING
+		prefetch (GFX.Clip[bg].DrawMode + (clip+1));
+	#endif
 		GFX.ClipColors = !(GFX.Clip[bg].DrawMode[clip] & 1);
 
 		if (BG.EnableMath && (GFX.Clip[bg].DrawMode[clip] & 2))
@@ -1160,6 +1180,10 @@ static void DrawBackground (int bg, uint8 Zh, uint8 Zl)
 			b1 += (TilemapRow & 0x1f) << 5;
 			b2 += (TilemapRow & 0x1f) << 5;
 
+		#ifdef PREFETCHING
+			prefetch(GFX.Clip[bg].Left + (clip+1));
+			prefetch(GFX.Clip[bg].Right + (clip + 1));
+		#endif
 			uint32	Left   = GFX.Clip[bg].Left[clip];
 			uint32	Right  = GFX.Clip[bg].Right[clip];
 			uint32	Offset = Left * PixWidth + Y * GFX.PPL;
@@ -1315,6 +1339,9 @@ static void DrawBackgroundMosaic (int bg, uint8 Zh, uint8 Zl)
 
 	for (int clip = 0; clip < GFX.Clip[bg].Count; clip++)
 	{
+	#ifdef PREFETCHING
+		prefetch(GFX.Clip[bg].DrawMode + (clip+1));
+	#endif
 		GFX.ClipColors = !(GFX.Clip[bg].DrawMode[clip] & 1);
 
 		if (BG.EnableMath && (GFX.Clip[bg].DrawMode[clip] & 2))
@@ -1365,6 +1392,10 @@ static void DrawBackgroundMosaic (int bg, uint8 Zh, uint8 Zl)
 			b1 += (TilemapRow & 0x1f) << 5;
 			b2 += (TilemapRow & 0x1f) << 5;
 
+		#ifdef PREFETCHING
+			prefetch(GFX.Clip[bg].Left + (clip+1));
+			prefetch(GFX.Clip[bg].Right + (clip + 1));
+		#endif
 			uint32	Left   = GFX.Clip[bg].Left[clip];
 			uint32	Right  = GFX.Clip[bg].Right[clip];
 			uint32	Offset = Left * PixWidth + (Y + MosaicStart) * GFX.PPL;
@@ -1493,6 +1524,9 @@ static void DrawBackgroundOffset (int bg, uint8 Zh, uint8 Zl, int VOffOff)
 
 	for (int clip = 0; clip < GFX.Clip[bg].Count; clip++)
 	{
+	#ifdef PREFETCHING
+		prefetch(GFX.Clip[bg].DrawMode + (clip+1));
+	#endif
 		GFX.ClipColors = !(GFX.Clip[bg].DrawMode[clip] & 1);
 
 		if (BG.EnableMath && (GFX.Clip[bg].DrawMode[clip] & 2))
@@ -1531,6 +1565,10 @@ static void DrawBackgroundOffset (int bg, uint8 Zh, uint8 Zl, int VOffOff)
 			s = ((VOffsetRow & 0x20) ? BPS2 : BPS0) + ((VOffsetRow & 0x1f) << 5);
 			int32	VOffsetOffset = s - s1;
 
+		#ifdef PREFETCHING
+			prefetch(GFX.Clip[bg].Left + (clip+1));
+			prefetch(GFX.Clip[bg].Right + (clip + 1));
+		#endif
 			uint32	Left  = GFX.Clip[bg].Left[clip];
 			uint32	Right = GFX.Clip[bg].Right[clip];
 			uint32	Offset = Left * PixWidth + Y * GFX.PPL;
@@ -1725,6 +1763,9 @@ static void DrawBackgroundOffsetMosaic (int bg, uint8 Zh, uint8 Zl, int VOffOff)
 
 	for (int clip = 0; clip < GFX.Clip[bg].Count; clip++)
 	{
+	#ifdef PREFETCHING
+		prefetch(GFX.Clip[bg].DrawMode + (clip+1));
+	#endif
 		GFX.ClipColors = !(GFX.Clip[bg].DrawMode[clip] & 1);
 
 		if (BG.EnableMath && (GFX.Clip[bg].DrawMode[clip] & 2))
@@ -1762,6 +1803,10 @@ static void DrawBackgroundOffsetMosaic (int bg, uint8 Zh, uint8 Zl, int VOffOff)
 			s = ((VOffsetRow & 0x20) ? BPS2 : BPS0) + ((VOffsetRow & 0x1f) << 5);
 			int32	VOffsetOffset = s - s1;
 
+		#ifdef PREFETCHING
+			prefetch(GFX.Clip[bg].Left + (clip+1));
+			prefetch(GFX.Clip[bg].Right + (clip + 1));
+		#endif
 			uint32	Left =  GFX.Clip[bg].Left[clip];
 			uint32	Right = GFX.Clip[bg].Right[clip];
 			uint32	Offset = Left * PixWidth + (Y + MosaicStart) * GFX.PPL;
@@ -1915,6 +1960,9 @@ static inline void DrawBackgroundMode7 (int bg, void (*DrawMath) (uint32, uint32
 {
 	for (int clip = 0; clip < GFX.Clip[bg].Count; clip++)
 	{
+	#ifdef PREFETCHING
+		prefetch(GFX.Clip[bg].DrawMode + (clip+1));
+	#endif
 		GFX.ClipColors = !(GFX.Clip[bg].DrawMode[clip] & 1);
 
 		if (BG.EnableMath && (GFX.Clip[bg].DrawMode[clip] & 2))
@@ -2173,14 +2221,14 @@ static void DisplayWatchedAddresses (void)
 
 void S9xDisplayMessages (uint16 *screen, int ppl, int width, int height, int scale)
 {
-	if (Settings.DisplayFrameRate)
-		DisplayFrameRate();
+	//if (Settings.DisplayFrameRate)
+	//	DisplayFrameRate();
 
-	if (Settings.DisplayWatchedAddresses)
-		DisplayWatchedAddresses();
+	//if (Settings.DisplayWatchedAddresses)
+	//	DisplayWatchedAddresses();
 
-	if (Settings.DisplayPressedKeys)
-		DisplayPressedKeys();
+	//if (Settings.DisplayPressedKeys)
+	//	DisplayPressedKeys();
 #ifdef MOVIE_SUPPORT
 	if (Settings.DisplayMovieFrame && S9xMovieActive())
 		S9xDisplayString(GFX.FrameDisplayString, 1, 1, false);

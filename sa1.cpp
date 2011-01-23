@@ -1065,6 +1065,61 @@ void S9xSA1SetByte (uint8 byte, uint32 address)
 	}
 }
 
+void S9xSA1SetWord01(uint16 Word, uint32 address, enum s9xwrap_t w)
+{
+	PC_t	a;
+
+	S9xSA1SetByte((uint8) Word, address);
+
+	switch (w)
+	{
+		case WRAP_PAGE:
+			a.xPBPC = address;
+			a.B.xPCl++;
+			S9xSA1SetByte(Word >> 8, a.xPBPC);
+			break;
+
+		case WRAP_BANK:
+			a.xPBPC = address;
+			a.W.xPC++;
+			S9xSA1SetByte(Word >> 8, a.xPBPC);
+			break;
+
+		case WRAP_NONE:
+		default:
+			S9xSA1SetByte(Word >> 8, address + 1);
+			break;
+	}
+
+}
+
+void S9xSA1SetWord10(uint16 Word, uint32 address, enum s9xwrap_t w)
+{
+	PC_t	a;
+
+	switch (w)
+	{
+		case WRAP_PAGE:
+			a.xPBPC = address;
+			a.B.xPCl++;
+			S9xSA1SetByte(Word >> 8, a.xPBPC);
+			break;
+
+		case WRAP_BANK:
+			a.xPBPC = address;
+			a.W.xPC++;
+			S9xSA1SetByte(Word >> 8, a.xPBPC);
+			break;
+
+		case WRAP_NONE:
+		default:
+			S9xSA1SetByte(Word >> 8, address + 1);
+			break;
+	}
+
+	S9xSA1SetByte((uint8) Word, address);
+}
+/*
 void S9xSA1SetWord (uint16 Word, uint32 address, enum s9xwrap_t w, enum s9xwriteorder_t o)
 {
 	PC_t	a;
@@ -1095,7 +1150,7 @@ void S9xSA1SetWord (uint16 Word, uint32 address, enum s9xwrap_t w, enum s9xwrite
 	if (o)
 		S9xSA1SetByte((uint8) Word, address);
 }
-
+*/
 void S9xSA1SetPCBase (uint32 address)
 {
 	SA1Registers.PBPC = address & 0xffffff;

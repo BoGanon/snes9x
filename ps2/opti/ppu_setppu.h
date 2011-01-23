@@ -900,35 +900,10 @@ case 0x2134:
 
 static void SetPPU_APU (uint8 Byte, uint16 Address)
 {
-/*
-  case 0x2140: case 0x2141: case 0x2142: case 0x2143:
-    case 0x2144: case 0x2145: case 0x2146: case 0x2147:
-    case 0x2148: case 0x2149: case 0x214a: case 0x214b:
-    case 0x214c: case 0x214d: case 0x214e: case 0x214f:
-    case 0x2150: case 0x2151: case 0x2152: case 0x2153:
-    case 0x2154: case 0x2155: case 0x2156: case 0x2157:
-    case 0x2158: case 0x2159: case 0x215a: case 0x215b:
-    case 0x215c: case 0x215d: case 0x215e: case 0x215f:
-    case 0x2160: case 0x2161: case 0x2162: case 0x2163:
-    case 0x2164: case 0x2165: case 0x2166: case 0x2167:
-    case 0x2168: case 0x2169: case 0x216a: case 0x216b:
-    case 0x216c: case 0x216d: case 0x216e: case 0x216f:
-    case 0x2170: case 0x2171: case 0x2172: case 0x2173:
-    case 0x2174: case 0x2175: case 0x2176: case 0x2177:
-    case 0x2178: case 0x2179: case 0x217a: case 0x217b:
-    case 0x217c: case 0x217d: case 0x217e: case 0x217f:
-*/
-#ifdef SPCTOOL
-	_//SPCInPB (Address & 3, Byte);
-#else	
-//	CPU.Flags |= DEBUG_MODE_FLAG;
+
+	S9xAPUWritePort(Address & 3, Byte);
 	Memory.FillRAM [Address] = Byte;
-	//(IAPUuncached->RAM) [(Address & 3) + 0xf4] = Byte;
-#ifdef SPC700_SHUTDOWN
-	//(IAPUuncached->APUExecuting) = Settings.APUEnabled;
-	//(IAPUuncached->WaitCounter)++;
-#endif
-#endif // SPCTOOL
+
 }
 
 static void SetPPU_2180 (uint8 Byte, uint16 Address)
@@ -1021,10 +996,10 @@ void S9xSetPPU (uint8 Byte, uint16 Address)
 		S9xTraceFormattedMessage("--- HDMA PPU %04X -> %02X", Address, Byte);
 #endif
 
-	if ((Address & 0xffc0) == 0x2140) // APUIO0, APUIO1, APUIO2, APUIO3
+	//if ((Address & 0xffc0) == 0x2140) // APUIO0, APUIO1, APUIO2, APUIO3
 		// write_port will run the APU until given clock before writing value
-		S9xAPUWritePort(Address & 3, Byte);
-	else
+		//S9xAPUWritePort(Address & 3, Byte);
+	//else
 	if (Address <= 0x2183)
 	{
 		SetPPU[Address - 0x2100]( Byte, Address );

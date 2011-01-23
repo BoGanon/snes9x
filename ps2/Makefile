@@ -14,8 +14,8 @@ ZLIB=1
 UNZIP_SUPPORT=1
 SDD1_DECOMP=1
 
-PS2SDK_FLAGS = -DNEW_PADMAN -UPS2LINK -fshort-double -mhard-float -ffast-math -mno-check-zero-division
-SNES9X_FLAGS = $(PS2SDK_FLAGS) -DRIGHTSHIFT_IS_SAR -DDEBUG -DZLIB -DHAVE_LIBPNG -DSDD1_DECOMP -DUNZIP_SUPPORT -DJMA_SUPPORT
+PS2SDK_FLAGS = -DNEW_PADMAN -UPS2LINK -fssa -frename-registers -fsingle-precision-constant -fshort-double -msingle-float -mhard-float -mfused-madd -ffast-math -mno-check-zero-division -mtune=r5900 -mno-mips16
+SNES9X_FLAGS = $(PS2SDK_FLAGS) -DCORRECT_VRAM_READS -DRIGHTSHIFT_IS_SAR -DDEBUG -DZLIB -DHAVE_LIBPNG -DSDD1_DECOMP -DUNZIP_SUPPORT -DJMA_SUPPORT
 
 SNES9X_INCS = -I.. -I../apu -I../unzip
 

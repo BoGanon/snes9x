@@ -70,7 +70,9 @@ void S9xInit()
 
 	S9xReportControllers();
 
+#ifdef GFX_MULTI_FORMAT
 	S9xSetRenderPixelFormat(BGR555);
+#endif
 
 	if (!S9xGraphicsInit())
 	{
@@ -96,13 +98,13 @@ void S9xDeinit()
 
 }
 
-
-
-
-
 int main(int argc, char **argv)
 {
 	int loaded = 0;
+	unsigned long current;
+	unsigned long last = 0;
+	char fps_str[20];
+	int frames = 0;
 
 	std::ios::sync_with_stdio(false);
 
@@ -148,6 +150,22 @@ int main(int argc, char **argv)
 
 		while (!stop_emulation)
 		{
+
+			if (Settings.DisplayFrameRate)
+			{
+				current = (unsigned int)(((float)clock()) / 576000.0f);
+
+				if (current != last)
+				{
+					sprintf(fps_str,"fps = %d",frames);
+					S9xSetInfoString (fps_str);
+					frames = 0;
+					last = current;
+				}
+
+				frames++;
+
+			}
 
 			S9xMainLoop();
 
